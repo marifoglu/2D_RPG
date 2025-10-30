@@ -13,7 +13,7 @@ public class Player_Combat : Entity_Combat
             ICounterable counterable = targer.GetComponent<ICounterable>();
 
 
-            if (counterable != null) 
+            if (counterable == null) 
                 continue; // if not counterable, skip
 
             if (counterable.CanBeCountered) 

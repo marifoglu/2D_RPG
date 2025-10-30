@@ -22,10 +22,6 @@ public class Entity_Health : MonoBehaviour, IDamageable
     [Header("On Heavy Damage Knockback")]
     [SerializeField] private float heavyDamageTreshold = 0.3f;
 
-    [Header("Stagger Settings")]
-    public float staggerDuration = 1f; // set individually in Inspector
-    [HideInInspector] public bool isStaggered;
-
     private void Awake()
     {
         entityVFX = GetComponent<Entity_VFX>();
