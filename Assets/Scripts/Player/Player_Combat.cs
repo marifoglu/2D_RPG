@@ -4,6 +4,7 @@ public class Player_Combat : Entity_Combat
 {
     [Header("Counter Attack Settings")]
     [SerializeField] private float counterRecovery = .1f;
+    [SerializeField] private float counterAttackDamage = 20f;
     public bool CounterAttackPerformed()
     {
         bool hasPerformedCounter = false;
@@ -11,6 +12,7 @@ public class Player_Combat : Entity_Combat
         foreach (var targer in GetDetectCollider())
         {
             ICounterable counterable = targer.GetComponent<ICounterable>();
+            IDamageable damageable = targer.GetComponent<IDamageable>();
 
 
             if (counterable == null) 
@@ -19,6 +21,11 @@ public class Player_Combat : Entity_Combat
             if (counterable.CanBeCountered) 
             {
                 counterable.HandleCounter();
+
+                if (damageable != null)
+                {
+                    damageable.TakeDamage(counterAttackDamage, transform);
+                }
                 hasPerformedCounter = true;
             }
 

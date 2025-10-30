@@ -38,6 +38,11 @@ public class Enemy : Entitiy
     public Vector2 knockbackForce = new Vector2(5f, 3f);
     public float knockbackDuration = 0.15f;
 
+    [Header("Counter Attack Damage")]
+    [SerializeField] private float counterDamageMultiplier = 1.5f; // Add this for extra counter damage
+
+    public bool CanBeCountered { get => canBeStunned; }
+
     public void EnableCounterWindow(bool enable) => canBeStunned = enable;
 
     public override void EntityDeath()
@@ -52,7 +57,15 @@ public class Enemy : Entitiy
         Debug.Log($"{name} received Player death event! Changing to idle...");
 
     }
+    public void HandleCounter()
+    {
+        if (CanBeCountered == false)
+            return;
 
+        stateMachine.ChangeState(stunnedState);
+        // GetComponent<Enemy_VFX>().PlayCounterEffect();
+
+    }
     public void TryEnterBattleState(Transform player)
     {
 

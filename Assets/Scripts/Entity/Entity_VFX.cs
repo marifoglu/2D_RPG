@@ -5,15 +5,17 @@ public class Entity_VFX : MonoBehaviour
 {
     private SpriteRenderer sr;
 
-    [Header("On Taking Damage VFX")]
+    [Header("Taking Damage VFX")]
     [SerializeField] private Material onDamageMaterial;
     [SerializeField] private float onDamageVfxDuration = 0.2f;
     private Material originalMaterial;
     private Coroutine onDamageVfxCoroutine;
 
-    [Header("On Death VFX")]
+    [Header("Death VFX")]
     [SerializeField] private GameObject hitVfx;
     [SerializeField] private Color hitVfxColor = Color.white;
+    [Header("Counter Attack VFX")]
+    [SerializeField] private GameObject counterAttackVFX; // Add this for counter attack effects
 
     private void Awake()
     {
@@ -44,5 +46,13 @@ public class Entity_VFX : MonoBehaviour
         //sr.material = onDamageMaterial;
         //sr.material = originalMaterial;
         //yield return new WaitForSeconds(onDamageVfxDuration);
+    }
+
+    public void CreateCounterAttackVFX(Transform target)
+    {
+        if (counterAttackVFX != null)
+        {
+            Instantiate(counterAttackVFX, target.position, Quaternion.identity);
+        }
     }
 }
