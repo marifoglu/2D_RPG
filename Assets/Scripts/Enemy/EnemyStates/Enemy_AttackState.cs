@@ -6,6 +6,11 @@ public class Enemy_AttackState : EnemyState
     {
     }
 
+    public override void Enter()
+    {
+        base.Enter();
+    }
+
 
     public override void Update()
     {
@@ -14,4 +19,11 @@ public class Enemy_AttackState : EnemyState
         if (triggerCalled)
             stateMachine.ChangeState(enemy.battleState);
     }
+    public override void Exit()
+    {
+        base.Exit();
+        // reset the attack animation when exiting
+        anim.SetBool(animBoolName, false);
+    }
+
 }

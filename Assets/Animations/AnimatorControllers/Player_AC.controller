@@ -782,10 +782,7 @@ AnimatorStateTransition:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 2
-    m_ConditionEvent: CounterAttackPerformed
-    m_EventTreshold: 0
+  m_Conditions: []
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 0}
   m_Solo: 0
@@ -920,7 +917,7 @@ AnimatorStateMachine:
     m_Position: {x: 410, y: 530, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6895391980652841160}
-    m_Position: {x: 850, y: 530, z: 0}
+    m_Position: {x: 870, y: 530, z: 0}
   m_ChildStateMachines:
   - serializedVersion: 1
     m_StateMachine: {fileID: 1835889888438133420}

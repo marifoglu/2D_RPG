@@ -38,8 +38,8 @@ public class Enemy : Entitiy
     public Vector2 knockbackForce = new Vector2(5f, 3f);
     public float knockbackDuration = 0.15f;
 
-    [Header("Counter Attack Damage")]
-    [SerializeField] private float counterDamageMultiplier = 1.5f; // Add this for extra counter damage
+    //[Header("Counter Attack Damage")]
+    //[SerializeField] private float counterDamageMultiplier = 1.5f; // Add this for extra counter damage
 
     public bool CanBeCountered { get => canBeStunned; }
 
@@ -59,13 +59,19 @@ public class Enemy : Entitiy
     }
     public void HandleCounter()
     {
-        if (CanBeCountered == false)
+        if (canBeStunned == false)
             return;
 
-        stateMachine.ChangeState(stunnedState);
-        // GetComponent<Enemy_VFX>().PlayCounterEffect();
+        // Force exit the current state which will reset its animation parameters
+        if (stateMachine.currentState == attackState)
+        {
+            stateMachine.currentState.Exit();
+        }
 
+        // Go directly to idle state
+        stateMachine.ChangeState(idleState);
     }
+
     public void TryEnterBattleState(Transform player)
     {
 
