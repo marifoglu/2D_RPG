@@ -11,14 +11,16 @@ public class Player_IdleState : Player_GroundedState
     {
         base.Enter();
 
-        player.SetVelocity(0, rb.linearVelocity.y);
+        //player.SetVelocity(0, rb.linearVelocity.y);
+        player.SetVelocity(0, 0f);   //  grounded = zero vertical velocity
+
     }
 
     public override void Update()
     {
         base.Update();
 
-        if (player.moveInput.x == player.facingDir && player.wallDetected)
+        if (player.moveInput.x == player.facingDir && player.wallDetected && !player.groundDetected)
             return;
 
         if (player.moveInput.x != 0)

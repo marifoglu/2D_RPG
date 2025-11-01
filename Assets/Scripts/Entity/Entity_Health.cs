@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class Entity_Health : MonoBehaviour, IDamageable
 {
     private Entity_VFX entityVFX;
-    private Entitiy entity;
+    private Entity entity;
     private Entity_Stats entityStats;
     private Slider healthBar;
 
@@ -13,8 +13,8 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
 
     [Header("On Light Damage Knockback")]
-    [SerializeField] private Vector2 knockbackPower = new Vector2(1.5f ,2.4f);
-    [SerializeField] private Vector2 heavyKnockbackPower = new Vector2(7f ,7f);
+    [SerializeField] private Vector2 knockbackPower = new Vector2(1.5f, 2.4f);
+    [SerializeField] private Vector2 heavyKnockbackPower = new Vector2(7f, 7f);
     [SerializeField] private float knockbackDuration = 0.2f;
     [SerializeField] private float heavyKnockbackDuration = 0.5f;
 
@@ -24,13 +24,21 @@ public class Entity_Health : MonoBehaviour, IDamageable
     private void Awake()
     {
         entityVFX = GetComponent<Entity_VFX>();
-        entity = GetComponent<Entitiy>();
+        entity = GetComponent<Entity>();
         entityStats = GetComponent<Entity_Stats>();
         healthBar = GetComponentInChildren<Slider>();
+
+        // Check if entityStats exists before using it
+        if (entityStats == null)
+        {
+            Debug.LogError($"Entity_Stats component not found on {gameObject.name}! Please add Entity_Stats component.");
+            return;
+        }
 
         currentHealth = entityStats.GetMaxHealth();
         UpdateHealthBar();
     }
+
     public virtual void TakeDamage(float damage, Transform damageDealer)
     {
         if (isDead)
@@ -59,28 +67,36 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
     private void UpdateHealthBar()
     {
-        if (healthBar == null)
+        if (healthBar == null || entityStats == null)
             return;
 
         healthBar.value = currentHealth / entityStats.GetMaxHealth();
     }
+
     protected virtual void Die()
     {
         isDead = true;
-        entity.EntityDeath(); 
+        entity?.EntityDeath();
     }
 
     private Vector2 CalculateKnockback(Transform damageDealer, float damage)
     {
         int direction = transform.position.x > damageDealer.position.x ? 1 : -1;
-        
-        Vector2 knockback =  IsHeavyDamage(damage) ? heavyKnockbackPower : knockbackPower;    
+
+        Vector2 knockback = IsHeavyDamage(damage) ? heavyKnockbackPower : knockbackPower;
         knockback.x *= direction;
 
         return knockback;
     }
 
     private float CalculateDuration(float damage) => IsHeavyDamage(damage) ? heavyKnockbackDuration : knockbackDuration;
-    private bool IsHeavyDamage(float damage) => damage / entityStats.GetMaxHealth() > heavyDamageTreshold;
-    
+
+    private bool IsHeavyDamage(float damage)
+    {
+        if (entityStats == null)
+            return false;
+
+        return damage / entityStats.GetMaxHealth() > heavyDamageTreshold;
+    }
+
 }

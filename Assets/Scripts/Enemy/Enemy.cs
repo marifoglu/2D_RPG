@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemy : Entitiy
+public class Enemy : Entity
 {
 
     public Enemy_IdleState idleState;

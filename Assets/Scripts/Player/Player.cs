@@ -3,7 +3,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.Windows;
 
-public class Player : Entitiy
+public class Player : Entity
 {
 
     public static event Action OnPlayerDeath;
@@ -90,6 +90,10 @@ public class Player : Entitiy
 
     private void OnEnable()
     {
+        // Ensure input is initialized
+        if (input == null)
+            input = new PlayerInputSet();
+
         input.Enable();
         input.PlayerCharacter.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         input.PlayerCharacter.Movement.canceled += ctx => moveInput = Vector2.zero;

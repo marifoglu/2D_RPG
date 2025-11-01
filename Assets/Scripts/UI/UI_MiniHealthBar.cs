@@ -3,11 +3,11 @@ using UnityEngine;
 public class UI_MiniHealthBar : MonoBehaviour
 {
 
-    private Entitiy entitiy;
+    private Entity entitiy;
 
     private void Awake()
     {
-        entitiy = GetComponentInParent<Entitiy>();
+        entitiy = GetComponentInParent<Entity>();
     }
     private void OnEnable()
     {
