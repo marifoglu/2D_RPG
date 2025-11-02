@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
+
 public class Enemy_BattleState : EnemyState
 {
-    private Transform player;
     private float lastTimeWasInBattle;
     private const float FLIP_DEAD_ZONE = 0.1f;
 
@@ -16,8 +16,13 @@ public class Enemy_BattleState : EnemyState
 
         UpdateBattleTimer();
 
-        if (player == null)
-            player = enemy.PlayerDetected().transform;
+        // Use the Enemy's player reference (set by TryEnterBattleState) as the source of truth.
+        if (enemy.player == null)
+        {
+            var hit = enemy.PlayerDetected();
+            if (hit.collider != null)
+                enemy.TryEnterBattleState(hit.transform); // use method (setter is inaccessible)
+        }
 
         if (ShouldRetreat())
         {
@@ -30,13 +35,14 @@ public class Enemy_BattleState : EnemyState
     {
         base.Update();
 
+        // Refresh battle timer when the player is detected in front of the enemy
         if (enemy.PlayerDetected())
             UpdateBattleTimer();
 
         if (BattleTimeOver())
             stateMachine.ChangeState(enemy.idleState);
 
-        if (WithinAttackRange() && enemy.PlayerDetected())
+        if (WithinAttackRange() && (enemy.PlayerDetected() || enemy.player != null))
         {
             stateMachine.ChangeState(enemy.attackState);
         }
@@ -54,18 +60,18 @@ public class Enemy_BattleState : EnemyState
 
     private float DistanceToPlayer()
     {
-        if (player == null)
+        if (enemy.player == null)
             return float.MaxValue;
 
-        return Mathf.Abs(player.position.x - enemy.transform.position.x);
+        return Mathf.Abs(enemy.player.position.x - enemy.transform.position.x);
     }
 
     private int DirectToPlayer()
     {
-        if (player == null)
+        if (enemy.player == null)
             return 0;
 
-        float distance = player.position.x - enemy.transform.position.x;
+        float distance = enemy.player.position.x - enemy.transform.position.x;
 
         if (Mathf.Abs(distance) < FLIP_DEAD_ZONE)
             return 0; // too close — don't flip

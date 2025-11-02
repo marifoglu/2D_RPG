@@ -11,28 +11,42 @@ public class Player_MoveState : PlayerState
 
         float x = player.moveInput.x;
 
-        // ✅ Handle Jump
+        // Handle Jump
         if (input.PlayerCharacter.Jump.WasPressedThisFrame() && player.groundDetected)
         {
             stateMachine.ChangeState(player.jumpState);
             return;
         }
 
-        // ✅ If no longer grounded, fall
+        // If no longer grounded, fall
         if (!player.groundDetected)
         {
             stateMachine.ChangeState(player.fallState);
             return;
         }
 
-        // ✅ Stop moving ONLY if x == 0
+        // Allow attacking while moving
+        if (input.PlayerCharacter.Attack.WasPressedThisFrame())
+        {
+            stateMachine.ChangeState(player.basicAttackState);
+            return;
+        }
+
+        // Allow counter while moving
+        if (input.PlayerCharacter.CounterAttack.WasPressedThisFrame())
+        {
+            stateMachine.ChangeState(player.counterAttackState);
+            return;
+        }
+
+        // Stop moving ONLY if x == 0
         if (x == 0f)
         {
             stateMachine.ChangeState(player.idleState);
             return;
         }
 
-        // ✅ Wall check: if grounded + wallDetected and still moving TOWARD wall, stop movement but stay in MoveState
+        // Wall check: if grounded + wallDetected and still moving TOWARD wall, stop movement but stay in MoveState
         if (player.wallDetected && player.moveInput.x == player.facingDir)
         {
             // Cancel X velocity (like a solid wall), but stay in MoveState to allow turn or jump
@@ -40,10 +54,10 @@ public class Player_MoveState : PlayerState
             return;
         }
 
-        // ✅ Normal movement
+        // Normal movement
         player.SetVelocity(x * player.moveSpeed, rb.linearVelocity.y);
 
-        // ✅ Flip sprite if needed
+        // Flip sprite if needed
         if (x != 0 && Mathf.Sign(x) != player.facingDir)
             player.Flip();
     }
