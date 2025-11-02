@@ -38,12 +38,18 @@ public class Enemy : Entity_Enemy
     public Vector2 knockbackForce = new Vector2(5f, 3f);
     public float knockbackDuration = 0.15f;
 
-    //[Header("Counter Attack Damage")]
-    //[SerializeField] private float counterDamageMultiplier = 1.5f; // Add this for extra counter damage
+    // Public property to check if enemy is in a state that shouldn't be interrupted
+    public bool IsInUninterruptibleState =>
+        stateMachine.currentState == stunnedState ||
+        stateMachine.currentState == deadState;
 
     public bool CanBeCountered { get => canBeStunned; }
 
-    public void EnableCounterWindow(bool enable) => canBeStunned = enable;
+    public void EnableCounterWindow(bool enable)
+    {
+        canBeStunned = enable;
+        Debug.Log($"[{name}] Counter window: {(enable ? "ENABLED" : "DISABLED")}");
+    }
 
     public override void EntityDeath()
     {
@@ -57,54 +63,69 @@ public class Enemy : Entity_Enemy
         Debug.Log($"{name} received Player death event! Changing to idle...");
 
     }
-    //public void HandleCounter()
-    //{
-    //    if (canBeStunned == false)
-    //        return;
 
-    //    // Force exit the current state which will reset its animation parameters
-    //    if (stateMachine.currentState == attackState)
-    //    {
-    //        stateMachine.currentState.Exit();
-    //    }
-
-    //    // Go directly to idle state
-    //    stateMachine.ChangeState(idleState);
-    //}
     public void HandleCounter()
     {
+        Debug.Log($"[{name}] ===== HANDLE COUNTER CALLED =====");
+        Debug.Log($"[{name}] Can be stunned: {canBeStunned}");
+        Debug.Log($"[{name}] Current state: {stateMachine.currentState.GetType().Name}");
+
         if (!canBeStunned)
+        {
+            Debug.LogWarning($"[{name}] Counter BLOCKED - canBeStunned is FALSE!");
             return;
+        }
 
-        // If mid-attack, cleanly exit so anim flags reset
-        if (stateMachine.currentState == attackState)
-            stateMachine.currentState.Exit();
+        Debug.Log($"[{name}] Counter SUCCESS! Applying knockback and changing to stunned state...");
 
-        // Face away from the player if we can resolve their transform
-        // Optional: just apply knockback direction, don't flip enemy
+        // Apply knockback away from player
         Transform p = GetPlayerDetection();
         if (p != null)
         {
             int dirFromPlayer = (transform.position.x < p.position.x) ? -1 : 1;
+            Debug.Log($"[{name}] Knockback direction from player: {dirFromPlayer}");
             ReceiveKnockback(new Vector2(knockbackForce.x * dirFromPlayer, knockbackForce.y), knockbackDuration);
         }
+        else
+        {
+            Debug.LogWarning($"[{name}] Player not found for knockback calculation!");
+        }
 
-        // Enter proper stagger/stun (Enemy_StunnedState handles timer & velocity)
+        // StateMachine.ChangeState() already calls Exit() on the current state
+        // No need to manually call it
+        Debug.Log($"[{name}] Changing state to STUNNED...");
         stateMachine.ChangeState(stunnedState);
+        Debug.Log($"[{name}] State changed! New state: {stateMachine.currentState.GetType().Name}");
     }
 
     public void TryEnterBattleState(Transform detectedPlayer)
     {
+        Debug.Log($"[{name}] TryEnterBattleState called - Current state: {stateMachine.currentState.GetType().Name}");
+
         // Always update the player reference when detected
         this.player = detectedPlayer;
 
+        // Don't interrupt uninterruptible states
+        if (IsInUninterruptibleState)
+        {
+            Debug.Log($"[{name}] BLOCKED battle state - enemy is in uninterruptible state!");
+            return;
+        }
+
         // Only change state if not already in battle or attacking
         if (stateMachine.currentState == battleState)
+        {
+            Debug.Log($"[{name}] Already in battle state");
             return;
+        }
 
         if (stateMachine.currentState == attackState)
+        {
+            Debug.Log($"[{name}] Already in attack state");
             return;
+        }
 
+        Debug.Log($"[{name}] Entering BATTLE state");
         stateMachine.ChangeState(battleState);
     }
 

@@ -36,6 +36,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
         }
 
         currentHealth = entityStats.GetMaxHealth();
+        Debug.Log($"[{gameObject.name}] INITIALIZED - Max HP: {entityStats.GetMaxHealth()}, Current HP: {currentHealth}");
         UpdateHealthBar();
     }
 
@@ -43,6 +44,8 @@ public class Entity_Health : MonoBehaviour, IDamageable
     {
         if (isDead)
             return;
+
+        Debug.Log($"[{gameObject.name}] Taking {damage} damage - Current HP BEFORE: {currentHealth}");
 
         Vector2 knockback = CalculateKnockback(damageDealer, damage);
         float duration = CalculateDuration(damage);
@@ -56,10 +59,12 @@ public class Entity_Health : MonoBehaviour, IDamageable
     protected void ReduceHp(float takenDamage)
     {
         currentHealth -= takenDamage;
+        Debug.Log($"[{gameObject.name}] HP reduced by {takenDamage} - Current HP AFTER: {currentHealth}");
         UpdateHealthBar();
 
         if (currentHealth <= 0)
         {
+            Debug.LogError($"[{gameObject.name}] DEAD! Final HP: {currentHealth}");
             isDead = true;
             Die();
         }
