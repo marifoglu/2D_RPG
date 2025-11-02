@@ -24,8 +24,12 @@ public class StateMachine
 
     public void UpdateActiveState()
     {
+        if (!canChangeState)   // switched off (e.g., dead)
+            return;
+
         currentState.Update();
     }
+
 
     public void switchOffStateMachine() => canChangeState = false;    
 }

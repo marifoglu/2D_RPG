@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemy : Entity
+public class Enemy : Entity_Enemy
 {
 
     public Enemy_IdleState idleState;
@@ -57,19 +57,40 @@ public class Enemy : Entity
         Debug.Log($"{name} received Player death event! Changing to idle...");
 
     }
+    //public void HandleCounter()
+    //{
+    //    if (canBeStunned == false)
+    //        return;
+
+    //    // Force exit the current state which will reset its animation parameters
+    //    if (stateMachine.currentState == attackState)
+    //    {
+    //        stateMachine.currentState.Exit();
+    //    }
+
+    //    // Go directly to idle state
+    //    stateMachine.ChangeState(idleState);
+    //}
     public void HandleCounter()
     {
-        if (canBeStunned == false)
+        if (!canBeStunned)
             return;
 
-        // Force exit the current state which will reset its animation parameters
+        // If mid-attack, cleanly exit so anim flags reset
         if (stateMachine.currentState == attackState)
-        {
             stateMachine.currentState.Exit();
+
+        // Face away from the player if we can resolve their transform
+        // Optional: just apply knockback direction, don't flip enemy
+        Transform p = GetPlayerDetection();
+        if (p != null)
+        {
+            int dirFromPlayer = (transform.position.x < p.position.x) ? -1 : 1;
+            ReceiveKnockback(new Vector2(knockbackForce.x * dirFromPlayer, knockbackForce.y), knockbackDuration);
         }
 
-        // Go directly to idle state
-        stateMachine.ChangeState(idleState);
+        // Enter proper stagger/stun (Enemy_StunnedState handles timer & velocity)
+        stateMachine.ChangeState(stunnedState);
     }
 
     public void TryEnterBattleState(Transform player)

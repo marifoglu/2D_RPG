@@ -76,7 +76,25 @@ public class Entity_Health : MonoBehaviour, IDamageable
     protected virtual void Die()
     {
         isDead = true;
-        entity?.EntityDeath();
+
+        // Call the correct Entity death handler:
+        // Players use the `Entity` type; enemies use `Entity_Enemy`.
+        // `entity` is assigned in Awake for objects that derive from Entity (Player).
+        if (entity != null)
+        {
+            entity.EntityDeath();
+            return;
+        }
+
+        var enemyEntity = GetComponent<Entity_Enemy>();
+        if (enemyEntity != null)
+        {
+            enemyEntity.EntityDeath();
+            return;
+        }
+
+        // Fallback: try any component named Entity via reflectionless check (shouldn't be necessary)
+        Debug.LogWarning($"{gameObject.name} died but no Entity/Entity_Enemy component found to notify.");
     }
 
     private Vector2 CalculateKnockback(Transform damageDealer, float damage)

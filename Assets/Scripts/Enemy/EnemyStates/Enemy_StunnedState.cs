@@ -25,6 +25,20 @@ public class Enemy_StunnedState : EnemyState
         base.Update();
 
         if (stateTimer < 0)
+        {
+            // Flip toward player on exit (optional but fixes facing issue)
+            Transform p = enemy.GetPlayerDetection();
+            if (p != null)
+            {
+                if ((p.position.x > enemy.transform.position.x && enemy.facingDir < 0) ||
+                    (p.position.x < enemy.transform.position.x && enemy.facingDir > 0))
+                {
+                    enemy.Flip();
+                }
+            }
+
             stateMachine.ChangeState(enemy.idleState);
+        }
     }
+
 }

@@ -16,12 +16,15 @@ public class Entity_Combat : MonoBehaviour
     }
     public void PerformAttack()
     {
+        // If the owner died, ignore any late animation events
+        var ownerHealth = GetComponent<Entity_Health>();
+        if (ownerHealth != null && ownerHealth.isDead)
+            return;
+
         foreach (var target in GetDetectCollider())
         {
             IDamageable damageable = target.GetComponent<IDamageable>();
-
-            if (damageable == null)
-                continue; // Skip if the target is not damageable
+            if (damageable == null) continue;
 
             damageable.TakeDamage(damage, transform);
             entityVfx.CreateOnHitVFX(target.transform);

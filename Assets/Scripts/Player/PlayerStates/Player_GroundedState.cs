@@ -20,7 +20,6 @@ public class Player_GroundedState : PlayerState
         bool jumpPressed = input.PlayerCharacter.Jump.WasPressedThisFrame();
         float x = player.moveInput.x;
         float y = player.moveInput.y;
-        Debug.Log($"State: GROUNDED - MoveX: {x} | Wall: {player.wallDetected} | Ground: {player.groundDetected}");
 
         // ✅ ONLY zero Y velocity when grounded and not trying to jump
         if (player.groundDetected && rb.linearVelocity.y != 0f && !jumpPressed && stateMachine.currentState != player.jumpState)
