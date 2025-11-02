@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Entity_Enemy : MonoBehaviour
 {
+
     public event Action OnFlipped;
     public Animator anim { get; private set; }
     public Rigidbody2D rb { get; private set; }
@@ -14,11 +15,12 @@ public class Entity_Enemy : MonoBehaviour
 
     [Header("Collision Detection")]
     [SerializeField] protected LayerMask whatIsGround;
-    [SerializeField] private float groundCheckDistance = 0.2f;
-    [SerializeField] private float wallCheckDistance = 0.2f;
+    [SerializeField] private float groundCheckDistance;
+    [SerializeField] private float wallCheckDistance;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Transform primaryWallCheck;
     [SerializeField] private Transform secondaryWallCheck;
+
 
     public bool groundDetected { get; private set; }
     public bool wallDetected { get; private set; }
@@ -40,35 +42,29 @@ public class Entity_Enemy : MonoBehaviour
 
     protected virtual void Update()
     {
-        // If this entity is dead or state machine is off, skip updates entirely
-        if (stateMachine == null || !stateMachine.canChangeState)
-            return;
-
         HandleCollisionDetection();
         stateMachine.UpdateActiveState();
     }
 
     public virtual void EntityDeath()
     {
-        Debug.Log("Enemy Dead");
+        Debug.Log("Entity Dead");
     }
-
     public void EnterStaggerState(EntityState staggerState)
     {
         stateMachine.ChangeState(staggerState);
     }
-
     public void CurrentStateAnimationTrigger()
     {
         stateMachine.currentState.AnimationTrigger();
     }
 
-    public void ReceiveKnockback(Vector2 knockback, float duration)
+    public void ReceiveKnockback(Vector2 konckback, float duration)
     {
         if (knockbackCo != null)
             StopCoroutine(knockbackCo);
 
-        knockbackCo = StartCoroutine(KnockbackCo(knockback, duration));
+        knockbackCo = StartCoroutine(KnockbackCo(konckback, duration));
     }
 
     private IEnumerator KnockbackCo(Vector2 knockback, float duration)
@@ -81,21 +77,22 @@ public class Entity_Enemy : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         isKnocked = false;
     }
-
     public void SetVelocity(float xVelocity, float yVelocity)
     {
+
         if (isKnocked)
             return;
+
 
         rb.linearVelocity = new Vector2(xVelocity, yVelocity);
         HandleFlip(xVelocity);
     }
 
-    public void HandleFlip(float xVelocity)
+    public void HandleFlip(float xVelcoity)
     {
-        if (xVelocity > 0 && !facingRight)
+        if (xVelcoity > 0 && facingRight == false)
             Flip();
-        else if (xVelocity < 0 && facingRight)
+        else if (xVelcoity < 0 && facingRight)
             Flip();
     }
 
@@ -103,20 +100,19 @@ public class Entity_Enemy : MonoBehaviour
     {
         transform.Rotate(0, 180, 0);
         facingRight = !facingRight;
-        facingDir *= -1;
+        facingDir = facingDir * -1;
+
         OnFlipped?.Invoke();
     }
 
     private void HandleCollisionDetection()
     {
-        // Check ground
         groundDetected = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
 
-        // Check wall(s)
         if (secondaryWallCheck != null)
         {
             wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround)
-                && Physics2D.Raycast(secondaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
+                    && Physics2D.Raycast(secondaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         }
         else
         {
@@ -124,20 +120,17 @@ public class Entity_Enemy : MonoBehaviour
         }
     }
 
+    
+
     protected virtual void OnDrawGizmos()
     {
-        if (!Application.isPlaying)
-            return;
-
         Gizmos.color = Color.green;
         Gizmos.DrawLine(groundCheck.position, groundCheck.position + new Vector3(0, -groundCheckDistance));
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(primaryWallCheck.position,
-                        primaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
+        Gizmos.DrawLine(primaryWallCheck.position, primaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
 
         if (secondaryWallCheck != null)
-            Gizmos.DrawLine(secondaryWallCheck.position,
-                            secondaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
+            Gizmos.DrawLine(secondaryWallCheck.position, secondaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
     }
 }

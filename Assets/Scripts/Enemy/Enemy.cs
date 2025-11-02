@@ -93,22 +93,24 @@ public class Enemy : Entity_Enemy
         stateMachine.ChangeState(stunnedState);
     }
 
-    public void TryEnterBattleState(Transform player)
+    public void TryEnterBattleState(Transform detectedPlayer)
     {
+        // Always update the player reference when detected
+        this.player = detectedPlayer;
 
-        if(stateMachine.currentState == battleState)
+        // Only change state if not already in battle or attacking
+        if (stateMachine.currentState == battleState)
             return;
 
         if (stateMachine.currentState == attackState)
             return;
 
-        this.player = player;
         stateMachine.ChangeState(battleState);
     }
 
     public Transform GetPlayerDetection()
     {
-        if(player == null)
+        if (player == null)
             player = PlayerDetected().transform;
 
         return player;
@@ -116,7 +118,7 @@ public class Enemy : Entity_Enemy
 
     public RaycastHit2D PlayerDetected()
     {
-        RaycastHit2D hit =  Physics2D.Raycast(playerCheck.position, Vector2.right * facingDir, playerCheckDistance, whatIsPlayer | whatIsGround);
+        RaycastHit2D hit = Physics2D.Raycast(playerCheck.position, Vector2.right * facingDir, playerCheckDistance, whatIsPlayer | whatIsGround);
 
         if (hit.collider == null || hit.collider.gameObject.layer != LayerMask.NameToLayer("Player"))
             return default;
@@ -127,10 +129,10 @@ public class Enemy : Entity_Enemy
         base.OnDrawGizmos();
 
         Gizmos.color = Color.yellow;
-        Gizmos.DrawLine(playerCheck.position,new Vector3(playerCheck.position.x + (facingDir * playerCheckDistance), playerCheck.position.y)); 
+        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (facingDir * playerCheckDistance), playerCheck.position.y));
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(playerCheck.position,new Vector3(playerCheck.position.x + (facingDir * attackDistance), playerCheck.position.y)); 
+        Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (facingDir * attackDistance), playerCheck.position.y));
 
         Gizmos.color = Color.green;
         Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (facingDir * minRetreatDistance), playerCheck.position.y));
