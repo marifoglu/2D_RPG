@@ -2,15 +2,25 @@ using UnityEngine;
 
 public class ChanceTest : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] private float chance = 25f;
+    [SerializeField] private float rollResult;
+    [SerializeField] private float result;
+
+    [ContextMenu("Try")]
+    public void Try()
     {
-        
+        rollResult = Random.Range(0f, 100f);
+
+        if(rollResult < chance)
+        {
+            result = 1f; // Success
+            Debug.Log($"Success! Rolled {rollResult} against chance {chance}");
+        }
+        else
+        {
+            result = 0f; // Failure
+            Debug.Log($"Failure! Rolled {rollResult} against chance {chance}");
+        }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }

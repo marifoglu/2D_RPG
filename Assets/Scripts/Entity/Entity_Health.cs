@@ -1,5 +1,6 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
+using Unity.Cinemachine;
 
 public class Entity_Health : MonoBehaviour, IDamageable
 {
@@ -11,7 +12,6 @@ public class Entity_Health : MonoBehaviour, IDamageable
     [SerializeField] protected float currentHealth;
     [SerializeField] public bool isDead { get; protected set; } = false;
 
-
     [Header("On Light Damage Knockback")]
     [SerializeField] private Vector2 knockbackPower = new Vector2(1.5f, 2.4f);
     [SerializeField] private Vector2 heavyKnockbackPower = new Vector2(7f, 7f);
@@ -21,22 +21,26 @@ public class Entity_Health : MonoBehaviour, IDamageable
     [Header("On Heavy Damage Knockback")]
     [SerializeField] private float heavyDamageTreshold = 0.3f;
 
+    [Header("Camera Shake on Hit")]
+    [SerializeField] private float cameraShakeForce = 1.0f;
+    private CinemachineImpulseSource impulseSource;
+    [SerializeField] private float shakeForce = 1.0f; // Can be set per object from Inspector
+
     private void Awake()
     {
         entityVFX = GetComponent<Entity_VFX>();
         entity = GetComponent<Entity>();
         entityStats = GetComponent<Entity_Stats>();
         healthBar = GetComponentInChildren<Slider>();
+        impulseSource = GetComponentInParent<CinemachineImpulseSource>();
 
         // Check if entityStats exists before using it
         if (entityStats == null)
         {
-            Debug.LogError($"Entity_Stats component not found on {gameObject.name}! Please add Entity_Stats component.");
             return;
         }
 
         currentHealth = entityStats.GetMaxHealth();
-        Debug.Log($"[{gameObject.name}] INITIALIZED - Max HP: {entityStats.GetMaxHealth()}, Current HP: {currentHealth}");
         UpdateHealthBar();
     }
 
@@ -45,13 +49,14 @@ public class Entity_Health : MonoBehaviour, IDamageable
         if (isDead)
             return;
 
-        Debug.Log($"[{gameObject.name}] Taking {damage} damage - Current HP BEFORE: {currentHealth}");
-
         Vector2 knockback = CalculateKnockback(damageDealer, damage);
         float duration = CalculateDuration(damage);
 
         entity?.ReceiveKnockback(knockback, duration);
         entityVFX?.PlayOnDamageVfx();
+
+        // Trigger camera shake when this entity takes damage
+        TriggerCameraShake();
 
         ReduceHp(damage);
     }
@@ -59,12 +64,10 @@ public class Entity_Health : MonoBehaviour, IDamageable
     protected void ReduceHp(float takenDamage)
     {
         currentHealth -= takenDamage;
-        Debug.Log($"[{gameObject.name}] HP reduced by {takenDamage} - Current HP AFTER: {currentHealth}");
         UpdateHealthBar();
 
         if (currentHealth <= 0)
         {
-            Debug.LogError($"[{gameObject.name}] DEAD! Final HP: {currentHealth}");
             isDead = true;
             Die();
         }
@@ -102,6 +105,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
         Debug.LogWarning($"{gameObject.name} died but no Entity/Entity_Enemy component found to notify.");
     }
 
+
     private Vector2 CalculateKnockback(Transform damageDealer, float damage)
     {
         int direction = transform.position.x > damageDealer.position.x ? 1 : -1;
@@ -121,5 +125,15 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
         return damage / entityStats.GetMaxHealth() > heavyDamageTreshold;
     }
-
+    private void TriggerCameraShake()
+    {
+        if (impulseSource != null)
+        {
+            impulseSource.GenerateImpulseWithForce(shakeForce);
+        }
+        else
+        {
+            Debug.LogWarning("[Entity_AnimationTriggers] No CinemachineImpulseSource found for camera shake.");
+        }
+    }
 }

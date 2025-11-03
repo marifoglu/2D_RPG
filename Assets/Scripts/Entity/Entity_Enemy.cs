@@ -21,6 +21,12 @@ public class Entity_Enemy : MonoBehaviour
     [SerializeField] private Transform primaryWallCheck;
     [SerializeField] private Transform secondaryWallCheck;
 
+    [Header("Edge Detection")]
+    [Tooltip("Horizontal look-ahead from feet to check for ground ahead.")]
+    [SerializeField] private float edgeForwardOffset = 0.5f;
+    [Tooltip("Extra downward distance from the look-ahead point.")]
+    [SerializeField] private float edgeDownDistance = 0.25f;
+    public bool edgeDetected { get; private set; }
 
     public bool groundDetected { get; private set; }
     public bool wallDetected { get; private set; }
@@ -79,10 +85,8 @@ public class Entity_Enemy : MonoBehaviour
     }
     public void SetVelocity(float xVelocity, float yVelocity)
     {
-
         if (isKnocked)
             return;
-
 
         rb.linearVelocity = new Vector2(xVelocity, yVelocity);
         HandleFlip(xVelocity);
@@ -107,30 +111,51 @@ public class Entity_Enemy : MonoBehaviour
 
     private void HandleCollisionDetection()
     {
+        // Ground under feet
         groundDetected = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
 
+        // Wall in front
         if (secondaryWallCheck != null)
         {
             wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround)
-                    && Physics2D.Raycast(secondaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
+                           && Physics2D.Raycast(secondaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         }
         else
         {
             wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         }
-    }
 
-    
+        // Ground ahead (front-foot probe)
+        Vector2 feetPos = groundCheck != null ? (Vector2)groundCheck.position : (Vector2)transform.position;
+        Vector2 frontFoot = feetPos + Vector2.right * facingDir * Mathf.Max(0.01f, edgeForwardOffset);
+        float downDist = Mathf.Max(0f, groundCheckDistance + edgeDownDistance);
+        bool groundAhead = Physics2D.Raycast(frontFoot, Vector2.down, downDist, whatIsGround);
+
+        // Consider an edge only if currently grounded and no ground at front
+        edgeDetected = groundDetected && !groundAhead;
+    }
 
     protected virtual void OnDrawGizmos()
     {
         Gizmos.color = Color.green;
-        Gizmos.DrawLine(groundCheck.position, groundCheck.position + new Vector3(0, -groundCheckDistance));
+        if (groundCheck != null)
+            Gizmos.DrawLine(groundCheck.position, groundCheck.position + new Vector3(0, -groundCheckDistance));
 
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(primaryWallCheck.position, primaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
+        if (primaryWallCheck != null)
+            Gizmos.DrawLine(primaryWallCheck.position, primaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
 
         if (secondaryWallCheck != null)
             Gizmos.DrawLine(secondaryWallCheck.position, secondaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
+
+        // Visualize edge probe
+        if (groundCheck != null)
+        {
+            Vector3 feetPos = groundCheck.position;
+            Vector3 frontFoot = feetPos + Vector3.right * facingDir * Mathf.Max(0.01f, edgeForwardOffset);
+            float downDist = Mathf.Max(0f, groundCheckDistance + edgeDownDistance);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(frontFoot, frontFoot + Vector3.down * downDist);
+        }
     }
 }

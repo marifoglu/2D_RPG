@@ -12,7 +12,7 @@ public class Entity : MonoBehaviour
     public int facingDir { get; private set; } = 1;
     [Header("Collision Detection")]
     [SerializeField] protected LayerMask whatIsGround;
-    [SerializeField] private float groundCheckDistance;
+    [SerializeField] private float groundCheckRadius = 0.1f;
     [SerializeField] private float wallCheckDistance;
     [SerializeField] private Transform groundCheck;
     [SerializeField] private Transform primaryWallCheck;
@@ -21,7 +21,6 @@ public class Entity : MonoBehaviour
     [Header("Slope Detection")]
     [SerializeField] private float slopeCheckDistance = 1.25f;
     [SerializeField] private float maxSlopeAngle = 45f;
-    [SerializeField] private float groundCheckRadius = 0.1f;
     [SerializeField] private float slopeOverlapRadius = 0.1f;
     [SerializeField] private PhysicsMaterial2D noFriction;
     [SerializeField] private PhysicsMaterial2D fullFriction;
@@ -95,18 +94,13 @@ public class Entity : MonoBehaviour
         if (isKnocked) return;
 
         bool touchingSlopeButNotDetectedYet =
-        groundDetected &&
-        Mathf.Abs(xInput) > 0.01f &&
-        rb.linearVelocity.x == 0f &&     // trying to move but blocked
-                    !isOnSlope &&
-        IsTouchingSlope();               // <-- NEW overlap check
+        groundDetected && Mathf.Abs(xInput) > 0.01f && rb.linearVelocity.x == 0f && !isOnSlope && IsTouchingSlope();    
+        
         if (touchingSlopeButNotDetectedYet)
         {
-            // Force player onto slope
             rb.linearVelocity = new Vector2(xInput * 2f, -2f);
             return;
         }
-        // Slope movement (when detected)
         if (isOnSlope && canWalkOnSlope && groundDetected)
         {
             Vector2 slopeDir = slopeNormalPerp.normalized;
@@ -150,27 +144,24 @@ public class Entity : MonoBehaviour
         {
             wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         }
-        // Proper ledge detection: Wall at body level but NO wall at head level
+
         bool wallAtBody = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         bool wallAtHead = Physics2D.Raycast(ledgeCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         ledgeDetected = wallAtBody && !wallAtHead;
     }
     public Vector2 DetermineLedgePosition()
     {
-        // Get the top of the wall by checking from above
         Vector2 wallTopCheck = new Vector2(primaryWallCheck.position.x, ledgeCheck.position.y);
         RaycastHit2D topHit = Physics2D.Raycast(wallTopCheck, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         if (topHit.collider != null)
         {
-            // We hit the top of the wall, move to the other side
             Vector2 ledgePos = new Vector2(
-topHit.point.x + (ledgeClimbOffset.x * -facingDir),
-topHit.point.y + ledgeClimbOffset.y);
+                topHit.point.x + (ledgeClimbOffset.x * -facingDir),
+                topHit.point.y + ledgeClimbOffset.y);
             return ledgePos;
         }
         else
         {
-            // Fallback: use the original method
             RaycastHit2D hit = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
             if (hit.collider != null)
             {
@@ -269,22 +260,15 @@ topHit.point.y + ledgeClimbOffset.y);
         if (noFriction == null || fullFriction == null) return;
         var col = GetComponent<Collider2D>();
         float vy = rb.linearVelocity.y;
-        // Conditions for applying slope friction
-        bool slopeWalk =
-        isOnSlope &&
-        canWalkOnSlope &&
-        groundDetected &&
-        (rb.linearVelocity.y > -0.6f && rb.linearVelocity.y < 0.6f);
 
-        bool movingDownSlope =
-        isOnSlope &&
-        canWalkOnSlope &&
-        rb.linearVelocity.y < 0f;
+        bool slopeWalk = isOnSlope && canWalkOnSlope && groundDetected && (rb.linearVelocity.y > -0.6f && rb.linearVelocity.y < 0.6f);
+
+        bool movingDownSlope = isOnSlope && canWalkOnSlope && rb.linearVelocity.y < 0f;
+       
         if (slopeWalk)
         {
             col.sharedMaterial = fullFriction;
 
-            // Only kill gravity when grounded on a gentle slope and not jumping
             if (groundDetected && Mathf.Abs(rb.linearVelocity.y) < 0.1f)
                 rb.gravityScale = 0f;
             else
@@ -302,15 +286,21 @@ topHit.point.y + ledgeClimbOffset.y);
         //Gizmos.DrawLine(groundCheck.position, groundCheck.position + new Vector3(0, -groundCheckDistance));
         if (groundCheck != null)
             Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+
         Gizmos.color = Color.blue;
         Gizmos.DrawLine(primaryWallCheck.position, primaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
+
         if (secondaryWallCheck != null)
             Gizmos.DrawLine(secondaryWallCheck.position, secondaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
+
         Gizmos.color = Color.red;
         if (ledgeCheck != null)
             Gizmos.DrawLine(ledgeCheck.position, ledgeCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
+
         Gizmos.color = Color.magenta;
         Vector2 feetPos = (Vector2)transform.position + Vector2.down * (capsuleColliderSize.y * 0.5f + 0.05f);
-        Gizmos.DrawWireSphere(feetPos, slopeOverlapRadius);
+
+        //Gizmos.color = Color.green;
+        //Gizmos.DrawWireSphere(feetPos, slopeOverlapRadius);
     }
 }

@@ -43,12 +43,15 @@ public class Enemy : Entity_Enemy
         stateMachine.currentState == stunnedState ||
         stateMachine.currentState == deadState;
 
+    // Track player life state to avoid attacking a dead player
+    private bool playerDead;
+    public bool IsPlayerDead => playerDead;
+
     public bool CanBeCountered { get => canBeStunned; }
 
     public void EnableCounterWindow(bool enable)
     {
         canBeStunned = enable;
-        Debug.Log($"[{name}] Counter window: {(enable ? "ENABLED" : "DISABLED")}");
     }
 
     public override void EntityDeath()
@@ -59,48 +62,46 @@ public class Enemy : Entity_Enemy
 
     private void HandlePlayerDeath()
     {
-        stateMachine.ChangeState(idleState);
-        Debug.Log($"{name} received Player death event! Changing to idle...");
+        // Mark player as dead and clear any references/motion
+        playerDead = true;
+        player = null;
+        rb.linearVelocity = Vector2.zero;
 
+        // Immediately leave battle/attack and go idle
+        stateMachine.ChangeState(idleState);
     }
 
     public void HandleCounter()
     {
-        Debug.Log($"[{name}] ===== HANDLE COUNTER CALLED =====");
-        Debug.Log($"[{name}] Can be stunned: {canBeStunned}");
-        Debug.Log($"[{name}] Current state: {stateMachine.currentState.GetType().Name}");
 
         if (!canBeStunned)
         {
-            Debug.LogWarning($"[{name}] Counter BLOCKED - canBeStunned is FALSE!");
             return;
         }
-
-        Debug.Log($"[{name}] Counter SUCCESS! Applying knockback and changing to stunned state...");
 
         // Apply knockback away from player
         Transform p = GetPlayerDetection();
         if (p != null)
         {
             int dirFromPlayer = (transform.position.x < p.position.x) ? -1 : 1;
-            Debug.Log($"[{name}] Knockback direction from player: {dirFromPlayer}");
             ReceiveKnockback(new Vector2(knockbackForce.x * dirFromPlayer, knockbackForce.y), knockbackDuration);
         }
         else
         {
-            Debug.LogWarning($"[{name}] Player not found for knockback calculation!");
         }
 
         // StateMachine.ChangeState() already calls Exit() on the current state
         // No need to manually call it
-        Debug.Log($"[{name}] Changing state to STUNNED...");
         stateMachine.ChangeState(stunnedState);
-        Debug.Log($"[{name}] State changed! New state: {stateMachine.currentState.GetType().Name}");
     }
 
     public void TryEnterBattleState(Transform detectedPlayer)
     {
-        Debug.Log($"[{name}] TryEnterBattleState called - Current state: {stateMachine.currentState.GetType().Name}");
+        // Do not enter battle if the player is dead
+        if (playerDead)
+        {
+            return;
+        }
 
         // Always update the player reference when detected
         this.player = detectedPlayer;
@@ -108,24 +109,20 @@ public class Enemy : Entity_Enemy
         // Don't interrupt uninterruptible states
         if (IsInUninterruptibleState)
         {
-            Debug.Log($"[{name}] BLOCKED battle state - enemy is in uninterruptible state!");
             return;
         }
 
         // Only change state if not already in battle or attacking
         if (stateMachine.currentState == battleState)
         {
-            Debug.Log($"[{name}] Already in battle state");
             return;
         }
 
         if (stateMachine.currentState == attackState)
         {
-            Debug.Log($"[{name}] Already in attack state");
             return;
         }
 
-        Debug.Log($"[{name}] Entering BATTLE state");
         stateMachine.ChangeState(battleState);
     }
 
@@ -139,6 +136,10 @@ public class Enemy : Entity_Enemy
 
     public RaycastHit2D PlayerDetected()
     {
+        // If player is dead, pretend nothing is detected
+        if (playerDead)
+            return default;
+
         RaycastHit2D hit = Physics2D.Raycast(playerCheck.position, Vector2.right * facingDir, playerCheckDistance, whatIsPlayer | whatIsGround);
 
         if (hit.collider == null || hit.collider.gameObject.layer != LayerMask.NameToLayer("Player"))

@@ -36,6 +36,6 @@ public class Player_CounterAttackState : PlayerState
 
         if (stateTimer < 0f && counteredSomebody == false)
             stateMachine.ChangeState(player.idleState);
-        
+
     }
 }

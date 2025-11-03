@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Player_Combat : Entity_Combat
 {
@@ -15,10 +15,10 @@ public class Player_Combat : Entity_Combat
             IDamageable damageable = targer.GetComponent<IDamageable>();
 
 
-            if (counterable == null) 
+            if (counterable == null)
                 continue; // if not counterable, skip
 
-            if (counterable.CanBeCountered) 
+            if (counterable.CanBeCountered)
             {
                 counterable.HandleCounter();
 
