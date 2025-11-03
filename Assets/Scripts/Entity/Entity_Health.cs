@@ -22,9 +22,10 @@ public class Entity_Health : MonoBehaviour, IDamageable
     [SerializeField] private float heavyDamageTreshold = 0.3f;
 
     [Header("Camera Shake on Hit")]
-    [SerializeField] private float cameraShakeForce = 1.0f;
     private CinemachineImpulseSource impulseSource;
+    [SerializeField] private ScreenShakeProfile screenShakeProfile;
     [SerializeField] private float shakeForce = 1.0f; // Can be set per object from Inspector
+
 
     private void Awake()
     {
@@ -85,9 +86,6 @@ public class Entity_Health : MonoBehaviour, IDamageable
     {
         isDead = true;
 
-        // Call the correct Entity death handler:
-        // Players use the `Entity` type; enemies use `Entity_Enemy`.
-        // `entity` is assigned in Awake for objects that derive from Entity (Player).
         if (entity != null)
         {
             entity.EntityDeath();
@@ -100,11 +98,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
             enemyEntity.EntityDeath();
             return;
         }
-
-        // Fallback: try any component named Entity via reflectionless check (shouldn't be necessary)
-        Debug.LogWarning($"{gameObject.name} died but no Entity/Entity_Enemy component found to notify.");
     }
-
 
     private Vector2 CalculateKnockback(Transform damageDealer, float damage)
     {
@@ -127,13 +121,8 @@ public class Entity_Health : MonoBehaviour, IDamageable
     }
     private void TriggerCameraShake()
     {
-        if (impulseSource != null)
-        {
-            impulseSource.GenerateImpulseWithForce(shakeForce);
-        }
-        else
-        {
-            Debug.LogWarning("[Entity_AnimationTriggers] No CinemachineImpulseSource found for camera shake.");
-        }
+
+        CameraShakeManager.Instance.ScreenShakeFromProfile(screenShakeProfile, impulseSource);
     }
+
 }
