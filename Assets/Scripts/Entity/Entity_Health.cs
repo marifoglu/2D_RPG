@@ -6,7 +6,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
 {
     private Entity_VFX entityVFX;
     private Entity entity;
-    private Entity_Stats entityStats;
+    private Entity_Stats stats;
     private Slider healthBar;
 
     [SerializeField] protected float currentHealth;
@@ -24,30 +24,33 @@ public class Entity_Health : MonoBehaviour, IDamageable
     [Header("Camera Shake on Hit")]
     private CinemachineImpulseSource impulseSource;
     [SerializeField] private ScreenShakeProfile screenShakeProfile;
-    [SerializeField] private float shakeForce = 1.0f; // Can be set per object from Inspector
+    //[SerializeField] private float shakeForce = 1.0f; // Can be set per object from Inspector
 
 
     private void Awake()
     {
         entityVFX = GetComponent<Entity_VFX>();
         entity = GetComponent<Entity>();
-        entityStats = GetComponent<Entity_Stats>();
+        stats = GetComponent<Entity_Stats>();
         healthBar = GetComponentInChildren<Slider>();
         impulseSource = GetComponentInParent<CinemachineImpulseSource>();
 
         // Check if entityStats exists before using it
-        if (entityStats == null)
+        if (stats == null)
         {
             return;
         }
 
-        currentHealth = entityStats.GetMaxHealth();
+        currentHealth = stats.GetMaxHealth();
         UpdateHealthBar();
     }
 
     public virtual void TakeDamage(float damage, Transform damageDealer)
     {
         if (isDead)
+            return;
+
+        if (AttackEvaded())
             return;
 
         Vector2 knockback = CalculateKnockback(damageDealer, damage);
@@ -60,6 +63,11 @@ public class Entity_Health : MonoBehaviour, IDamageable
         TriggerCameraShake();
 
         ReduceHp(damage);
+    }
+
+    private bool AttackEvaded()
+    {
+        return Random.Range(0,100) < stats.GetEvasion();
     }
 
     protected void ReduceHp(float takenDamage)
@@ -76,10 +84,10 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
     private void UpdateHealthBar()
     {
-        if (healthBar == null || entityStats == null)
+        if (healthBar == null || stats == null)
             return;
 
-        healthBar.value = currentHealth / entityStats.GetMaxHealth();
+        healthBar.value = currentHealth / stats.GetMaxHealth();
     }
 
     protected virtual void Die()
@@ -114,10 +122,10 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
     private bool IsHeavyDamage(float damage)
     {
-        if (entityStats == null)
+        if (stats == null)
             return false;
 
-        return damage / entityStats.GetMaxHealth() > heavyDamageTreshold;
+        return damage / stats.GetMaxHealth() > heavyDamageTreshold;
     }
     private void TriggerCameraShake()
     {
