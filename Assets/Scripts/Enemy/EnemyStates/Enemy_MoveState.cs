@@ -1,22 +1,21 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Enemy_MoveState : Enemy_GroundedState
 {
-    public Enemy_MoveState(Enemy enemy, StateMachine stateMachine, string animBoolName) : base(enemy, stateMachine, animBoolName)
-    {
-    }
+    public Enemy_MoveState(Enemy enemy, StateMachine stateMachine, string animBoolName)
+        : base(enemy, stateMachine, animBoolName) { }
 
-    override public void Enter()
+    public override void Enter()
     {
         base.Enter();
-        // Do not flip on Enter; wait for a confirmed edge/wall in Update
+        // No immediate flip here; edge detection will trigger a flip
     }
 
-    override public void Update()
+    public override void Update()
     {
         base.Update();
 
-        // If we left the ground, stop and idle
+        // ✅ Stop if enemy is no longer grounded
         if (!enemy.groundDetected)
         {
             enemy.SetVelocity(0f, rb.linearVelocity.y);
@@ -24,7 +23,7 @@ public class Enemy_MoveState : Enemy_GroundedState
             return;
         }
 
-        // If a wall or edge is ahead, stop, flip once, and idle
+        // ✅ Stop and flip if facing edge or wall
         if (enemy.wallDetected || enemy.edgeDetected)
         {
             enemy.SetVelocity(0f, rb.linearVelocity.y);
@@ -33,7 +32,7 @@ public class Enemy_MoveState : Enemy_GroundedState
             return;
         }
 
-        // Walk forward safely
+        // ✅ Move safely forward (apply horizontal motion only)
         enemy.SetVelocity(enemy.moveSpeed * enemy.facingDir, rb.linearVelocity.y);
     }
 }

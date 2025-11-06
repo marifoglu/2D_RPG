@@ -29,6 +29,8 @@ public class Entity : MonoBehaviour
     public bool groundDetected { get; private set; }
     public bool wallDetected { get; private set; }
     public bool ledgeDetected { get; private set; }
+    public bool edgeDetected { get; private set; }
+
     // Slope variables
     public bool isOnSlope { get; private set; }
     public bool canWalkOnSlope { get; private set; }
@@ -94,14 +96,14 @@ public class Entity : MonoBehaviour
         if (isKnocked) return;
 
         bool touchingSlopeButNotDetectedYet =
-        groundDetected && Mathf.Abs(xInput) > 0.01f && rb.linearVelocity.x == 0f && !isOnSlope && IsTouchingSlope();    
-        
-        if (touchingSlopeButNotDetectedYet)
+        groundDetected && Mathf.Abs(xInput) > 0.01f && rb.linearVelocity.x == 0f && !isOnSlope && IsTouchingSlope();
+
+        if (touchingSlopeButNotDetectedYet)
         {
-            rb.linearVelocity = new Vector2(xInput * 2f, -2f);
+            rb.linearVelocity = new Vector2(xInput * 2f, -2f);
             return;
         }
-        if (isOnSlope && canWalkOnSlope && groundDetected)
+        if (isOnSlope && canWalkOnSlope && groundDetected)
         {
             Vector2 slopeDir = slopeNormalPerp.normalized;
             if (Mathf.Sign(slopeDir.x) != Mathf.Sign(xInput))
@@ -145,24 +147,31 @@ public class Entity : MonoBehaviour
             wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         }
 
-        bool wallAtBody = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
+        bool wallAtBody = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         bool wallAtHead = Physics2D.Raycast(ledgeCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         ledgeDetected = wallAtBody && !wallAtHead;
+
+        // ADD this new edge detection!
+        Vector2 frontPos = (Vector2)transform.position + new Vector2(facingDir * 0.5f, -0.5f);
+        edgeDetected = !Physics2D.Raycast(frontPos, Vector2.down, 0.6f, whatIsGround);
+
+        Debug.DrawRay(frontPos, Vector2.down * 0.6f, edgeDetected ? Color.red : Color.green);
     }
+
     public Vector2 DetermineLedgePosition()
     {
-        Vector2 wallTopCheck = new Vector2(primaryWallCheck.position.x, ledgeCheck.position.y);
+        Vector2 wallTopCheck = new Vector2(primaryWallCheck.position.x, ledgeCheck.position.y);
         RaycastHit2D topHit = Physics2D.Raycast(wallTopCheck, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         if (topHit.collider != null)
         {
-            Vector2 ledgePos = new Vector2(
-                topHit.point.x + (ledgeClimbOffset.x * -facingDir),
-                topHit.point.y + ledgeClimbOffset.y);
+            Vector2 ledgePos = new Vector2(
+                            topHit.point.x + (ledgeClimbOffset.x * -facingDir),
+                            topHit.point.y + ledgeClimbOffset.y);
             return ledgePos;
         }
         else
         {
-            RaycastHit2D hit = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
+            RaycastHit2D hit = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
             if (hit.collider != null)
             {
                 Vector2 ledgePos = new Vector2(
@@ -261,10 +270,10 @@ public class Entity : MonoBehaviour
         var col = GetComponent<Collider2D>();
         float vy = rb.linearVelocity.y;
 
-        bool slopeWalk = isOnSlope && canWalkOnSlope && groundDetected && (rb.linearVelocity.y > -0.6f && rb.linearVelocity.y < 0.6f);
+        bool slopeWalk = isOnSlope && canWalkOnSlope && groundDetected && (rb.linearVelocity.y > -0.6f && rb.linearVelocity.y < 0.6f);
 
         bool movingDownSlope = isOnSlope && canWalkOnSlope && rb.linearVelocity.y < 0f;
-       
+
         if (slopeWalk)
         {
             col.sharedMaterial = fullFriction;

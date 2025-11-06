@@ -114,6 +114,15 @@ public class Entity_Enemy : MonoBehaviour
         // Ground under feet
         groundDetected = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
 
+        // Forward edge raycast (single direction based on facingDir)
+        Vector2 feetPos = (Vector2)groundCheck.position;
+        Vector2 forwardProbe = feetPos + Vector2.right * facingDir * edgeForwardOffset;  // WORKS FOR BOTH LEFT AND RIGHT
+        float rayLength = groundCheckDistance + edgeDownDistance;
+
+        bool groundAhead = Physics2D.Raycast(forwardProbe, Vector2.down, rayLength, whatIsGround);
+
+        edgeDetected = groundDetected && !groundAhead;
+
         // Wall in front
         if (secondaryWallCheck != null)
         {
@@ -124,23 +133,18 @@ public class Entity_Enemy : MonoBehaviour
         {
             wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         }
-
-        // Ground ahead (front-foot probe)
-        Vector2 feetPos = groundCheck != null ? (Vector2)groundCheck.position : (Vector2)transform.position;
-        Vector2 frontFoot = feetPos + Vector2.right * facingDir * Mathf.Max(0.01f, edgeForwardOffset);
-        float downDist = Mathf.Max(0f, groundCheckDistance + edgeDownDistance);
-        bool groundAhead = Physics2D.Raycast(frontFoot, Vector2.down, downDist, whatIsGround);
-
-        // Consider an edge only if currently grounded and no ground at front
-        edgeDetected = groundDetected && !groundAhead;
     }
+
 
     protected virtual void OnDrawGizmos()
     {
-        Gizmos.color = Color.green;
-        if (groundCheck != null)
-            Gizmos.DrawLine(groundCheck.position, groundCheck.position + new Vector3(0, -groundCheckDistance));
+        if (groundCheck == null) return;
 
+        // ✅ Ground raycast (only 1)
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(groundCheck.position, groundCheck.position + new Vector3(0, -groundCheckDistance));
+
+        // ✅ Wall raycasts
         Gizmos.color = Color.blue;
         if (primaryWallCheck != null)
             Gizmos.DrawLine(primaryWallCheck.position, primaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
@@ -148,14 +152,14 @@ public class Entity_Enemy : MonoBehaviour
         if (secondaryWallCheck != null)
             Gizmos.DrawLine(secondaryWallCheck.position, secondaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
 
-        // Visualize edge probe
-        if (groundCheck != null)
-        {
-            Vector3 feetPos = groundCheck.position;
-            Vector3 frontFoot = feetPos + Vector3.right * facingDir * Mathf.Max(0.01f, edgeForwardOffset);
-            float downDist = Mathf.Max(0f, groundCheckDistance + edgeDownDistance);
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawLine(frontFoot, frontFoot + Vector3.down * downDist);
-        }
+        // ✅ Edge raycast (single, forward only)
+        Vector3 feetPos = groundCheck.position;
+        Vector3 forwardProbe = feetPos + Vector3.right * facingDir * Mathf.Max(0.01f, edgeForwardOffset);
+        float downDist = Mathf.Max(0f, groundCheckDistance + edgeDownDistance);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(forwardProbe, forwardProbe + Vector3.down * downDist);
     }
+
+
 }

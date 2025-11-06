@@ -9,16 +9,19 @@ public class Enemy_Health : Entity_Health
         enemy = GetComponent<Enemy>();
     }
 
-    public override void TakeDamage(float damage, Transform damageDealer)
+    public override bool TakeDamage(float damage, Transform damageDealer)
     {
-        bool wasInUninterruptibleState = enemy != null && enemy.IsInUninterruptibleState;
+        bool wasHit = enemy != null && enemy.IsInUninterruptibleState;
         
         base.TakeDamage(damage, damageDealer);
 
-        if (isDead || wasInUninterruptibleState)
-            return;
+        if (isDead || wasHit)
+            return false;
 
         if (enemy != null && damageDealer.GetComponent<Player>() != null)
             enemy.TryEnterBattleState(damageDealer);
+
+        return true;
     }
+
 }

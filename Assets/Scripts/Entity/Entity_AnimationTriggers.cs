@@ -46,18 +46,5 @@ public class Entity_AnimationTriggers : MonoBehaviour
         if (entityCombat != null)
             entityCombat.PerformAttack();
 
-        //TriggerCameraShake();
     }
-
-    //private void TriggerCameraShake()
-    //{
-    //    if (impulseSource != null)
-    //    {
-    //        impulseSource.GenerateImpulseWithForce(shakeForce);
-    //    }
-    //    else
-    //    {
-    //        Debug.LogWarning("[Entity_AnimationTriggers] No CinemachineImpulseSource found for camera shake.");
-    //    }
-    //}
 }

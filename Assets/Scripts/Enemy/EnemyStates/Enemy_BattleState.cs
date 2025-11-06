@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-
 public class Enemy_BattleState : EnemyState
 {
     private float lastTimeWasInBattle;
@@ -24,11 +23,9 @@ public class Enemy_BattleState : EnemyState
             {
                 enemy.TryEnterBattleState(hit.transform); // use method (setter is inaccessible)
             }
-            else
-            {
-            }
         }
 
+        // Optional: small retreat if too close on enter
         if (ShouldRetreat())
         {
             rb.linearVelocity = new Vector2(enemy.retreatVelocity.x * -DirectToPlayer(), enemy.retreatVelocity.y);
@@ -40,59 +37,59 @@ public class Enemy_BattleState : EnemyState
     {
         base.Update();
 
+        // 🚫 STOP if edge or no ground
+        if (enemy.edgeDetected || !enemy.groundDetected)
+        {
+            Debug.LogWarning($"[{enemy.name}] Stopped chasing due to edge/no ground. Roaming.");
+            enemy.SetVelocity(0f, rb.linearVelocity.y);
+            stateMachine.ChangeState(enemy.idleState);
+            return;
+        }
+
+        // ✅ Normal battle logic below — only runs when we're safe
         bool playerDetected = enemy.PlayerDetected();
 
-        // Refresh battle timer when the player is detected in front of the enemy
         if (playerDetected)
-        {
             UpdateBattleTimer();
-        }
-        else
-        {
-            // Player is no longer in line of sight - try to turn around to find them
-            if (enemy.player != null)
-            {
-                int dirToLastKnownPlayer = DirectToPlayer();
-
-
-                // If player is behind us, flip to face them
-                if (dirToLastKnownPlayer != 0 && dirToLastKnownPlayer != enemy.facingDir)
-                {
-                    enemy.Flip();
-                }
-            }
-        }
-
-        if (BattleTimeOver())
+        else if (BattleTimeOver())
         {
             stateMachine.ChangeState(enemy.idleState);
             return;
         }
 
-        // Only enter attack when player is actually detected by the raycast (line-of-sight).
         if (WithinAttackRange() && playerDetected)
         {
             stateMachine.ChangeState(enemy.attackState);
             return;
         }
 
-        // Otherwise move toward the (known) player position if we have one.
-        if (enemy.player != null)
-        {
-            int dir = DirectToPlayer();
-            enemy.SetVelocity(enemy.battleMoveSpeed * dir, rb.linearVelocity.y);
-        }
-        else
-        {
-            enemy.SetVelocity(0f, rb.linearVelocity.y);
-        }
+        int dir = DirectToPlayer();
+        enemy.SetVelocity(enemy.battleMoveSpeed * dir, rb.linearVelocity.y);
     }
+
 
     private void UpdateBattleTimer() => lastTimeWasInBattle = Time.time;
     private bool BattleTimeOver() => Time.time >= lastTimeWasInBattle + enemy.battleTimeDuration;
     private bool WithinAttackRange() => DistanceToPlayer() < enemy.attackDistance;
 
     private bool ShouldRetreat() => DistanceToPlayer() < enemy.minRetreatDistance;
+
+    private bool CanSafelyAttack()
+    {
+        if (enemy.player == null)
+            return false;
+
+        if (enemy.edgeDetected)
+            return false;
+
+        if (enemy.wallDetected)
+            return false;
+
+        if (!enemy.groundDetected)
+            return false;
+
+        return true;
+    }
 
     private float DistanceToPlayer()
     {

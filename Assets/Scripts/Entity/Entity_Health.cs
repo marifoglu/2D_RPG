@@ -45,13 +45,13 @@ public class Entity_Health : MonoBehaviour, IDamageable
         UpdateHealthBar();
     }
 
-    public virtual void TakeDamage(float damage, Transform damageDealer)
+    public virtual bool TakeDamage(float damage, Transform damageDealer)
     {
         if (isDead)
-            return;
+            return false;
 
         if (AttackEvaded())
-            return;
+            return false;
 
         Vector2 knockback = CalculateKnockback(damageDealer, damage);
         float duration = CalculateDuration(damage);
@@ -63,6 +63,8 @@ public class Entity_Health : MonoBehaviour, IDamageable
         TriggerCameraShake();
 
         ReduceHp(damage);
+
+        return true;
     }
 
     private bool AttackEvaded()
@@ -129,6 +131,24 @@ public class Entity_Health : MonoBehaviour, IDamageable
     }
     private void TriggerCameraShake()
     {
+        // Check if all required components exist
+        if (CameraShakeManager.Instance == null)
+        {
+            Debug.LogWarning($"[{gameObject.name}] CameraShakeManager.Instance is null!");
+            return;
+        }
+
+        if (screenShakeProfile == null)
+        {
+            Debug.LogWarning($"[{gameObject.name}] ScreenShakeProfile is not assigned!");
+            return;
+        }
+
+        if (impulseSource == null)
+        {
+            Debug.LogWarning($"[{gameObject.name}] CinemachineImpulseSource not found! Make sure it's on a parent GameObject.");
+            return;
+        }
 
         CameraShakeManager.Instance.ScreenShakeFromProfile(screenShakeProfile, impulseSource);
     }

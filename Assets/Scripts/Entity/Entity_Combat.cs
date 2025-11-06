@@ -14,6 +14,7 @@ public class Entity_Combat : MonoBehaviour
     {
         entityVfx = GetComponent<Entity_VFX>();
     }
+
     public void PerformAttack()
     {
         // If the owner died, ignore any late animation events
@@ -21,13 +22,27 @@ public class Entity_Combat : MonoBehaviour
         if (ownerHealth != null && ownerHealth.isDead)
             return;
 
+        // Hard block: if this combat belongs to an enemy and it’s unsafe (ledge/wall), do not attack.
+        var ownerEnemy = GetComponent<Enemy>();
+        if (ownerEnemy != null)
+        {
+            if (ownerEnemy.edgeDetected || ownerEnemy.wallDetected)
+                return;
+
+            if (ownerEnemy.IsPlayerDead)
+                return;
+        }
+
         foreach (var target in GetDetectCollider())
         {
             IDamageable damageable = target.GetComponent<IDamageable>();
             if (damageable == null) continue;
 
-            damageable.TakeDamage(damage, transform);
-            entityVfx.CreateOnHitVFX(target.transform);
+            bool targetGotHit = damageable.TakeDamage(damage, transform);
+            if (targetGotHit)
+            {
+                entityVfx?.CreateOnHitVFX(target.transform);
+            }
         }
     }
 
@@ -41,7 +56,4 @@ public class Entity_Combat : MonoBehaviour
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(targetCheck.position, targetCheckRadius);
     }
-
-
-
 }
