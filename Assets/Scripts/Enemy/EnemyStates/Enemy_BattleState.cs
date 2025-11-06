@@ -15,17 +15,15 @@ public class Enemy_BattleState : EnemyState
 
         UpdateBattleTimer();
 
-        // Use the Enemy's player reference (set by TryEnterBattleState) as the source of truth.
         if (enemy.player == null)
         {
             var hit = enemy.PlayerDetected();
             if (hit.collider != null)
             {
-                enemy.TryEnterBattleState(hit.transform); // use method (setter is inaccessible)
+                enemy.TryEnterBattleState(hit.transform);
             }
         }
 
-        // Optional: small retreat if too close on enter
         if (ShouldRetreat())
         {
             rb.linearVelocity = new Vector2(enemy.retreatVelocity.x * -DirectToPlayer(), enemy.retreatVelocity.y);
@@ -37,7 +35,7 @@ public class Enemy_BattleState : EnemyState
     {
         base.Update();
 
-        // 🚫 STOP if edge or no ground
+        // stop there mate, if edge or no ground
         if (enemy.edgeDetected || !enemy.groundDetected)
         {
             Debug.LogWarning($"[{enemy.name}] Stopped chasing due to edge/no ground. Roaming.");
@@ -46,7 +44,7 @@ public class Enemy_BattleState : EnemyState
             return;
         }
 
-        // ✅ Normal battle logic below — only runs when we're safe
+        // normal battle logic below, this one only runs when we're safe
         bool playerDetected = enemy.PlayerDetected();
 
         if (playerDetected)
@@ -66,7 +64,6 @@ public class Enemy_BattleState : EnemyState
         int dir = DirectToPlayer();
         enemy.SetVelocity(enemy.battleMoveSpeed * dir, rb.linearVelocity.y);
     }
-
 
     private void UpdateBattleTimer() => lastTimeWasInBattle = Time.time;
     private bool BattleTimeOver() => Time.time >= lastTimeWasInBattle + enemy.battleTimeDuration;

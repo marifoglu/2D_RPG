@@ -111,12 +111,12 @@ public class Entity_Enemy : MonoBehaviour
 
     private void HandleCollisionDetection()
     {
-        // Ground under feet
+        // Ground under for feet
         groundDetected = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
 
         // Forward edge raycast (single direction based on facingDir)
         Vector2 feetPos = (Vector2)groundCheck.position;
-        Vector2 forwardProbe = feetPos + Vector2.right * facingDir * edgeForwardOffset;  // WORKS FOR BOTH LEFT AND RIGHT
+        Vector2 forwardProbe = feetPos + Vector2.right * facingDir * edgeForwardOffset;
         float rayLength = groundCheckDistance + edgeDownDistance;
 
         bool groundAhead = Physics2D.Raycast(forwardProbe, Vector2.down, rayLength, whatIsGround);
@@ -140,11 +140,11 @@ public class Entity_Enemy : MonoBehaviour
     {
         if (groundCheck == null) return;
 
-        // ✅ Ground raycast (only 1)
+        // Ground raycast (only 1)
         Gizmos.color = Color.green;
         Gizmos.DrawLine(groundCheck.position, groundCheck.position + new Vector3(0, -groundCheckDistance));
 
-        // ✅ Wall raycasts
+        // Wall raycasts
         Gizmos.color = Color.blue;
         if (primaryWallCheck != null)
             Gizmos.DrawLine(primaryWallCheck.position, primaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
@@ -152,7 +152,7 @@ public class Entity_Enemy : MonoBehaviour
         if (secondaryWallCheck != null)
             Gizmos.DrawLine(secondaryWallCheck.position, secondaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
 
-        // ✅ Edge raycast (single, forward only)
+        // Edge raycast (single, forward only)
         Vector3 feetPos = groundCheck.position;
         Vector3 forwardProbe = feetPos + Vector3.right * facingDir * Mathf.Max(0.01f, edgeForwardOffset);
         float downDist = Mathf.Max(0f, groundCheckDistance + edgeDownDistance);

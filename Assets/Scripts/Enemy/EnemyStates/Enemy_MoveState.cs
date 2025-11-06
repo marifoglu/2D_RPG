@@ -2,20 +2,24 @@
 
 public class Enemy_MoveState : Enemy_GroundedState
 {
+    // small grace after flipping
+    private float edgeGraceTimer;
+
     public Enemy_MoveState(Enemy enemy, StateMachine stateMachine, string animBoolName)
         : base(enemy, stateMachine, animBoolName) { }
 
     public override void Enter()
     {
         base.Enter();
-        // No immediate flip here; edge detection will trigger a flip
+        // allow a brief step away from the edge after entering move
+        edgeGraceTimer = 0.18f; 
     }
 
     public override void Update()
     {
         base.Update();
 
-        // ✅ Stop if enemy is no longer grounded
+        // Always fall back to Idle if lose ground
         if (!enemy.groundDetected)
         {
             enemy.SetVelocity(0f, rb.linearVelocity.y);
@@ -23,7 +27,15 @@ public class Enemy_MoveState : Enemy_GroundedState
             return;
         }
 
-        // ✅ Stop and flip if facing edge or wall
+        // While grace timer is active, ignore all edge/wall checks,
+        if (edgeGraceTimer > 0f)
+        {
+            edgeGraceTimer -= Time.deltaTime;
+            enemy.SetVelocity(enemy.moveSpeed * enemy.facingDir, rb.linearVelocity.y);
+            return;
+        }
+
+        // use your normal safe guards
         if (enemy.wallDetected || enemy.edgeDetected)
         {
             enemy.SetVelocity(0f, rb.linearVelocity.y);
@@ -32,7 +44,7 @@ public class Enemy_MoveState : Enemy_GroundedState
             return;
         }
 
-        // ✅ Move safely forward (apply horizontal motion only)
+        // Normal roam
         enemy.SetVelocity(enemy.moveSpeed * enemy.facingDir, rb.linearVelocity.y);
     }
 }
