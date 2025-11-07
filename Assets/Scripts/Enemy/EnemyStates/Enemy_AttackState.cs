@@ -31,12 +31,10 @@ public class Enemy_AttackState : EnemyState
         {
             if (enemy.edgeDetected || enemy.wallDetected || !enemy.groundDetected)
             {
-                Debug.LogWarning($"[{enemy.name}] AT EDGE/WALL after attack - Starting to roam!");
                 stateMachine.ChangeState(enemy.idleState);
             }
             else
             {
-                Debug.Log($"[{enemy.name}] Safe position - Back to battle.");
                 stateMachine.ChangeState(enemy.battleState);
             }
         }

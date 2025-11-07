@@ -3,6 +3,8 @@
 public class Entity_Combat : MonoBehaviour
 {
     private Entity_VFX entityVfx;
+    private Entity_Stats entityStats;
+
     public float damage = 10f;
 
     [Header("Target Detection")]
@@ -13,6 +15,7 @@ public class Entity_Combat : MonoBehaviour
     private void Awake()
     {
         entityVfx = GetComponent<Entity_VFX>();
+        entityStats = GetComponent<Entity_Stats>();
     }
 
     public void PerformAttack()
@@ -38,7 +41,7 @@ public class Entity_Combat : MonoBehaviour
             IDamageable damageable = target.GetComponent<IDamageable>();
             if (damageable == null) continue;
 
-            bool targetGotHit = damageable.TakeDamage(damage, transform);
+            bool targetGotHit = damageable.TakeDamage(entityStats.GetPhysicalDamage(), transform);
             if (targetGotHit)
             {
                 entityVfx?.CreateOnHitVFX(target.transform);

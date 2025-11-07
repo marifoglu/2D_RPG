@@ -24,7 +24,6 @@ public class Entity_Health : MonoBehaviour, IDamageable
     [Header("Camera Shake on Hit")]
     private CinemachineImpulseSource impulseSource;
     [SerializeField] private ScreenShakeProfile screenShakeProfile;
-    //[SerializeField] private float shakeForce = 1.0f; // Can be set per object from Inspector
 
 
     private void Awake()

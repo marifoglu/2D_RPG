@@ -7,8 +7,8 @@ public class Entity_Stats : MonoBehaviour
     public Stat_OffenseGroup offense;
     public Stat_DefenseGroup defense;
 
-    // Equipped weapon addes  +5 Damage, +10 Crit Chance, +3 Evasion
-    // Portions add +10 armor for 10 secs
+
+    // Health Section
     public float GetMaxHealth()
     {
         float baseHp = maxHealth.GetValue();
@@ -17,11 +17,39 @@ public class Entity_Stats : MonoBehaviour
         return baseHp + bonusHp;
     }
 
+    // Physical Damage Section
+    public float GetPhysicalDamage()
+    {
+        float baseDamage = offense.damage.GetValue();
+        float bonusDamage = major.strength.GetValue();
+        float totalBaseDamage = baseDamage + bonusDamage;
+
+        float baseCritChance = offense.critChance.GetValue();
+        float bonusCritChance = major.agility.GetValue() * 0.5f;  //bonus crt chance from Agility %0.5 per AGI
+        float totalCritChance = baseCritChance + bonusCritChance;
+
+        float baseCritPower = offense.critPower.GetValue();
+        float bonusCritPower = major.strength.GetValue() * .5f; //bonus crit power from Strength +1% per STR
+        float totalCritPower = baseCritPower + bonusCritPower /100; // Total crit power as a multiplier
+
+        bool isCrit = Random.Range(0f, 100f) < totalCritChance;
+        float finalDamage = isCrit ? totalBaseDamage * totalCritPower: totalBaseDamage;
+
+        return finalDamage;
+    }
+
+    // Evasion Section
     public float GetEvasion()
     {
-        float baseEvasion = defense.evasion.GetValue();
+        float baseEvasion = defense.evasion.GetValue(); // Base evasion from equipment and buffs
         float bonusEvasion = major.agility.GetValue() * 5f;  //each point in agility adds %0.5 evasion
 
-        return baseEvasion + bonusEvasion;
+        float totalEvasion = baseEvasion + bonusEvasion; // Total evasion before capping
+        float evesionCap = 50f; // Max evasion is 50%
+        float finalEvasion = Mathf.Min(totalEvasion, evesionCap); // Cap evasion at 50%
+
+        return finalEvasion;
     }
+
+
 }
