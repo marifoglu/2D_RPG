@@ -36,9 +36,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
         // Check if entityStats exists before using it
         if (stats == null)
-        {
-            return;
-        }
+            return;   
 
         currentHealth = stats.GetMaxHealth();
         UpdateHealthBar();
@@ -52,16 +50,20 @@ public class Entity_Health : MonoBehaviour, IDamageable
         if (AttackEvaded())
             return false;
 
-        Vector2 knockback = CalculateKnockback(damageDealer, damage);
-        float duration = CalculateDuration(damage);
+        float mitigation = stats.GetArmorMitigation();
+        float finalDamage = damage * (1 - mitigation);
+
+        Vector2 knockback = CalculateKnockback(damageDealer, finalDamage);
+        float duration = CalculateDuration(finalDamage);
 
         entity?.ReceiveKnockback(knockback, duration);
         entityVFX?.PlayOnDamageVfx();
 
+        ReduceHp(finalDamage);
+        Debug.Log($"[{gameObject.name}] Took {finalDamage} damage. Current HP: {currentHealth}/{stats.GetMaxHealth()}");
+
         // Trigger camera shake when this entity takes damage
         TriggerCameraShake();
-
-        ReduceHp(damage);
 
         return true;
     }

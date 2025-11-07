@@ -4,6 +4,7 @@ using UnityEngine;
 public class Entity_VFX : MonoBehaviour
 {
     private SpriteRenderer sr;
+    private Entity entity;
 
     [Header("Taking Damage VFX")]
     [SerializeField] private Material onDamageMaterial;
@@ -11,32 +12,63 @@ public class Entity_VFX : MonoBehaviour
     private Material originalMaterial;
     private Coroutine onDamageVfxCoroutine;
 
-    [Header("Death VFX")]
-    [SerializeField] private GameObject hitVfx;
+    [Header("Doing Damage VFX")]
     [SerializeField] private Color hitVfxColor = Color.white;
+    [SerializeField] private GameObject hitVfx;
+    [SerializeField] private GameObject critHitVfx;
+
+
     [Header("Counter Attack VFX")]
-    [SerializeField] private GameObject counterAttackVFX; // Add this for counter attack effects
+    [SerializeField] private GameObject counterAttackVFX; // for counter attack effects
 
     private void Awake()
     {
         sr = GetComponentInChildren<SpriteRenderer>();
-        originalMaterial = sr.material;
+        if (sr != null)
+            originalMaterial = sr.material;
+
+        entity = GetComponent<Entity>();
     }
-    
-    public void CreateOnHitVFX(Transform target)
+
+    public void CreateOnHitVFX(Transform target, bool isCrit)
     {
-        GameObject vfx = Instantiate(hitVfx, target.position, Quaternion.identity);
-        vfx.GetComponent<SpriteRenderer>().color = hitVfxColor;
+        GameObject hitPrefab = isCrit ? critHitVfx : hitVfx;
+        if (hitPrefab == null)
+        {
+            Debug.LogWarning($"[{gameObject.name}] Hit VFX prefab is not assigned!");
+            return;
+        }
+
+        GameObject vfx = Instantiate(hitPrefab, target.position, Quaternion.identity);
+
+        // Check if the instantiated VFX has a SpriteRenderer before trying to access it
+        SpriteRenderer vfxRenderer = vfx.GetComponent<SpriteRenderer>();
+        if (vfxRenderer != null)
+        {
+            vfxRenderer.color = hitVfxColor;
+        }
+        else
+        {
+            Debug.LogWarning($"[{gameObject.name}] VFX prefab '{hitPrefab.name}' doesn't have a SpriteRenderer component!");
+        }
+
+        if (entity != null && entity.facingDir == -1 && isCrit)
+            vfx.transform.Rotate(0f, 180f, 0);
     }
+
     public void PlayOnDamageVfx()
     {
         if (onDamageVfxCoroutine != null)
             StopCoroutine(onDamageVfxCoroutine);
-        
+
         onDamageVfxCoroutine = StartCoroutine(OnDamageVfxCo());
     }
+
     private IEnumerator OnDamageVfxCo()
     {
+        if (sr == null)
+            yield break;
+
         Color originalColor = sr.color;
         sr.color = Color.paleVioletRed;
 
