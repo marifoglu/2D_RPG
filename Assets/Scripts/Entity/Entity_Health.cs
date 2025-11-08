@@ -55,27 +55,30 @@ public class Entity_Health : MonoBehaviour, IDamageable
         float armorReduction = attackerStats != null ? attackerStats.GetArmorReduction() : 0f;
 
         float mitigation = stats.GetArmorMitigation(armorReduction);
-        float finalDamage = damage * (1 - mitigation);
+        float physicalDamageTaken = damage * (1 - mitigation);
 
 
         // Calculate elemental resistance
         float elementalResistance = stats.GetElementalResistance(elementType);
-        float elementalDamageTaken = elementalDamage * (1 - elementalResistance);   
+        float elementalDamageTaken = elementalDamage * (1 - elementalResistance);
 
         // Knockback
-        Vector2 knockback = CalculateKnockback(damageDealer, finalDamage);
-        float duration = CalculateDuration(finalDamage);
+        TakeKnockback(damageDealer, physicalDamageTaken);
 
-        entity?.ReceiveKnockback(knockback, duration);
-        entityVFX?.PlayOnDamageVfx();
-
-        ReduceHp(finalDamage + elementalDamageTaken);
-        Debug.Log($"Took {elementalDamageTaken} elemental damage from the {elementType} Current HP: {currentHealth}");
+        ReduceHp(physicalDamageTaken + elementalDamageTaken);
 
         // Trigger camera shake when this entity takes damage
         TriggerCameraShake();
 
         return true;
+    }
+
+    private void TakeKnockback(Transform damageDealer, float finalDamage)
+    {
+        Vector2 knockback = CalculateKnockback(damageDealer, finalDamage);
+        float duration = CalculateDuration(finalDamage);
+
+        entity?.ReceiveKnockback(knockback, duration);
     }
 
     private bool AttackEvaded()
@@ -85,6 +88,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
     protected void ReduceHp(float takenDamage)
     {
+        entityVFX?.PlayOnDamageVfx();
         currentHealth -= takenDamage;
         UpdateHealthBar();
 
@@ -142,25 +146,15 @@ public class Entity_Health : MonoBehaviour, IDamageable
     }
     private void TriggerCameraShake()
     {
-        // Check if all required components exist
         if (CameraShakeManager.Instance == null)
-        {
-            Debug.LogWarning($"[{gameObject.name}] CameraShakeManager.Instance is null!");
             return;
-        }
-
+        
         if (screenShakeProfile == null)
-        {
-            Debug.LogWarning($"[{gameObject.name}] ScreenShakeProfile is not assigned!");
             return;
-        }
-
+        
         if (impulseSource == null)
-        {
-            Debug.LogWarning($"[{gameObject.name}] CinemachineImpulseSource not found! Make sure it's on a parent GameObject.");
             return;
-        }
-
+        
         CameraShakeManager.Instance.ScreenShakeFromProfile(screenShakeProfile, impulseSource);
     }
 

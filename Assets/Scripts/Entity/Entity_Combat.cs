@@ -25,7 +25,7 @@ public class Entity_Combat : MonoBehaviour
         if (ownerHealth != null && ownerHealth.isDead)
             return;
 
-        // Hard block: if this combat belongs to an enemy and it’s unsafe (ledge/wall), do not attack.
+        // Hard block: if combat belongs to an enemy and it’s unsafe (ledge-wall), do not attack.
         var ownerEnemy = GetComponent<Enemy>();
         if (ownerEnemy != null)
         {

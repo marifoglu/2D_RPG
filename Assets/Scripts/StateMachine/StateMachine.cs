@@ -2,34 +2,34 @@ using UnityEngine;
 
 public class StateMachine
 {
-    public EntityState currentState {get; private set;}
+    public EntityState currentState { get; private set; }
     public bool canChangeState;
 
     public void Initialize(EntityState startState)
     {
         canChangeState = true;
         currentState = startState;
-        currentState.Enter();
+        currentState?.Enter();
     }
 
     public void ChangeState(EntityState newState)
     {
-        if(canChangeState == false)
+        if (canChangeState == false || newState == null)
             return;
 
-        currentState.Exit();
+        currentState?.Exit();
         currentState = newState;
         currentState.Enter();
     }
 
     public void UpdateActiveState()
     {
-        if (!canChangeState)   // switched off (e.g., dead)
+        // Check if state machine is active AND currentState is not null
+        if (!canChangeState || currentState == null)
             return;
 
         currentState.Update();
     }
 
-
-    public void switchOffStateMachine() => canChangeState = false;    
+    public void switchOffStateMachine() => canChangeState = false;
 }

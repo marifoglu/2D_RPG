@@ -63,7 +63,10 @@ public class Entity : MonoBehaviour
     protected virtual void Update()
     {
         HandleCollisionDetection();
-        stateMachine.UpdateActiveState();
+        if (stateMachine != null && stateMachine.currentState != null)
+        {
+            stateMachine.UpdateActiveState();
+        }
     }
     public virtual void EntityDeath()
     {

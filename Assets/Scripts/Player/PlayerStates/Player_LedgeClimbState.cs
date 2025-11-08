@@ -18,8 +18,6 @@ public class Player_LedgeClimbState : PlayerState
     {
         base.Enter();
 
-        Debug.Log("LEDGE CLIMB STARTED");
-
         // Store original physics
         originalGravity = rb.gravityScale;
 
@@ -72,6 +70,5 @@ public class Player_LedgeClimbState : PlayerState
         rb.gravityScale = originalGravity;
         player.transform.position = new Vector2(climbEndPosition.x, climbEndPosition.y + 0.1f); // Small upward offset
         isLedgeCached = false; // Reset cache for next use
-        Debug.Log("LEDGE CLIMB FINISHED");
     }
 }
