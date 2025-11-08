@@ -42,7 +42,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
         UpdateHealthBar();
     }
 
-    public virtual bool TakeDamage(float damage, Transform damageDealer)
+    public virtual bool TakeDamage(float damage, float elementalDamage, ElementType elementType, Transform damageDealer)
     {
         if (isDead)
             return false;
@@ -50,17 +50,27 @@ public class Entity_Health : MonoBehaviour, IDamageable
         if (AttackEvaded())
             return false;
 
-        float mitigation = stats.GetArmorMitigation();
+        // Calculate armor mitigation
+        Entity_Stats attackerStats = damageDealer.GetComponent<Entity_Stats>();
+        float armorReduction = attackerStats != null ? attackerStats.GetArmorReduction() : 0f;
+
+        float mitigation = stats.GetArmorMitigation(armorReduction);
         float finalDamage = damage * (1 - mitigation);
 
+
+        // Calculate elemental resistance
+        float elementalResistance = stats.GetElementalResistance(elementType);
+        float elementalDamageTaken = elementalDamage * (1 - elementalResistance);   
+
+        // Knockback
         Vector2 knockback = CalculateKnockback(damageDealer, finalDamage);
         float duration = CalculateDuration(finalDamage);
 
         entity?.ReceiveKnockback(knockback, duration);
         entityVFX?.PlayOnDamageVfx();
 
-        ReduceHp(finalDamage);
-        Debug.Log($"[{gameObject.name}] Took {finalDamage} damage. Current HP: {currentHealth}/{stats.GetMaxHealth()}");
+        ReduceHp(finalDamage + elementalDamageTaken);
+        Debug.Log($"Took {elementalDamageTaken} elemental damage from the {elementType} Current HP: {currentHealth}");
 
         // Trigger camera shake when this entity takes damage
         TriggerCameraShake();

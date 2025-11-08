@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Entity_Stats : MonoBehaviour
 {
+    public ElementType elementType;
     public Stat maxHealth;
     public Stat_MajorGroup major;
     public Stat_OffenseGroup offense;
@@ -52,20 +53,93 @@ public class Entity_Stats : MonoBehaviour
 
         return finalEvasion;
     }
+    public float GetArmorReduction()
+    {
+        float armorReduction = offense.armorReduction.GetValue();
 
-    public float GetArmorMitigation()
+        return armorReduction;
+    }
+    public float GetArmorMitigation(float armorReduction)
     {
         float baseArmor = defense.armor.GetValue();
         float bonusArmor = major.vitality.GetValue();
         float totalArmor = baseArmor + bonusArmor;  
 
-        float mitigation = totalArmor / (totalArmor + 100f); // Mitigation formula
+        float reductionMultiplier = Mathf.Clamp(1f - armorReduction, 0, 1);
+        float effectiveArmor = totalArmor * reductionMultiplier;
+
+        float mitigation = effectiveArmor / (effectiveArmor + 100f); // Mitigation formula
         float mitigationCap = 0.75f; // Cap mitigation at 75%
 
         float finalMitigation = Mathf.Clamp(mitigation, 0f, mitigationCap);
 
 
         return finalMitigation;
+    }
+
+    public float GetElementalResistance(ElementType elementType)
+    {
+        float baseResistance = 0f;
+        float bonusResistance = major.intellgence.GetValue() * .5f; // + .5% elemental resistance per INT
+
+        switch (elementType)
+        {
+            case ElementType.Fire:
+                baseResistance = defense.fireResist.GetValue();
+                break;
+            case ElementType.Ice:
+                baseResistance = defense.iceResist.GetValue();
+                break;
+            case ElementType.Lighting:  
+                baseResistance = defense.lightingResist.GetValue();
+                break;
+        }
+
+        float resistace = baseResistance + bonusResistance;
+        float resistanceCap = 75f; // Cap resistance at 75%
+        float finalResistance = Mathf.Clamp(resistace, 0f, resistanceCap) / 100; // Convert to multiplier
+
+        return finalResistance;
+    }
+    public float GetElementelDamage(out ElementType elementType)
+    {
+        float fireDamage = offense.fireDamage.GetValue();
+        float iceDamage = offense.iceDamage.GetValue();
+        float lightingDamage = offense.lightingDamage.GetValue();
+
+        float bonusElementalDamage = major.intellgence.GetValue(); // +1 elemental damage per INT
+
+        // Elemental damage check
+        float highiestElementalDamage = fireDamage;
+        elementType = ElementType.Fire;
+
+
+        if (iceDamage > highiestElementalDamage) { 
+            highiestElementalDamage = iceDamage;
+            elementType = ElementType.Ice;
+        }
+
+        if (lightingDamage > highiestElementalDamage)
+        {
+            highiestElementalDamage = lightingDamage;
+            elementType = ElementType.Lighting;
+        }
+
+        if (highiestElementalDamage <= 0)
+        {
+            elementType = ElementType.None;
+            return 0;
+        }
+
+        float bonusFireDamage = (fireDamage == highiestElementalDamage) ? 0 :  fireDamage * 5f;
+        float bonusIceDamage = (iceDamage == highiestElementalDamage) ? 0 :  iceDamage * 5f;
+        float bonusLightingDamage = (lightingDamage == highiestElementalDamage) ? 0 :  lightingDamage * 5f;
+
+        float weakerElementalDamage = bonusFireDamage + bonusIceDamage + bonusLightingDamage;
+
+        float finalElementalDamage = highiestElementalDamage + weakerElementalDamage + bonusElementalDamage;
+
+        return finalElementalDamage;
     }
 
 

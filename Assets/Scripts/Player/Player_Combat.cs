@@ -9,11 +9,11 @@ public class Player_Combat : Entity_Combat
     {
         bool hasPerformedCounter = false;
 
-        foreach (var targer in GetDetectCollider())
+        foreach (var target in GetDetectCollider())
         {
-            ICounterable counterable = targer.GetComponent<ICounterable>();
-            IDamageable damageable = targer.GetComponent<IDamageable>();
-
+            ICounterable counterable = target.GetComponent<ICounterable>();
+            IDamageable damageable = target.GetComponent<IDamageable>();
+            float elementalDamage = 0f; // Assuming no elemental damage for counter-attack
 
             if (counterable == null)
                 continue; // if not counterable, skip
@@ -24,7 +24,7 @@ public class Player_Combat : Entity_Combat
 
                 if (damageable != null)
                 {
-                    damageable.TakeDamage(counterAttackDamage, transform);
+                    damageable.TakeDamage(counterAttackDamage, elementalDamage, ElementType.None, transform);
                 }
                 hasPerformedCounter = true;
             }
@@ -35,3 +35,4 @@ public class Player_Combat : Entity_Combat
 
     public float GetCounterRecoveryDuration() => counterRecovery;
 }
+

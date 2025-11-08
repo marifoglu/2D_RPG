@@ -38,7 +38,6 @@ public class Enemy_BattleState : EnemyState
         // stop there mate, if edge or no ground
         if (enemy.edgeDetected || !enemy.groundDetected)
         {
-            Debug.LogWarning($"[{enemy.name}] Stopped chasing due to edge/no ground. Roaming.");
             enemy.SetVelocity(0f, rb.linearVelocity.y);
             stateMachine.ChangeState(enemy.idleState);
             return;
