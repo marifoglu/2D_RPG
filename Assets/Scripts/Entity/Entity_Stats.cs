@@ -33,10 +33,10 @@ public class Entity_Stats : MonoBehaviour
 
         float baseCritPower = offense.critPower.GetValue();
         float bonusCritPower = major.strength.GetValue() * .5f; //bonus crit power from Strength +1% per STR
-        float totalCritPower = baseCritPower + bonusCritPower /100; // Total crit power as a multiplier
+        float totalCritPower = (baseCritPower + bonusCritPower) / 100; // Total crit power as a multiplier
 
         isCrit = Random.Range(0f, 100f) < totalCritChance;
-        float finalDamage = isCrit ? totalBaseDamage * totalCritPower: totalBaseDamage;
+        float finalDamage = isCrit ? totalBaseDamage * totalCritPower : totalBaseDamage;
 
         return finalDamage;
     }

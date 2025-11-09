@@ -45,8 +45,10 @@ public class Entity_Combat : MonoBehaviour
             float elementalDamage = entityStats.GetElementelDamage(out ElementType elementType);
 
             bool targetGotHit = damageable.TakeDamage(damage, elementalDamage,elementType, transform);
+
             if (targetGotHit)
             {
+                entityVfx.UpdateOnHitColor(elementType);
                 entityVfx?.CreateOnHitVFX(target.transform, isCrit);
             }
         }

@@ -53,6 +53,14 @@ public class Entity_VFX : MonoBehaviour
         onDamageVfxCoroutine = StartCoroutine(OnDamageVfxCo());
     }
 
+    public void UpdateOnHitColor(ElementType elementType)
+    {
+        if(elementType == ElementType.Ice)
+            hitVfxColor = chillVfx;
+
+        if(elementType == ElementType.None)
+            hitVfxColor = originalHitVfxColor;
+    }
     private IEnumerator OnDamageVfxCo()
     {
         sr.material = onDamageMaterial;
