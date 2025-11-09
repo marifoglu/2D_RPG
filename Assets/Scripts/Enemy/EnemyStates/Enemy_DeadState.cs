@@ -9,26 +9,28 @@ public class Enemy_DeadState : EnemyState
         : base(enemy, stateMachine, animBoolName)
     {
         col = enemy.GetComponent<Collider2D>();
-
     }
 
     public override void Enter()
     {
         base.Enter();
 
-        // Stop movement and disable collision
+        // Stop all movement immediately
         rb.linearVelocity = Vector2.zero;
         rb.gravityScale = 0;
-        if (col != null) col.enabled = false;
 
-        // Trigger your "isDead" animation in Animator
-        anim.SetTrigger("dead");
+        // Optionally freeze the rigidbody completely to prevent any physics
+        rb.bodyType = RigidbodyType2D.Kinematic;
+
+        // Disable collision
+        if (col != null)
+            col.enabled = false;
 
         // Stop state updates
         stateMachine.switchOffStateMachine();
 
-        // Remove enemy after animation finishes (e.g. 3 seconds)
-        enemy.StartCoroutine(DestroyAfterDelay(3f));
+        // Remove enemy after animation finishes (e.g. 2-3 seconds)
+        enemy.StartCoroutine(DestroyAfterDelay(2.5f));
     }
 
     private IEnumerator DestroyAfterDelay(float delay)

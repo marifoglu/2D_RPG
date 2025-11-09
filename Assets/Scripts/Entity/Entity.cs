@@ -93,7 +93,18 @@ public class Entity : MonoBehaviour
             stateMachine.UpdateActiveState();
         }
     }
+    public virtual void SlowDownEntity(float duration, float slowMultiplier)
+    {
+        if(slowDownCo != null)
+            StopCoroutine(slowDownCo);
 
+        slowDownCo = StartCoroutine(SlowDownEntityCo(duration, slowMultiplier));
+    }
+
+    protected virtual IEnumerator SlowDownEntityCo(float duration, float slowMultiplier)
+    {
+        yield return null;
+    }
     public virtual void EntityDeath()
     {
         //Debug.Log("Entity Dead");
@@ -132,12 +143,6 @@ public class Entity : MonoBehaviour
         // Enemy uses simplified slope logic
         if (useEnemyEdgeDetection)
         {
-            // Debug logging
-            if (Mathf.Abs(xInput) > 0.01f)
-            {
-                Debug.Log($"Enemy Moving - Ground: {groundDetected}, OnSlope: {isOnSlope}, CanWalk: {canWalkOnSlope}, Angle: {slopeDownAngle}, Normal: {slopeNormalPerp}");
-            }
-
             // If on a slope and grounded, move along the slope direction
             if (groundDetected && isOnSlope && canWalkOnSlope && Mathf.Abs(xInput) > 0.01f)
             {

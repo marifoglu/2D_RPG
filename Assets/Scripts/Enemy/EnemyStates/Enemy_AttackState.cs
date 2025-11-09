@@ -8,7 +8,10 @@ public class Enemy_AttackState : EnemyState
     {
         base.Enter();
 
-        // If edge or wall, block before  animation triggers
+        // Stop all movement when entering attack state
+        enemy.SetVelocity(0f, 0f);
+
+        // If edge or wall, block before animation triggers
         if (enemy.edgeDetected || enemy.wallDetected)
         {
             stateMachine.ChangeState(enemy.idleState);
@@ -19,6 +22,9 @@ public class Enemy_AttackState : EnemyState
     public override void Update()
     {
         base.Update();
+
+        // Keep the enemy stationary during attack
+        enemy.SetVelocity(0f, rb.linearVelocity.y);
 
         // cancel attack, if the player is gone, or we are at the edge or wall
         if (enemy.player == null || enemy.edgeDetected || enemy.wallDetected)
