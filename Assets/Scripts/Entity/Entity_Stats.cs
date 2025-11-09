@@ -142,7 +142,16 @@ public class Entity_Stats : MonoBehaviour
         return finalElementalDamage;
     }
 
+    // Counter Attack Damage Section
+    public float GetCounterAttackDamage()
+    {
+        float baseCounterDamage = offense.counterAttackDamage.GetValue();
+        float bonusCounterDamage = major.strength.GetValue() * 0.5f; // Optional: bonus from STR
 
+        float finalCounterDamage = baseCounterDamage + bonusCounterDamage;
+
+        return finalCounterDamage;
+    }
 }
 
 // Done

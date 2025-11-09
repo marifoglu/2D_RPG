@@ -3,10 +3,8 @@ using Unity.Cinemachine;
 
 public class Entity_AnimationTriggers : MonoBehaviour
 {
-    // Support both hierarchies
-    private Entity playerEntity;          // Player path (Player : Entity)
-    private Entity_Enemy enemyEntity;     // Enemy path (Enemy : Entity_Enemy)
-    private Entity_Combat entityCombat;   // Shared combat component
+    private Entity entity;
+    private Entity_Combat entityCombat;
 
     //private CinemachineImpulseSource impulseSource;
 
@@ -15,22 +13,24 @@ public class Entity_AnimationTriggers : MonoBehaviour
 
     protected virtual void Awake()
     {
-        playerEntity = GetComponentInParent<Entity>();
-        enemyEntity = GetComponentInParent<Entity_Enemy>();
+        entity = GetComponentInParent<Entity>();
         entityCombat = GetComponentInParent<Entity_Combat>();
 
         // Only look for shake source on Player
         //impulseSource = GetComponentInParent<CinemachineImpulseSource>();
 
-        if (playerEntity == null && enemyEntity == null)
-            Debug.LogError($"{name}: Entity_AnimationTriggers couldn't find Entity or Entity_Enemy on parents.");
+        if (entity == null)
+            Debug.LogError($"{name}: Entity_AnimationTriggers couldn't find Entity on parents.");
     }
 
     // Animation Event: called from clips
     private void CurrentStateTrigger()
     {
-        if (playerEntity != null) { playerEntity.CurrentStateAnimationTrigger(); return; }
-        if (enemyEntity != null) { enemyEntity.CurrentStateAnimationTrigger(); return; }
+        if (entity != null)
+        {
+            entity.CurrentStateAnimationTrigger();
+            return;
+        }
 
         Debug.LogWarning($"{name}: CurrentStateTrigger called but no entity found.");
     }
@@ -39,12 +39,11 @@ public class Entity_AnimationTriggers : MonoBehaviour
     private void AttackTrigger()
     {
         // If this is an enemy and the player has died, ignore attack hit application
-        var enemy = enemyEntity as Enemy;
+        Enemy enemy = entity as Enemy;
         if (enemy != null && enemy.IsPlayerDead)
             return;
 
         if (entityCombat != null)
             entityCombat.PerformAttack();
-
     }
 }

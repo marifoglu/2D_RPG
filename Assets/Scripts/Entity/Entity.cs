@@ -10,6 +10,7 @@ public class Entity : MonoBehaviour
     protected StateMachine stateMachine;
     private bool facingRight = true;
     public int facingDir { get; private set; } = 1;
+
     [Header("Collision Detection")]
     [SerializeField] protected LayerMask whatIsGround;
     [SerializeField] private float groundCheckRadius = 0.1f;
@@ -18,21 +19,32 @@ public class Entity : MonoBehaviour
     [SerializeField] private Transform primaryWallCheck;
     [SerializeField] private Transform secondaryWallCheck;
     [SerializeField] private Transform ledgeCheck;
+
+    [Header("Edge Detection")]
+    [Tooltip("Horizontal look-ahead from feet to check for ground ahead.")]
+    [SerializeField] protected float edgeForwardOffset = 0.5f;
+    [Tooltip("Extra downward distance from the look-ahead point.")]
+    [SerializeField] protected float edgeDownDistance = 0.25f;
+    [Tooltip("Use enemy-style edge detection (simpler raycast forward from feet)")]
+    [SerializeField] protected bool useEnemyEdgeDetection = false;
+
     [Header("Slope Detection")]
     [SerializeField] private float slopeCheckDistance = 1.25f;
     [SerializeField] private float maxSlopeAngle = 45f;
     [SerializeField] private float slopeOverlapRadius = 0.1f;
     [SerializeField] private PhysicsMaterial2D noFriction;
     [SerializeField] private PhysicsMaterial2D fullFriction;
+
     [Header("Ledge Climb Details")]
     [SerializeField] private Vector2 ledgeClimbOffset;
+
     public bool groundDetected { get; private set; }
     public bool wallDetected { get; private set; }
     public bool ledgeDetected { get; private set; }
     public bool edgeDetected { get; private set; }
 
-    // Slope variables
-    public bool isOnSlope { get; private set; }
+    // Slope variables
+    public bool isOnSlope { get; private set; }
     public bool canWalkOnSlope { get; private set; }
     public float slopeDownAngle { get; private set; }
     public Vector2 slopeNormalPerp { get; private set; }
@@ -42,9 +54,11 @@ public class Entity : MonoBehaviour
     private Vector2 capsuleColliderSize;
     private CapsuleCollider2D cc;
 
-    // Condition Variables
-    private bool isKnocked = false;
+    // Condition Variables
+    private bool isKnocked = false;
     private Coroutine knockbackCo;
+    private Coroutine slowDownCo;
+
     protected virtual void Awake()
     {
         anim = GetComponentInChildren<Animator>();
@@ -52,14 +66,25 @@ public class Entity : MonoBehaviour
         stateMachine = new StateMachine();
         cc = GetComponent<CapsuleCollider2D>();
         if (cc != null)
+        {
             capsuleColliderSize = cc.size;
-        defaultGravity = rb.gravityScale; // store original gravity
-
+        }
+        else
+        {
+            // Fallback for enemies without CapsuleCollider2D
+            var boxCol = GetComponent<BoxCollider2D>();
+            if (boxCol != null)
+                capsuleColliderSize = boxCol.size;
+            else
+                capsuleColliderSize = new Vector2(1f, 2f); // Default size
+        }
+        defaultGravity = rb.gravityScale;
     }
 
     protected virtual void Start()
     {
     }
+
     protected virtual void Update()
     {
         HandleCollisionDetection();
@@ -68,24 +93,29 @@ public class Entity : MonoBehaviour
             stateMachine.UpdateActiveState();
         }
     }
+
     public virtual void EntityDeath()
     {
-        Debug.Log("Entity Dead");
+        //Debug.Log("Entity Dead");
     }
+
     public void EnterStaggerState(EntityState staggerState)
     {
         stateMachine.ChangeState(staggerState);
     }
+
     public void CurrentStateAnimationTrigger()
     {
         stateMachine.currentState.AnimationTrigger();
     }
+
     public void ReceiveKnockback(Vector2 konckback, float duration)
     {
         if (knockbackCo != null)
             StopCoroutine(knockbackCo);
         knockbackCo = StartCoroutine(KnockbackCo(konckback, duration));
     }
+
     private IEnumerator KnockbackCo(Vector2 knockback, float duration)
     {
         isKnocked = true;
@@ -94,10 +124,37 @@ public class Entity : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         isKnocked = false;
     }
+
     public void SetVelocity(float xInput, float yVelocity)
     {
         if (isKnocked) return;
 
+        // Enemy uses simplified slope logic
+        if (useEnemyEdgeDetection)
+        {
+            // Debug logging
+            if (Mathf.Abs(xInput) > 0.01f)
+            {
+                Debug.Log($"Enemy Moving - Ground: {groundDetected}, OnSlope: {isOnSlope}, CanWalk: {canWalkOnSlope}, Angle: {slopeDownAngle}, Normal: {slopeNormalPerp}");
+            }
+
+            // If on a slope and grounded, move along the slope direction
+            if (groundDetected && isOnSlope && canWalkOnSlope && Mathf.Abs(xInput) > 0.01f)
+            {
+                Vector2 slopeDir = slopeNormalPerp.normalized;
+                if (Mathf.Sign(slopeDir.x) != Mathf.Sign(xInput))
+                    slopeDir *= -1;
+                rb.linearVelocity = new Vector2(slopeDir.x * Mathf.Abs(xInput), slopeDir.y * Mathf.Abs(xInput));
+            }
+            else
+            {
+                rb.linearVelocity = new Vector2(xInput, yVelocity);
+            }
+            HandleFlip(xInput);
+            return;
+        }
+
+        // Player slope logic
         bool touchingSlopeButNotDetectedYet =
         groundDetected && Mathf.Abs(xInput) > 0.01f && rb.linearVelocity.x == 0f && !isOnSlope && IsTouchingSlope();
 
@@ -121,6 +178,7 @@ public class Entity : MonoBehaviour
         }
         HandleFlip(xInput);
     }
+
     public void HandleFlip(float xVelcoity)
     {
         if (xVelcoity > 0 && facingRight == false)
@@ -128,6 +186,7 @@ public class Entity : MonoBehaviour
         else if (xVelcoity < 0 && facingRight)
             Flip();
     }
+
     public void Flip()
     {
         transform.Rotate(0, 180, 0);
@@ -135,11 +194,24 @@ public class Entity : MonoBehaviour
         facingDir = facingDir * -1;
         OnFlipped?.Invoke();
     }
+
     private void HandleCollisionDetection()
     {
-        groundDetected =
-        Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, whatIsGround)
-        || Physics2D.Raycast(transform.position, Vector2.down, capsuleColliderSize.y * 0.6f, whatIsGround);
+        // Ground detection - simple raycast from groundCheck
+        if (useEnemyEdgeDetection)
+        {
+            // Enemy uses simple ground check
+            groundDetected = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckRadius, whatIsGround);
+        }
+        else
+        {
+            // Player uses more complex ground check
+            groundDetected =
+            Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, whatIsGround)
+            || Physics2D.Raycast(transform.position, Vector2.down, capsuleColliderSize.y * 0.6f, whatIsGround);
+        }
+
+        // Wall detection (same for both)
         if (secondaryWallCheck != null)
         {
             wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround)
@@ -150,19 +222,43 @@ public class Entity : MonoBehaviour
             wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         }
 
-        bool wallAtBody = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
-        bool wallAtHead = Physics2D.Raycast(ledgeCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
-        ledgeDetected = wallAtBody && !wallAtHead;
+        // Ledge detection (for player only)
+        if (ledgeCheck != null && !useEnemyEdgeDetection)
+        {
+            bool wallAtBody = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
+            bool wallAtHead = Physics2D.Raycast(ledgeCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
+            ledgeDetected = wallAtBody && !wallAtHead;
+        }
+        else
+        {
+            ledgeDetected = false;
+        }
 
-        // ADD this new edge detection!
-        Vector2 frontPos = (Vector2)transform.position + new Vector2(facingDir * 0.5f, -0.5f);
-        edgeDetected = !Physics2D.Raycast(frontPos, Vector2.down, 0.6f, whatIsGround);
+        // Edge detection - different method based on entity type
+        if (useEnemyEdgeDetection)
+        {
+            // Enemy-style: check if ground exists ahead at feet level
+            Vector2 feetPos = (Vector2)groundCheck.position;
+            Vector2 forwardProbe = feetPos + Vector2.right * facingDir * edgeForwardOffset;
+            float rayLength = groundCheckRadius + edgeDownDistance;
 
-        Debug.DrawRay(frontPos, Vector2.down * 0.6f, edgeDetected ? Color.red : Color.green);
+            bool groundAhead = Physics2D.Raycast(forwardProbe, Vector2.down, rayLength, whatIsGround);
+            edgeDetected = groundDetected && !groundAhead;
+        }
+        else
+        {
+            // Player-style edge detection
+            Vector2 frontPos = (Vector2)transform.position + new Vector2(facingDir * 0.5f, -0.5f);
+            edgeDetected = !Physics2D.Raycast(frontPos, Vector2.down, 0.6f, whatIsGround);
+        }
     }
 
     public Vector2 DetermineLedgePosition()
     {
+        // Only allow ledge climbing if not using enemy detection
+        if (useEnemyEdgeDetection)
+            return transform.position;
+
         Vector2 wallTopCheck = new Vector2(primaryWallCheck.position.x, ledgeCheck.position.y);
         RaycastHit2D topHit = Physics2D.Raycast(wallTopCheck, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         if (topHit.collider != null)
@@ -185,27 +281,49 @@ public class Entity : MonoBehaviour
         }
         return transform.position;
     }
+
     protected virtual void FixedUpdate()
     {
+        // Both player and enemy need slope calculations for proper movement
         SlopeCheck();
         ApplySlopeFriction();
     }
+
     private bool IsTouchingSlope()
     {
         Vector2 feetPos = (Vector2)transform.position + Vector2.down * (capsuleColliderSize.y * 0.5f + 0.05f);
         return Physics2D.OverlapCircle(feetPos, slopeOverlapRadius, whatIsGround);
     }
+
     private void SlopeCheck()
     {
-        if (cc == null) return;
-        float yOffset = capsuleColliderSize.y * 0.5f + 0.05f;
-        Vector2 checkPos = (Vector2)transform.position + Vector2.down * yOffset;
+        // Use groundCheck position for enemies, capsule collider for player
+        Vector2 checkPos;
+
+        if (useEnemyEdgeDetection && groundCheck != null)
+        {
+            // Enemy: check from groundCheck position
+            checkPos = groundCheck.position;
+        }
+        else if (cc != null)
+        {
+            // Player: check from capsule collider bottom
+            float yOffset = capsuleColliderSize.y * 0.5f + 0.05f;
+            checkPos = (Vector2)transform.position + Vector2.down * yOffset;
+        }
+        else
+        {
+            // Fallback: use transform position
+            checkPos = (Vector2)transform.position + Vector2.down * 0.5f;
+        }
+
         RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, slopeCheckDistance, whatIsGround);
         if (hit)
         {
             slopeDownAngle = Vector2.Angle(hit.normal, Vector2.up);
             slopeNormalPerp = Vector2.Perpendicular(hit.normal).normalized;
             isOnSlope = slopeDownAngle > 0.1f;
+            Debug.DrawRay(hit.point, hit.normal * 0.5f, Color.green);
         }
         else
         {
@@ -213,8 +331,8 @@ public class Entity : MonoBehaviour
             isOnSlope = false;
         }
         canWalkOnSlope = slopeDownAngle > 0.1f && slopeDownAngle <= maxSlopeAngle;
-        Debug.DrawRay(hit.point, hit.normal * 0.5f, Color.green);
     }
+
     private void SlopeCheckHorizontal(Vector2 checkPos)
     {
         RaycastHit2D slopeHitFront = Physics2D.Raycast(checkPos, Vector2.down + Vector2.right * facingDir, slopeCheckDistance, whatIsGround);
@@ -235,6 +353,7 @@ public class Entity : MonoBehaviour
             isOnSlope = false;
         }
     }
+
     private void SlopeCheckVertical(Vector2 checkPos)
     {
         RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, slopeCheckDistance, whatIsGround);
@@ -267,15 +386,16 @@ public class Entity : MonoBehaviour
             rb.sharedMaterial = noFriction;
         }
     }
+
     public void ApplySlopeFriction()
     {
         if (noFriction == null || fullFriction == null) return;
+
         var col = GetComponent<Collider2D>();
-        float vy = rb.linearVelocity.y;
+        if (col == null) return;
 
+        // Both enemy and player use similar friction logic
         bool slopeWalk = isOnSlope && canWalkOnSlope && groundDetected && (rb.linearVelocity.y > -0.6f && rb.linearVelocity.y < 0.6f);
-
-        bool movingDownSlope = isOnSlope && canWalkOnSlope && rb.linearVelocity.y < 0f;
 
         if (slopeWalk)
         {
@@ -292,27 +412,46 @@ public class Entity : MonoBehaviour
             rb.gravityScale = defaultGravity;
         }
     }
+
     protected virtual void OnDrawGizmos()
     {
-        Gizmos.color = Color.green;
-        //Gizmos.DrawLine(groundCheck.position, groundCheck.position + new Vector3(0, -groundCheckDistance));
-        if (groundCheck != null)
-            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        if (groundCheck == null) return;
 
+        // Ground check visualization
+        Gizmos.color = Color.green;
+        if (useEnemyEdgeDetection)
+        {
+            // Enemy: simple line down
+            Gizmos.DrawLine(groundCheck.position, groundCheck.position + new Vector3(0, -groundCheckRadius));
+        }
+        else
+        {
+            // Player: sphere
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
+
+        // Wall checks
         Gizmos.color = Color.blue;
-        Gizmos.DrawLine(primaryWallCheck.position, primaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
+        if (primaryWallCheck != null)
+            Gizmos.DrawLine(primaryWallCheck.position, primaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
 
         if (secondaryWallCheck != null)
             Gizmos.DrawLine(secondaryWallCheck.position, secondaryWallCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
 
+        // Ledge check (player only)
         Gizmos.color = Color.red;
-        if (ledgeCheck != null)
+        if (ledgeCheck != null && !useEnemyEdgeDetection)
             Gizmos.DrawLine(ledgeCheck.position, ledgeCheck.position + new Vector3(wallCheckDistance * facingDir, 0));
 
-        Gizmos.color = Color.magenta;
-        Vector2 feetPos = (Vector2)transform.position + Vector2.down * (capsuleColliderSize.y * 0.5f + 0.05f);
+        // Edge detection visualization
+        if (useEnemyEdgeDetection)
+        {
+            Vector3 feetPos = groundCheck.position;
+            Vector3 forwardProbe = feetPos + Vector3.right * facingDir * Mathf.Max(0.01f, edgeForwardOffset);
+            float downDist = Mathf.Max(0f, groundCheckRadius + edgeDownDistance);
 
-        //Gizmos.color = Color.green;
-        //Gizmos.DrawWireSphere(feetPos, slopeOverlapRadius);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawLine(forwardProbe, forwardProbe + Vector3.down * downDist);
+        }
     }
 }

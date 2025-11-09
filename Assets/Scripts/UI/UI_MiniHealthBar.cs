@@ -2,30 +2,23 @@ using UnityEngine;
 
 public class UI_MiniHealthBar : MonoBehaviour
 {
-    private MonoBehaviour entityBase;
+    private Entity entity;
 
     private void Awake()
     {
-        // Try to get Entity (player)
-        entityBase = GetComponentInParent<Entity>();
-        if (entityBase == null)
-            entityBase = GetComponentInParent<Entity_Enemy>();
+        entity = GetComponentInParent<Entity>();
     }
 
     private void OnEnable()
     {
-        if (entityBase is Entity e)
-            e.OnFlipped += HandleFlip;
-        else if (entityBase is Entity_Enemy en)
-            en.OnFlipped += HandleFlip;
+        if (entity != null)
+            entity.OnFlipped += HandleFlip;
     }
 
     private void OnDisable()
     {
-        if (entityBase is Entity e)
-            e.OnFlipped -= HandleFlip;
-        else if (entityBase is Entity_Enemy en)
-            en.OnFlipped -= HandleFlip;
+        if (entity != null)
+            entity.OnFlipped -= HandleFlip;
     }
 
     private void HandleFlip() => transform.rotation = Quaternion.identity;

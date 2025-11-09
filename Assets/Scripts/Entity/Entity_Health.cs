@@ -114,14 +114,6 @@ public class Entity_Health : MonoBehaviour, IDamageable
         if (entity != null)
         {
             entity.EntityDeath();
-            return;
-        }
-
-        var enemyEntity = GetComponent<Entity_Enemy>();
-        if (enemyEntity != null)
-        {
-            enemyEntity.EntityDeath();
-            return;
         }
     }
 

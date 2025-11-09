@@ -9,6 +9,7 @@ public class Stat_OffenseGroup
     public Stat critPower;
     public Stat critChance;
     public Stat armorReduction;
+    public Stat counterAttackDamage; // counter attacks maybe?
 
     //Elemental Attack Power    
     public Stat fireDamage;

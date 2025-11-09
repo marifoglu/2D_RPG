@@ -19,7 +19,8 @@ public class Enemy_IdleState : Enemy_GroundedState
 
         if (enemy.edgeDetected)
         {
-            enemy.Flip(); // turn around
+            enemy.Flip();
+            stateMachine.ChangeState(enemy.moveState);
             return;
         }
 

@@ -1,8 +1,8 @@
+using System.Collections;
 using UnityEngine;
 
-public class Enemy : Entity_Enemy
+public class Enemy : Entity
 {
-
     public Enemy_IdleState idleState;
     public Enemy_MoveState moveState;
     public Enemy_AttackState attackState;
@@ -30,7 +30,7 @@ public class Enemy : Entity_Enemy
     public Transform player { get; private set; }
 
     [Header("Stunned Settings")]
-    public float stunnedDuration = 1f;   // Default 1 second, can change per enemy in Inspector
+    public float stunnedDuration = 1f;
     public Vector2 stunnedVelocity = new Vector2(3f, 3f);
     [SerializeField] protected bool canBeStunned;
 
@@ -38,16 +38,41 @@ public class Enemy : Entity_Enemy
     public Vector2 knockbackForce = new Vector2(5f, 3f);
     public float knockbackDuration = 0.15f;
 
-    // Public property to check if enemy is in a state that shouldn't be interrupted
     public bool IsInUninterruptibleState =>
         stateMachine.currentState == stunnedState ||
         stateMachine.currentState == deadState;
 
-    // Track player life state to avoid attacking a dead player
     private bool playerDead;
     public bool IsPlayerDead => playerDead;
 
     public bool CanBeCountered { get => canBeStunned; }
+
+    protected override void Awake()
+    {
+        // Set enemy edge detection BEFORE base.Awake()
+        useEnemyEdgeDetection = true;
+
+        base.Awake();
+
+        // Initialize all states in Awake
+        idleState = new Enemy_IdleState(this, stateMachine, "Idle");
+        moveState = new Enemy_MoveState(this, stateMachine, "Move");
+        battleState = new Enemy_BattleState(this, stateMachine, "Battle");
+        deadState = new Enemy_DeadState(this, stateMachine, "Dead");
+        stunnedState = new Enemy_StunnedState(this, stateMachine, "Stunned");
+
+        // You need to create Enemy_AttackState - it was referenced but not instantiated
+        // If you don't have it yet, comment out this line:
+        attackState = new Enemy_AttackState(this, stateMachine, "Attack");
+    }
+
+    protected override void Start()
+    {
+        base.Start();
+
+        // Start in idle state
+        stateMachine.Initialize(idleState);
+    }
 
     public void EnableCounterWindow(bool enable)
     {
@@ -62,57 +87,43 @@ public class Enemy : Entity_Enemy
 
     private void HandlePlayerDeath()
     {
-        // Mark player as dead and clear any references/motion
         playerDead = true;
         player = null;
         rb.linearVelocity = Vector2.zero;
-
-        // Immediately leave battle/attack and go idle
         stateMachine.ChangeState(idleState);
     }
 
     public void HandleCounter()
     {
-
         if (!canBeStunned)
         {
             return;
         }
 
-        // Apply knockback away from player
         Transform p = GetPlayerDetection();
         if (p != null)
         {
             int dirFromPlayer = (transform.position.x < p.position.x) ? -1 : 1;
             ReceiveKnockback(new Vector2(knockbackForce.x * dirFromPlayer, knockbackForce.y), knockbackDuration);
         }
-        else
-        {
-        }
 
-        // StateMachine.ChangeState() already calls Exit() on the current state
-        // No need to manually call it
         stateMachine.ChangeState(stunnedState);
     }
 
     public void TryEnterBattleState(Transform detectedPlayer)
     {
-        // Do not enter battle if the player is dead
         if (playerDead)
         {
             return;
         }
 
-        // Always update the player reference when detected
         this.player = detectedPlayer;
 
-        // Don't interrupt uninterruptible states
         if (IsInUninterruptibleState)
         {
             return;
         }
 
-        // Only change state if not already in battle or attacking
         if (stateMachine.currentState == battleState)
         {
             return;
@@ -129,14 +140,17 @@ public class Enemy : Entity_Enemy
     public Transform GetPlayerDetection()
     {
         if (player == null)
-            player = PlayerDetected().transform;
+        {
+            var hit = PlayerDetected();
+            if (hit.collider != null)
+                player = hit.transform;
+        }
 
         return player;
     }
 
     public RaycastHit2D PlayerDetected()
     {
-        // If player is dead, pretend nothing is detected
         if (playerDead)
             return default;
 
@@ -144,11 +158,15 @@ public class Enemy : Entity_Enemy
 
         if (hit.collider == null || hit.collider.gameObject.layer != LayerMask.NameToLayer("Player"))
             return default;
+
         return hit;
     }
+
     protected override void OnDrawGizmos()
     {
         base.OnDrawGizmos();
+
+        if (playerCheck == null) return;
 
         Gizmos.color = Color.yellow;
         Gizmos.DrawLine(playerCheck.position, new Vector3(playerCheck.position.x + (facingDir * playerCheckDistance), playerCheck.position.y));
@@ -169,5 +187,4 @@ public class Enemy : Entity_Enemy
     {
         Player.OnPlayerDeath -= HandlePlayerDeath;
     }
-
 }
