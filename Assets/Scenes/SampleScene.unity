@@ -821,11 +821,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.1
-  far clip plane: 5000
-  field of view: 40
+  near clip plane: 0.3
+  far clip plane: 1000
+  field of view: 34
   orthographic: 1
-  orthographic size: 10
+  orthographic size: 8
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -4804,6 +4804,7 @@ MonoBehaviour:
   counterAttackVFX: {fileID: 0}
   chillVfx: {r: 0, g: 1, b: 1, a: 1}
   burnVfx: {r: 1, g: 0, b: 0, a: 1}
+  electricVfx: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!1 &781547541
 GameObject:
   m_ObjectHideFlags: 0
@@ -5029,8 +5030,8 @@ MonoBehaviour:
   ReactionSettings:
     m_SecondaryNoise: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
     AmplitudeGain: 2
-    FrequencyGain: 2
-    Duration: 0.2
+    FrequencyGain: 1
+    Duration: 0.25
     m_NoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &840913527
 GameObject:
@@ -5325,6 +5326,9 @@ MonoBehaviour:
     m_Bits: 128
   defaultDuration: 3
   chillSlowMultiplier: 0.4
+  electrifyChargeBuildUp: 0.4
+  fireScale: 0.8
+  lightingScale: 0.8
 --- !u!114 &881426930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5338,6 +5342,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_Health
   currentHealth: 0
+  regenInterval: 1
+  canRegenarteHealth: 1
   knockbackPower: {x: 1.5, y: 5}
   heavyKnockbackPower: {x: 2, y: 7}
   knockbackDuration: 0.2
@@ -5364,6 +5370,7 @@ MonoBehaviour:
   counterAttackVFX: {fileID: 0}
   chillVfx: {r: 0, g: 1, b: 1, a: 1}
   burnVfx: {r: 1, g: 0, b: 0, a: 1}
+  electricVfx: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
   attackAllert: {fileID: 0}
 --- !u!114 &881426932
 MonoBehaviour:
@@ -5377,9 +5384,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e614e535a51501a4fb34eb02324a6fa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entity_Stats
-  elementType: 0
-  maxHealth:
-    baseValue: 1000
+  resources:
+    maxHealth:
+      baseValue: 1000
+    healthRegen:
+      baseValue: 0
   major:
     strength:
       baseValue: 0
@@ -5391,7 +5400,7 @@ MonoBehaviour:
       baseValue: 0
   offense:
     damage:
-      baseValue: 0
+      baseValue: 150
     critPower:
       baseValue: 0
     critChance:
@@ -5401,9 +5410,9 @@ MonoBehaviour:
     counterAttackDamage:
       baseValue: 0
     fireDamage:
-      baseValue: 15
+      baseValue: 0
     iceDamage:
-      baseValue: 15
+      baseValue: 0
     lightingDamage:
       baseValue: 0
   defense:
@@ -5416,7 +5425,7 @@ MonoBehaviour:
     iceResist:
       baseValue: 0
     lightingResist:
-      baseValue: 0
+      baseValue: 25
 --- !u!114 &881426933
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5482,6 +5491,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59bbde39dd5a50a4da113b3a25fbc546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entity_StatusHandler
+  lightingStrikeVfx: {fileID: 510414179274297462, guid: 15101063922375c43b97b583a3ae005d, type: 3}
+  currentCharge: 0
+  maximumCharge: 1
 --- !u!1 &942206161
 GameObject:
   m_ObjectHideFlags: 0
@@ -7351,6 +7363,7 @@ MonoBehaviour:
   counterAttackVFX: {fileID: 6858235655514556814, guid: 082fe0917cf0491459cb5df7d3e2ca31, type: 3}
   chillVfx: {r: 0, g: 0.5415221, b: 0.8274932, a: 1}
   burnVfx: {r: 1, g: 0, b: 0, a: 1}
+  electricVfx: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
 --- !u!114 &1662391625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7364,6 +7377,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entity_Health
   currentHealth: 0
+  regenInterval: 1
+  canRegenarteHealth: 1
   knockbackPower: {x: 1.5, y: 2.4}
   heavyKnockbackPower: {x: 7, y: 7}
   knockbackDuration: 0.2
@@ -7389,6 +7404,9 @@ MonoBehaviour:
     m_Bits: 256
   defaultDuration: 3
   chillSlowMultiplier: 0.2
+  electrifyChargeBuildUp: 0.4
+  fireScale: 0.8
+  lightingScale: 0.8
   counterRecovery: 0.4
 --- !u!114 &1662391628
 MonoBehaviour:
@@ -7455,9 +7473,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e614e535a51501a4fb34eb02324a6fa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entity_Stats
-  elementType: 0
-  maxHealth:
-    baseValue: 10000
+  resources:
+    maxHealth:
+      baseValue: 1000
+    healthRegen:
+      baseValue: 50
   major:
     strength:
       baseValue: 0
@@ -7469,7 +7489,7 @@ MonoBehaviour:
       baseValue: 0
   offense:
     damage:
-      baseValue: 0
+      baseValue: 10
     critPower:
       baseValue: 0
     critChance:
@@ -7479,9 +7499,9 @@ MonoBehaviour:
     counterAttackDamage:
       baseValue: 0
     fireDamage:
-      baseValue: 150
-    iceDamage:
       baseValue: 0
+    iceDamage:
+      baseValue: 50
     lightingDamage:
       baseValue: 0
   defense:
@@ -7519,6 +7539,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 59bbde39dd5a50a4da113b3a25fbc546, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entity_StatusHandler
+  lightingStrikeVfx: {fileID: 510414179274297462, guid: 15101063922375c43b97b583a3ae005d, type: 3}
+  currentCharge: 0
+  maximumCharge: 1
 --- !u!1 &1833562947
 GameObject:
   m_ObjectHideFlags: 0

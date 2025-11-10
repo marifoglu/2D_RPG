@@ -7,10 +7,15 @@ public class Entity : MonoBehaviour
     public event Action OnFlipped;
     public Animator anim { get; private set; }
     public Rigidbody2D rb { get; private set; }
+    public Entity_Stats  stats { get; private set; }
+
     protected StateMachine stateMachine;
+    
+    
     private bool facingRight = true;
     public int facingDir { get; private set; } = 1;
 
+    
     [Header("Collision Detection")]
     [SerializeField] protected LayerMask whatIsGround;
     [SerializeField] private float groundCheckRadius = 0.1f;
@@ -64,6 +69,7 @@ public class Entity : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
         stateMachine = new StateMachine();
+        stats = GetComponent<Entity_Stats>();
         cc = GetComponent<CapsuleCollider2D>();
         if (cc != null)
         {

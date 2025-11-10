@@ -17,6 +17,8 @@ public class Enemy_AttackState : EnemyState
             stateMachine.ChangeState(enemy.idleState);
             return;
         }
+
+        SyncAttackSpeed();
     }
 
     public override void Update()
