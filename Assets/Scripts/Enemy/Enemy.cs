@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine;
 
 public class Enemy : Entity
@@ -78,14 +78,13 @@ public class Enemy : Entity
     {
         float originalMoveSpeed = moveSpeed;
         float originalBattleSpeed = battleMoveSpeed;
-        float originalAnimSpeed = anim.speed; 
+        float originalAnimSpeed = anim.speed;
 
-        float speedMultiplier = 1f - slowMultiplier;
+        float speedMultiplier = 1 - slowMultiplier;
 
-        moveSpeed = speedMultiplier * speedMultiplier;
-        battleMoveSpeed = battleMoveSpeed * speedMultiplier;
-        anim.speed = anim.speed * speedMultiplier;
-    
+        moveSpeed *= speedMultiplier;
+        battleMoveSpeed *= speedMultiplier;
+        anim.speed *= speedMultiplier;
 
         yield return new WaitForSeconds(duration);
 
@@ -93,6 +92,7 @@ public class Enemy : Entity
         battleMoveSpeed = originalBattleSpeed;
         anim.speed = originalAnimSpeed;
     }
+
     public void EnableCounterWindow(bool enable)
     {
         canBeStunned = enable;

@@ -21,7 +21,7 @@ public class Entity_Stats : MonoBehaviour
     }
 
     // Physical Damage Section
-    public float GetPhysicalDamage(out bool isCrit)
+    public float GetPhysicalDamage(out bool isCrit, float scaleFactor = 1)
     {
         float baseDamage = offense.damage.GetValue();
         float bonusDamage = major.strength.GetValue();
@@ -38,7 +38,7 @@ public class Entity_Stats : MonoBehaviour
         isCrit = Random.Range(0f, 100f) < totalCritChance;
         float finalDamage = isCrit ? totalBaseDamage * totalCritPower : totalBaseDamage;
 
-        return finalDamage;
+        return finalDamage * scaleFactor;
     }
 
     // Evasion Section
@@ -101,7 +101,7 @@ public class Entity_Stats : MonoBehaviour
 
         return finalResistance;
     }
-    public float GetElementelDamage(out ElementType elementType)
+    public float GetElementelDamage(out ElementType elementType, float scaleFactor = 1)
     {
         float fireDamage = offense.fireDamage.GetValue();
         float iceDamage = offense.iceDamage.GetValue();
@@ -139,7 +139,7 @@ public class Entity_Stats : MonoBehaviour
 
         float finalElementalDamage = highiestElementalDamage + weakerElementalDamage + bonusElementalDamage;
 
-        return finalElementalDamage;
+        return finalElementalDamage * scaleFactor;
     }
 
     // Counter Attack Damage Section

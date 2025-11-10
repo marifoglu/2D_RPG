@@ -65,7 +65,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
         // Knockback
         TakeKnockback(damageDealer, physicalDamageTaken);
 
-        ReduceHp(physicalDamageTaken + elementalDamageTaken);
+        ReduceHealth(physicalDamageTaken + elementalDamageTaken);
 
         // Trigger camera shake when this entity takes damage
         TriggerCameraShake();
@@ -86,7 +86,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
         return Random.Range(0,100) < stats.GetEvasion();
     }
 
-    protected void ReduceHp(float takenDamage)
+    public void ReduceHealth(float takenDamage)
     {
         entityVFX?.PlayOnDamageVfx();
         currentHealth -= takenDamage;

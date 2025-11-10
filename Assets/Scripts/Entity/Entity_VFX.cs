@@ -13,7 +13,7 @@ public class Entity_VFX : MonoBehaviour
     private Coroutine onDamageVfxCoroutine;
 
     [Header("Doing Damage VFX")]
-    [SerializeField] private Color hitVfxColor = Color.red;
+    [SerializeField] private Color hitVfxColor = Color.white;
     [SerializeField] private GameObject hitVfx;
     [SerializeField] private GameObject critHitVfx;
 
@@ -22,6 +22,8 @@ public class Entity_VFX : MonoBehaviour
 
     [Header("Element VFX")]
     [SerializeField] private Color chillVfx = Color.cyan;
+    [SerializeField] private Color burnVfx = Color.red;
+    [SerializeField] private Color electricVfx = Color.yellow;
     private Color originalHitVfxColor;
 
     private void Awake()
@@ -32,6 +34,49 @@ public class Entity_VFX : MonoBehaviour
         originalHitVfxColor = hitVfxColor;
     }
 
+  
+
+    public void PlayStatusVfx(float duration, ElementType elementType)
+    {
+        if (elementType == ElementType.Ice)
+            StartCoroutine(PlayStatusVfxCo(duration, chillVfx));
+
+        if (elementType == ElementType.Fire)
+            StartCoroutine(PlayStatusVfxCo(duration, burnVfx));
+
+        if(elementType == ElementType.Lighting)
+            StartCoroutine(PlayStatusVfxCo(duration, electricVfx));
+    }
+
+    public void StopAllVFX()
+    {
+        StopAllCoroutines();
+        sr.color = Color.white;
+        sr.material = originalMaterial;
+    }
+    private IEnumerator PlayStatusVfxCo(float duration, Color effectColor)
+    {
+        float tickInterval = .25f;
+        float timeHasPassed = 0f;
+
+        Color lightColor = effectColor * 1.2f;
+        Color darkColor = effectColor * .9f;
+
+        bool toggle = false;
+
+        while (timeHasPassed < duration)
+        {
+            sr.color = toggle ? lightColor : darkColor;
+            toggle = !toggle;
+
+            yield return new WaitForSeconds(tickInterval);
+
+            timeHasPassed += tickInterval;
+        }
+
+        sr.color = Color.white;
+
+    }
     public void CreateOnHitVFX(Transform target, bool isCrit)
     {
         GameObject hitPrefab = isCrit ? critHitVfx : hitVfx;

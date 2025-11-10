@@ -821,11 +821,11 @@ Camera:
     y: 0
     width: 1
     height: 1
-  near clip plane: 0.3
-  far clip plane: 1000
-  field of view: 34
+  near clip plane: 0.1
+  far clip plane: 5000
+  field of view: 40
   orthographic: 1
-  orthographic size: 8
+  orthographic size: 10
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -850,7 +850,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.1000004, y: 4.42, z: -10}
+  m_LocalPosition: {x: -7.0000005, y: 4.5400004, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -4803,6 +4803,7 @@ MonoBehaviour:
   critHitVfx: {fileID: 0}
   counterAttackVFX: {fileID: 0}
   chillVfx: {r: 0, g: 1, b: 1, a: 1}
+  burnVfx: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &781547541
 GameObject:
   m_ObjectHideFlags: 0
@@ -4907,7 +4908,7 @@ Transform:
   m_GameObject: {fileID: 803037688}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.1000004, y: 4.42, z: -10}
+  m_LocalPosition: {x: -7.0000005, y: 4.5400004, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -5163,6 +5164,7 @@ GameObject:
   - component: {fileID: 881426930}
   - component: {fileID: 881426931}
   - component: {fileID: 881426932}
+  - component: {fileID: 881426934}
   m_Layer: 8
   m_Name: Enemy_Skeleton
   m_TagString: Untagged
@@ -5220,7 +5222,7 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDamping: 0
+  m_LinearDamping: 0.1
   m_AngularDamping: 0.05
   m_GravityScale: 3.5
   m_Material: {fileID: 0}
@@ -5249,13 +5251,21 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  groundCheckDistance: 0.5
+  groundCheckRadius: 0.41
   wallCheckDistance: 0.5
   groundCheck: {fileID: 1341941705}
   primaryWallCheck: {fileID: 881426928}
   secondaryWallCheck: {fileID: 0}
-  edgeForwardOffset: 0.64
-  edgeDownDistance: 0.26
+  ledgeCheck: {fileID: 0}
+  edgeForwardOffset: 0.5
+  edgeDownDistance: 0.25
+  useEnemyEdgeDetection: 0
+  slopeCheckDistance: 1.25
+  maxSlopeAngle: 45
+  slopeOverlapRadius: 0.1
+  noFriction: {fileID: 6200000, guid: a4bdca4b67f40e44b92cd2769f40204e, type: 2}
+  fullFriction: {fileID: 6200000, guid: fafd4a3d7955c2f4f913bd7db1e32678, type: 2}
+  ledgeClimbOffset: {x: 0, y: 0}
   battleMoveSpeed: 3
   attackDistance: 2
   battleTimeDuration: 5
@@ -5283,7 +5293,7 @@ Transform:
   m_GameObject: {fileID: 881426924}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -19.22, y: 0.33, z: 0}
+  m_LocalPosition: {x: -15.57, y: 0.33, z: 0}
   m_LocalScale: {x: 1.3, y: 1.3, z: 1.3}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -5308,12 +5318,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38a3ff8a50ba3fe4da518ae3a852bb73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Entity_Combat
-  damage: 10
   targetCheck: {fileID: 193489267}
   targetCheckRadius: 1
   whatIsTarget:
     serializedVersion: 2
     m_Bits: 128
+  defaultDuration: 3
+  chillSlowMultiplier: 0.4
 --- !u!114 &881426930
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5346,12 +5357,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enemy_VFX
   onDamageMaterial: {fileID: 2100000, guid: 5d8c2e6b5f993f74f9ebe09b72ba4372, type: 2}
-  onDamageVfxDuration: 0.3
-  hitVfxColor: {r: 0.1732165, g: 0.89218324, b: 0, a: 1}
+  onDamageVfxDuration: 0.2
+  hitVfxColor: {r: 1, g: 0.95062655, b: 0, a: 1}
   hitVfx: {fileID: 3902961829865244433, guid: 98eedea8b5a906440a3c9a553737987d, type: 3}
   critHitVfx: {fileID: 6858235655514556814, guid: 082fe0917cf0491459cb5df7d3e2ca31, type: 3}
   counterAttackVFX: {fileID: 0}
   chillVfx: {r: 0, g: 1, b: 1, a: 1}
+  burnVfx: {r: 1, g: 0, b: 0, a: 1}
   attackAllert: {fileID: 0}
 --- !u!114 &881426932
 MonoBehaviour:
@@ -5389,9 +5401,9 @@ MonoBehaviour:
     counterAttackDamage:
       baseValue: 0
     fireDamage:
-      baseValue: 0
+      baseValue: 15
     iceDamage:
-      baseValue: 0
+      baseValue: 15
     lightingDamage:
       baseValue: 0
   defense:
@@ -5458,6 +5470,18 @@ MonoBehaviour:
     DissipationDistance: 100
     PropagationSpeed: 343
   DefaultVelocity: {x: 0, y: -1, z: 0}
+--- !u!114 &881426934
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 881426924}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59bbde39dd5a50a4da113b3a25fbc546, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Entity_StatusHandler
 --- !u!1 &942206161
 GameObject:
   m_ObjectHideFlags: 0
@@ -6428,7 +6452,7 @@ Transform:
   m_GameObject: {fileID: 1341941704}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.106, y: -0.957, z: 0}
+  m_LocalPosition: {x: -0.035, y: -0.961, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -7168,6 +7192,7 @@ GameObject:
   - component: {fileID: 1662391628}
   - component: {fileID: 1662391629}
   - component: {fileID: 1662391630}
+  - component: {fileID: 1662391631}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -7190,12 +7215,15 @@ MonoBehaviour:
   whatIsGround:
     serializedVersion: 2
     m_Bits: 64
-  groundCheckRadius: 0.34
+  groundCheckRadius: 0.35
   wallCheckDistance: 0.4
   groundCheck: {fileID: 1917586011}
   primaryWallCheck: {fileID: 1483950197}
   secondaryWallCheck: {fileID: 1852115169}
   ledgeCheck: {fileID: 1928386692}
+  edgeForwardOffset: 0.5
+  edgeDownDistance: 0.25
+  useEnemyEdgeDetection: 0
   slopeCheckDistance: 1.25
   maxSlopeAngle: 45
   slopeOverlapRadius: 0.1
@@ -7210,7 +7238,7 @@ MonoBehaviour:
   attackVelocityDuration: 0.1
   comboResetTime: 1
   moveSpeed: 5
-  jumpForce: 15
+  jumpForce: 12
   wallJumpForce: {x: 6, y: 12}
   inAirMoveMultiplier: 0.8
   wallSlideSlowMultiplier: 0.4
@@ -7226,7 +7254,7 @@ Transform:
   m_GameObject: {fileID: 1662391617}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -6.1, y: 0.26, z: 0}
+  m_LocalPosition: {x: -7, y: 0.38, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
   m_Children:
@@ -7322,6 +7350,7 @@ MonoBehaviour:
   critHitVfx: {fileID: 6858235655514556814, guid: 082fe0917cf0491459cb5df7d3e2ca31, type: 3}
   counterAttackVFX: {fileID: 6858235655514556814, guid: 082fe0917cf0491459cb5df7d3e2ca31, type: 3}
   chillVfx: {r: 0, g: 0.5415221, b: 0.8274932, a: 1}
+  burnVfx: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &1662391625
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7353,13 +7382,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 842ec76f0c8385948b8995078bd5c9cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player_Combat
-  damage: 10
   targetCheck: {fileID: 83486591}
   targetCheckRadius: 1
   whatIsTarget:
     serializedVersion: 2
     m_Bits: 256
-  counterRecovery: 0.25
+  defaultDuration: 3
+  chillSlowMultiplier: 0.2
+  counterRecovery: 0.4
 --- !u!114 &1662391628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7439,21 +7469,21 @@ MonoBehaviour:
       baseValue: 0
   offense:
     damage:
-      baseValue: 50
+      baseValue: 0
     critPower:
-      baseValue: 5
+      baseValue: 0
     critChance:
-      baseValue: 50
+      baseValue: 0
     armorReduction:
       baseValue: 0
     counterAttackDamage:
-      baseValue: 50
-    fireDamage:
       baseValue: 0
+    fireDamage:
+      baseValue: 150
     iceDamage:
       baseValue: 0
     lightingDamage:
-      baseValue: 200
+      baseValue: 0
   defense:
     armor:
       baseValue: 0
@@ -7477,6 +7507,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8dbaa7fe4fe7f494f9500b61c40c460b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::OneWayPlatform
+--- !u!114 &1662391631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1662391617}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 59bbde39dd5a50a4da113b3a25fbc546, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Entity_StatusHandler
+--- !u!1 &1833562947
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1833562948}
+  m_Layer: 0
+  m_Name: GameObject
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1833562948
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1833562947}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.3385, y: 1.2426, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1843535137
 GameObject:
   m_ObjectHideFlags: 0
@@ -7564,7 +7637,7 @@ Transform:
   m_GameObject: {fileID: 1917586010}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.042, y: -1.021, z: 0}
+  m_LocalPosition: {x: -0.042, y: -1.19, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -17654,3 +17727,4 @@ SceneRoots:
   - {fileID: 781189012}
   - {fileID: 873429623}
   - {fileID: 1259002500}
+  - {fileID: 1833562948}
