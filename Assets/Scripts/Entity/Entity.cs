@@ -7,7 +7,7 @@ public class Entity : MonoBehaviour
     public event Action OnFlipped;
     public Animator anim { get; private set; }
     public Rigidbody2D rb { get; private set; }
-    public Entity_Stats  stats { get; private set; }
+    public Entity_Stats stats { get; private set; }
 
     protected StateMachine stateMachine;
     

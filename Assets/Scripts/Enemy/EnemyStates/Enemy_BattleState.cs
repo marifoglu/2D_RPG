@@ -103,7 +103,7 @@ public class Enemy_BattleState : EnemyState
         float distance = enemy.player.position.x - enemy.transform.position.x;
 
         if (Mathf.Abs(distance) < FLIP_DEAD_ZONE)
-            return 0; // too close — don't flip
+            return 0; // too close - don't flip
 
         return distance > 0 ? 1 : -1;
     }

@@ -7,6 +7,7 @@ public class Enemy_AttackState : EnemyState
     public override void Enter()
     {
         base.Enter();
+        SyncAttackSpeed();
 
         // Stop all movement when entering attack state
         enemy.SetVelocity(0f, 0f);
@@ -18,7 +19,6 @@ public class Enemy_AttackState : EnemyState
             return;
         }
 
-        SyncAttackSpeed();
     }
 
     public override void Update()
