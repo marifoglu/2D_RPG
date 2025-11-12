@@ -153,6 +153,57 @@ public class Entity_Stats : MonoBehaviour
 
         return finalCounterDamage;
     }
+
+    public Stat GetStatByType(StatType statType)
+    {
+        switch (statType)
+        {
+            case StatType.MaxHealth:
+                return resources.maxHealth;
+            case StatType.HealthRegen:
+                return resources.healthRegen;
+
+            case StatType.Strength:
+                return major.strength;
+            case StatType.Agility:
+                return major.agility;
+            case StatType.Intelligence:
+                return major.intellgence;
+
+            case StatType.Armor:
+                return defense.armor;
+            case StatType.Evasion:
+                return defense.evasion;
+
+            case StatType.Damage:
+                return offense.damage;
+            case StatType.CritChance:
+                return offense.critChance;
+            case StatType.CritPower:
+                return offense.critPower;
+            case StatType.AttackSpeed:
+                return offense.attackSpeed;
+            case StatType.ArmorReduction:
+                return offense.armorReduction;
+
+            case StatType.FireDamage:
+                return offense.fireDamage;
+            case StatType.IceDamage:
+                return offense.iceDamage;
+            case StatType.LightningDamage:
+                return offense.lightingDamage;
+
+            case StatType.FireResistance:
+                return defense.fireResist;
+            case StatType.IceResistance:
+                return defense.iceResist;
+            case StatType.LightningResistance:
+                return defense.lightingResist;
+            default:
+                Debug.LogWarning($"StatType {statType} not found!");
+                return null;
+        }
+    }
 }
 
 // Done
