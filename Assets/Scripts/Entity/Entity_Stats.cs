@@ -132,9 +132,9 @@ public class Entity_Stats : MonoBehaviour
             return 0;
         }
 
-        float bonusFireDamage = (fireDamage == highiestElementalDamage) ? 0 :  fireDamage * 5f;
-        float bonusIceDamage = (iceDamage == highiestElementalDamage) ? 0 :  iceDamage * 5f;
-        float bonusLightingDamage = (lightingDamage == highiestElementalDamage) ? 0 :  lightingDamage * 5f;
+        float bonusFireDamage = (elementType == ElementType.Fire) ? 0 :  fireDamage * 5f;
+        float bonusIceDamage = (elementType == ElementType.Ice) ? 0 :  iceDamage * 5f;
+        float bonusLightingDamage = (elementType == ElementType.Lighting) ? 0 :  lightingDamage * 5f;
 
         float weakerElementalDamage = bonusFireDamage + bonusIceDamage + bonusLightingDamage;
 
