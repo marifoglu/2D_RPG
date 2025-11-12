@@ -77,7 +77,6 @@ public class Entity_Stats : MonoBehaviour
 
         return finalMitigation;
     }
-
     public float GetElementalResistance(ElementType elementType)
     {
         float baseResistance = 0f;
