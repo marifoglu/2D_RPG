@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 
 [Serializable]
-public class Stat 
+public class Stat
 {
     [SerializeField] private float baseValue;
     [SerializeField] private List<StatModifier> modifiers = new List<StatModifier>();
@@ -42,7 +42,7 @@ public class Stat
 
     public float GetFinalValue()
     {
-        finalValue = baseValue;
+        float finalValue = baseValue;
 
         foreach (var mod in modifiers)
         {
@@ -50,6 +50,8 @@ public class Stat
         }
         return finalValue;
     }
+
+    public void SetBaseValue(float value) => baseValue = value;
 }
 
 [Serializable]

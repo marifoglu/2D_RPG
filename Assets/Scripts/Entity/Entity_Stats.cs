@@ -2,12 +2,12 @@ using UnityEngine;
 
 public class Entity_Stats : MonoBehaviour
 {
-    //public ElementType elementType;
+    public Stat_SetupSO defaultStatSetup; 
 
     public Stat_ResourceGroup resources;
-    public Stat_MajorGroup major;
     public Stat_OffenseGroup offense;
     public Stat_DefenseGroup defense;
+    public Stat_MajorGroup major;
 
 
     // Health Section
@@ -203,6 +203,41 @@ public class Entity_Stats : MonoBehaviour
                 Debug.LogWarning($"StatType {statType} not found!");
                 return null;
         }
+    }
+
+    [ContextMenu("Apply Default Stat Setup")]
+    public void ApplyStatSetup()
+    {
+        if (defaultStatSetup == null)
+        {
+            Debug.LogWarning("Default Stat Setup is not assigned!");
+            return;
+        }
+
+        resources.maxHealth.SetBaseValue(defaultStatSetup.maxHealth);
+        resources.healthRegen.SetBaseValue(defaultStatSetup.healthRegen);
+
+        major.strength.SetBaseValue(defaultStatSetup.strength);
+        major.agility.SetBaseValue(defaultStatSetup.agility);
+        major.intellgence.SetBaseValue(defaultStatSetup.intelligence);
+        major.vitality.SetBaseValue(defaultStatSetup.vitality);
+
+        offense.damage.SetBaseValue(defaultStatSetup.damage);
+        offense.attackSpeed.SetBaseValue(defaultStatSetup.attacckSpeed);
+        offense.critChance.SetBaseValue(defaultStatSetup.critChance);
+        offense.critPower.SetBaseValue(defaultStatSetup.critPower);
+        offense.armorReduction.SetBaseValue(defaultStatSetup.armorReduction);
+
+        offense.fireDamage.SetBaseValue(defaultStatSetup.fireDamage);
+        offense.iceDamage.SetBaseValue(defaultStatSetup.iceDamage);
+        offense.lightingDamage.SetBaseValue(defaultStatSetup.lightningDamage);
+
+        defense.armor.SetBaseValue(defaultStatSetup.armor);
+        defense.evasion.SetBaseValue(defaultStatSetup.evasion);
+
+        defense.fireResist.SetBaseValue(defaultStatSetup.fireResistance);
+        defense.iceResist.SetBaseValue(defaultStatSetup.iceResistance);
+        defense.lightingResist.SetBaseValue(defaultStatSetup.lightninResistance);
     }
 }
 
