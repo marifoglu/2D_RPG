@@ -13,11 +13,11 @@ MonoBehaviour:
   m_Name: Default stat - Skeleton
   m_EditorClassIdentifier: Assembly-CSharp::Stat_SetupSO
   maxHealth: 100
-  healthRegen: 0
+  healthRegen: 25
   damage: 10
   attacckSpeed: 1
   critChance: 0
-  critPower: 150
+  critPower: 10
   armorReduction: 0
   fireDamage: 0
   iceDamage: 0
@@ -27,3 +27,7 @@ MonoBehaviour:
   fireResistance: 0
   iceResistance: 0
   lightninResistance: 0
+  strength: 0
+  agility: 0
+  intelligence: 0
+  vitality: 0
