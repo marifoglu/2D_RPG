@@ -4,6 +4,8 @@ using UnityEngine.UI;
 
 public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler
 {
+    private UI ui;
+    private RectTransform rect;
 
     [SerializeField] Skill_DataSO skillData;
     [SerializeField] private string skillName;
@@ -15,18 +17,12 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private Color lastColor;
 
 
-    private void OnValidate()
-    {
-        if (skillData == null)
-            return;
 
-        skillName = skillData.displayName;
-        skillIcon.sprite = skillData.icon;
-        gameObject.name = "UI - Treenode - " + skillData.displayName;
-
-    }
     private void Awake()
     {
+        ui = GetComponentInParent<UI>();
+        rect = GetComponent<RectTransform>();
+
         UpdateIconColor(GetColorByHex(lockedColorHex));
         
     }
@@ -56,6 +52,14 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         skillIcon.color = color;
     }
 
+
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        if(!isUnlocked)
+        UpdateIconColor(Color.white * .9f);
+
+        ui.skillToolTip.ShowToolTip(true, rect, skillData);
+    }
     public void OnPointerDown(PointerEventData eventData)
     {
         if(CanBeUnlock())
@@ -64,16 +68,12 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             Debug.Log("Skill cannot be unlocked");
     }
 
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-        if(!isUnlocked)
-        UpdateIconColor(Color.white * .9f);
-    }
-
     public void OnPointerExit(PointerEventData eventData)
     {
         if(!isUnlocked)
             UpdateIconColor(lastColor);
+
+        ui.skillToolTip.ShowToolTip(false, rect );
     }
 
     private Color GetColorByHex(string hex)
@@ -81,6 +81,17 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         ColorUtility.TryParseHtmlString(hex, out Color color);
         
         return color;
+    }
+
+    private void OnValidate()
+    {
+        if (skillData == null)
+            return;
+
+        skillName = skillData.displayName;
+        skillIcon.sprite = skillData.icon;
+        gameObject.name = "UI - Treenode - " + skillData.displayName;
+
     }
 }
  
