@@ -1,0 +1,60 @@
+using UnityEngine;
+
+public class UI_TreeConnection : MonoBehaviour
+{
+    [SerializeField] RectTransform rotationPoint;
+    [SerializeField] RectTransform connectionLength;
+    [SerializeField] RectTransform childNodeConnectionPoint;
+
+    public void DirectConnection(NodeDirectionType direction, float length)
+    {
+        bool shouldBeAcitve = direction != NodeDirectionType.None;
+        float finalLength = shouldBeAcitve ? length : 0;
+        float angle = GetDirectionAngle(direction);
+
+        rotationPoint.localRotation = Quaternion.Euler(0, 0, angle);
+        connectionLength.sizeDelta = new Vector2(finalLength, connectionLength.sizeDelta.y);
+
+    }
+
+    public Vector2 GetChildNodeConnectionPoint(RectTransform rect)
+    {
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(
+            rect.parent as RectTransform,   
+            childNodeConnectionPoint.position,
+            null,
+            out var localPosition
+            );
+        return localPosition;
+    }
+    private float GetDirectionAngle(NodeDirectionType type)
+    {
+        switch (type)
+        {
+            case NodeDirectionType.Left: return 135f;
+            case NodeDirectionType.Up: return 90f;
+            case NodeDirectionType.UpRight: return 45f;
+            case NodeDirectionType.Right: return 0f;
+            case NodeDirectionType.DownLeft: return -135f;
+            case NodeDirectionType.Down: return -90f;
+            case NodeDirectionType.DownRight: return -45f;
+            default: return 0f;
+
+
+
+        }
+
+    }
+}
+public enum NodeDirectionType
+    {
+        None,
+        UpLeft,
+        Up,
+        UpRight,
+        Left,
+        Right,
+        DownLeft,
+        Down,
+        DownRight
+    }
