@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Skill_DataSO
   cost: 3
   skillType: 0
-  upgradeType: 2
+  upgradeData:
+    upgradeType: 2
+    cooldown: 3
   displayName: Deja Vu
   description: 'Create a time echo on arrival
 

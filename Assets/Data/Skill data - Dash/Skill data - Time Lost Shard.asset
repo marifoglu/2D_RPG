@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Skill_DataSO
   cost: 2
   skillType: 0
-  upgradeType: 3
+  upgradeData:
+    upgradeType: 3
+    cooldown: 3
   displayName: Time Lost Shard
   description: 'Create a time shard before you dash
 

@@ -14,7 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Skill_DataSO
   cost: 3
   skillType: 0
-  upgradeType: 1
+  upgradeData:
+    upgradeType: 1
+    cooldown: 3
   displayName: Echo Step
   description: 'Create a time echo before you dash
 
