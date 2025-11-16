@@ -8,42 +8,34 @@ public class UI_TreeConnectDetails
     public NodeDirectionType direction;
     [Range(100f, 350f)] public float length;
 }
+[ExecuteAlways]
 
 public class UI_TreeConnectHandler : MonoBehaviour
 {
-    [SerializeField] private UI_TreeConnectDetails[] details;
-    [SerializeField] private UI_TreeConnection[] connection;
-    private RectTransform rect;
+    private RectTransform rect => GetComponent<RectTransform>();
+    [SerializeField] private UI_TreeConnectDetails[] connectionDetails;
+    [SerializeField] private UI_TreeConnection[] connections;
 
     private void OnValidate()
     {
-        if(rect == null)
-            rect = GetComponent<RectTransform>();
+        if (connectionDetails.Length <= 0)
+            return;
 
-        if (details.Length != connection.Length)
+        if (connectionDetails.Length != connections.Length)
         {
-            Debug.LogWarning($"[UI_TreeConnectHandler] Details length {details.Length} is not equal to connection length {connection.Length}. Adjusting connection array size.");
+            Debug.LogWarning($"[UI_TreeConnectHandler] Details length {connectionDetails.Length} is not equal to connection length {connections.Length}. Adjusting connection array size.");
             return;
         }
 
-        // Defer the update to avoid SendMessage during OnValidate
-        if (Application.isPlaying)
-        {
-            UpdateConnection();
-        }
-        else
-        {
-            // In editor mode, schedule update for next frame
-            UnityEditor.EditorApplication.delayCall += UpdateConnection;
-        }
+        UpdateConnection();
     }
 
     private void UpdateConnection()
     {
-        for(int i = 0; i < details.Length; i++)
+        for(int i = 0; i < connectionDetails.Length; i++)
         {
-            var detail = details[i];
-            var conn = connection[i];
+            var detail = connectionDetails[i];
+            var conn = connections[i];
             Vector2 targetPosition = conn.GetChildNodeConnectionPoint(rect);
 
             conn.DirectConnection(detail.direction, detail.length);
