@@ -644,8 +644,8 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 574212970}
   - {fileID: 224988420}
+  - {fileID: 574212970}
   - {fileID: 612867695}
   - {fileID: 777694319}
   - {fileID: 889574763}
@@ -670,6 +670,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_SkillTree
   skillPoints: 19
+  parentNodes:
+  - {fileID: 224988422}
 --- !u!1 &168747721
 GameObject:
   m_ObjectHideFlags: 0
@@ -1646,7 +1648,7 @@ GameObject:
   - component: {fileID: 574212970}
   - component: {fileID: 574212971}
   m_Layer: 5
-  m_Name: UI_Skill_ToolTip
+  m_Name: UI - Skill_ToolTip
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1689,12 +1691,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_SkillToolTip
   offset: {x: 300, y: 20}
-  skillNameText: {fileID: 1021997444}
+  skillName: {fileID: 1021997444}
   skillDescription: {fileID: 990109300}
-  skillRequirement: {fileID: 1634212102}
+  skillRequirements: {fileID: 1634212102}
   metConditionHex: '#05F600'
   notMetConditionHex: '#FF0D00'
-  importandInfoHex: '#0098FF'
+  importantInfoHex: 
   exampleColor: {r: 0, g: 0.5977037, b: 1, a: 0}
   lockedSkillText: You've taken a different path - this skill now locked.
 --- !u!1 &583916451
@@ -1857,7 +1859,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -258.89343, y: -403.2082}
+  m_AnchoredPosition: {x: -259.3318, y: -404.107}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &619394800
@@ -5566,8 +5568,7 @@ MonoBehaviour:
     direction: 0
     length: 0
     rotation: 0
-  connections:
-  - {fileID: 30564306}
+  connections: []
 --- !u!114 &777694318
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5581,9 +5582,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_TreeNode
   neededNodes:
-  - {fileID: 224988421}
+  - {fileID: 612867693}
   conflictNodes:
-  - {fileID: 1885383101}
+  - {fileID: 889574762}
   isUnlocked: 0
   isLocked: 0
   skillData: {fileID: 11400000, guid: e6cf1f26ae71c0243994742391e12bdf, type: 2}
@@ -5610,7 +5611,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -82.94, y: -600.694}
+  m_AnchoredPosition: {x: -84.06879, y: -602.20575}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &803037688
@@ -5877,8 +5878,7 @@ MonoBehaviour:
     direction: 0
     length: 0
     rotation: 0
-  connections:
-  - {fileID: 88586929}
+  connections: []
 --- !u!114 &889574762
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5892,9 +5892,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_TreeNode
   neededNodes:
-  - {fileID: 224988421}
+  - {fileID: 612867693}
   conflictNodes:
-  - {fileID: 1885383101}
+  - {fileID: 777694318}
   isUnlocked: 0
   isLocked: 0
   skillData: {fileID: 11400000, guid: bf772b6aa33c23b4cb8acb8a25163375, type: 2}
@@ -5921,7 +5921,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -258.89343, y: -600.70825}
+  m_AnchoredPosition: {x: -259.3318, y: -601.60706}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &942206161
@@ -8811,6 +8811,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI
   skillToolTip: {fileID: 0}
+  skillTree: {fileID: 0}
 --- !u!1 &1852115168
 GameObject:
   m_ObjectHideFlags: 0
@@ -8879,7 +8880,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -82.66821, y: -404.107}
+  m_AnchoredPosition: {x: -85.16821, y: -404.107}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1885383100
