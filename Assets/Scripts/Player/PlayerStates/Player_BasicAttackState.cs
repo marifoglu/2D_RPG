@@ -41,7 +41,7 @@ public class Player_BasicAttackState : PlayerState
         base.Update();
         HandleAttackVelocity();
 
-        if (input.PlayerCharacter.Attack.WasPressedThisFrame())
+        if (input.Player.Attack.WasPressedThisFrame())
             QueueNextAttack();
 
         if (triggerCalled)

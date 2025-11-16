@@ -20,7 +20,7 @@ public class Player_WallSlideState : PlayerState
             return;
         }
         // WALL JUMP
-        if (input.PlayerCharacter.Jump.WasPerformedThisFrame())
+        if (input.Player.Jump.WasPerformedThisFrame())
         {
             stateMachine.ChangeState(player.wallJumpState);
             return;

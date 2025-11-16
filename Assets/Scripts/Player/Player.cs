@@ -5,6 +5,7 @@ using UnityEngine.Windows;
 
 public class Player : Entity
 {
+    private UI ui;
 
     public static event Action OnPlayerDeath;
     public PlayerInputSet input { get; private set; }
@@ -57,6 +58,7 @@ public class Player : Entity
     {
         base.Awake();
 
+        ui = FindAnyObjectByType<UI>(); 
         input = new PlayerInputSet();
 
         idleState = new Player_IdleState(this, stateMachine, "Idle");
@@ -134,8 +136,10 @@ public class Player : Entity
             input = new PlayerInputSet();
 
         input.Enable();
-        input.PlayerCharacter.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        input.PlayerCharacter.Movement.canceled += ctx => moveInput = Vector2.zero;
+        input.Player.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        input.Player.Movement.canceled += ctx => moveInput = Vector2.zero;
+
+        input.Player.ToggleSkillTreeUi.performed += ctx => ui.ToggleSkillTreeUI();
     }
 
     private void OnDisable()

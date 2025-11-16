@@ -7,6 +7,7 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private UI ui;
     private RectTransform rect;
     private UI_SkillTree skillTree;
+    private UI_TreeConnectHandler connectionHandler;
 
     [Header("Unlock Details")]
     public UI_TreeNode[] neededNodes;
@@ -23,23 +24,37 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private Color lastColor;
 
 
-
-
     private void Awake()
     {
         ui = GetComponentInParent<UI>();
         rect = GetComponent<RectTransform>();
         skillTree = GetComponentInParent<UI_SkillTree>();
+        connectionHandler = GetComponent<UI_TreeConnectHandler>();
 
         UpdateIconColor(GetColorByHex(lockedColorHex));
-        
     }
+     
+    public void Refund()
+    {
+        isUnlocked = false;
+        isLocked = false;
+        UpdateIconColor(GetColorByHex(lockedColorHex));
+
+        skillTree.AddSkillPoints(skillData.cost);
+        connectionHandler.UnlockConnectionImage(false);
+
+        //Skill manager and reset skill
+    }
+    
     private void Unlock()
     {
         isUnlocked = true;
         UpdateIconColor(Color.white);
-        skillTree.RemoveSkillPoints(skillData.cost);
         LockComplateNodes();
+
+        skillTree.RemoveSkillPoints(skillData.cost);
+        connectionHandler.UnlockConnectionImage(true);
+
         // Find player skill manager
         //unlock skill in player skill manager
     }
@@ -87,34 +102,48 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     public void OnPointerEnter(PointerEventData eventData)
     {
         ui.skillToolTip.ShowToolTip(true, rect, this);
-
-        if(!isUnlocked)
-        UpdateIconColor(Color.white * .9f);
-
+        if (!isUnlocked && !isLocked)   //not an OR operator
+            ToggleNodeHighlight(true);
     }
+
     public void OnPointerDown(PointerEventData eventData)
     {
         if(CanBeUnlock())
             Unlock();
-        else
-            Debug.Log("Skill cannot be unlocked");
+        else if(isLocked)
+            ui.skillToolTip.LockedSkillEffect();
     }
-    
+
     public void OnPointerExit(PointerEventData eventData)
     {
-
         ui.skillToolTip.ShowToolTip(false, rect);
-
-        if(!isUnlocked)
-            UpdateIconColor(lastColor);
+        if (!isUnlocked && !isLocked) // not an OR operator
+            ToggleNodeHighlight(false);
 
     }
 
+    private void ToggleNodeHighlight(bool highlight)
+    {
+        Color highlightColor = Color.white * 0.9f; highlightColor.a = 1;
+        Color colorToApply = highlight ? highlightColor : lastColor;
+
+        UpdateIconColor(colorToApply);
+    }
     private Color GetColorByHex(string hex)
     {
         ColorUtility.TryParseHtmlString(hex, out Color color);
         
         return color;
+    }
+
+    private void OnDisable()
+    {
+        if (!isUnlocked || isLocked)
+            //isLocked not actually needed since it shouldn't highlight to begin with      
+            UpdateIconColor(GetColorByHex(lockedColorHex));
+
+        else
+            UpdateIconColor(Color.white);
     }
 
     private void OnValidate()
@@ -126,7 +155,7 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         skillIcon.sprite = skillData.icon;
         skillCost = skillData.cost;
         gameObject.name = "UI - Treenode - " + skillData.displayName;
-
     }
 }
+
  

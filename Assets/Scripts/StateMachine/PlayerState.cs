@@ -22,7 +22,7 @@ public abstract class PlayerState : EntityState
 
 
 
-        if (input.PlayerCharacter.Dash.WasPressedThisFrame() && CanDash())
+        if (input.Player.Dash.WasPressedThisFrame() && CanDash())
             stateMachine.ChangeState(player.dashState);
     }
 

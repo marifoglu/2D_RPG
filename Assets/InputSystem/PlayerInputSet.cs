@@ -136,6 +136,15 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleSkillTreeUi"",
+                    ""type"": ""Button"",
+                    ""id"": ""a68863fb-0e64-4271-af0f-4da96bb5e61f"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -336,6 +345,39 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""action"": ""CounterAttack"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""28495942-4a51-4afd-a2b7-3d982ad6ff32"",
+                    ""path"": ""<Keyboard>/l"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleSkillTreeUi"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6889c42f-3e75-48ef-938f-9706a74d6037"",
+                    ""path"": ""<Gamepad>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleSkillTreeUi"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6a42bac4-5f58-4c9d-944b-a637faa1589b"",
+                    ""path"": ""<XInputController>/start"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": """",
+                    ""action"": ""ToggleSkillTreeUi"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -355,6 +397,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         m_PlayerCharacter_Dash = m_PlayerCharacter.FindAction("Dash", throwIfNotFound: true);
         m_PlayerCharacter_Attack = m_PlayerCharacter.FindAction("Attack", throwIfNotFound: true);
         m_PlayerCharacter_CounterAttack = m_PlayerCharacter.FindAction("CounterAttack", throwIfNotFound: true);
+        m_PlayerCharacter_ToggleSkillTreeUi = m_PlayerCharacter.FindAction("ToggleSkillTreeUi", throwIfNotFound: true);
     }
 
     ~@PlayerInputSet()
@@ -440,6 +483,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerCharacter_Dash;
     private readonly InputAction m_PlayerCharacter_Attack;
     private readonly InputAction m_PlayerCharacter_CounterAttack;
+    private readonly InputAction m_PlayerCharacter_ToggleSkillTreeUi;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerCharacter".
     /// </summary>
@@ -471,6 +515,10 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerCharacter/CounterAttack".
         /// </summary>
         public InputAction @CounterAttack => m_Wrapper.m_PlayerCharacter_CounterAttack;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerCharacter/ToggleSkillTreeUi".
+        /// </summary>
+        public InputAction @ToggleSkillTreeUi => m_Wrapper.m_PlayerCharacter_ToggleSkillTreeUi;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -512,6 +560,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @CounterAttack.started += instance.OnCounterAttack;
             @CounterAttack.performed += instance.OnCounterAttack;
             @CounterAttack.canceled += instance.OnCounterAttack;
+            @ToggleSkillTreeUi.started += instance.OnToggleSkillTreeUi;
+            @ToggleSkillTreeUi.performed += instance.OnToggleSkillTreeUi;
+            @ToggleSkillTreeUi.canceled += instance.OnToggleSkillTreeUi;
         }
 
         /// <summary>
@@ -538,6 +589,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @CounterAttack.started -= instance.OnCounterAttack;
             @CounterAttack.performed -= instance.OnCounterAttack;
             @CounterAttack.canceled -= instance.OnCounterAttack;
+            @ToggleSkillTreeUi.started -= instance.OnToggleSkillTreeUi;
+            @ToggleSkillTreeUi.performed -= instance.OnToggleSkillTreeUi;
+            @ToggleSkillTreeUi.canceled -= instance.OnToggleSkillTreeUi;
         }
 
         /// <summary>
@@ -570,7 +624,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
     /// <summary>
     /// Provides a new <see cref="PlayerCharacterActions" /> instance referencing this action map.
     /// </summary>
-    public PlayerCharacterActions @PlayerCharacter => new PlayerCharacterActions(this);
+    public PlayerCharacterActions Player => new PlayerCharacterActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -626,5 +680,12 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnCounterAttack(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToggleSkillTreeUi" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleSkillTreeUi(InputAction.CallbackContext context);
     }
 }
