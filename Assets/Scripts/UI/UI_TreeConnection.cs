@@ -19,14 +19,16 @@ public class UI_TreeConnection : MonoBehaviour
 
     public Image GetConnectionImage() => connectionLength.GetComponent<Image>();
 
-    public Vector2 GetChildNodeConnectionPoint(RectTransform rect)
+    public Vector2 GetConnectionPoint(RectTransform rect)
     {
-        RectTransformUtility.ScreenPointToLocalPointInRectangle(
-            rect.parent as RectTransform,   
-            childNodeConnectionPoint.position,
-            null,
-            out var localPosition
+        RectTransformUtility.ScreenPointToLocalPointInRectangle
+            (
+                rect.parent as RectTransform,
+                childNodeConnectionPoint.position,
+                null,
+                out var localPosition
             );
+
         return localPosition;
     }
     private float GetDirectionAngle(NodeDirectionType type)

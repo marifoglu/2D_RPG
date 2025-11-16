@@ -4,6 +4,15 @@ public class UI_SkillTree : MonoBehaviour
 {
     [SerializeField] private int skillPoints;
     [SerializeField] private UI_TreeConnectHandler[] parentNodes;
+    public Player_SkillManager skillManager { get; private set; }
+    private UI_SkillToolTip tooltip;
+
+
+    private void Awake()
+    {
+        tooltip = GetComponentInChildren<UI_SkillToolTip>();
+        skillManager = FindAnyObjectByType<Player_SkillManager>();
+    }
 
     private void Start()
     {
@@ -15,7 +24,7 @@ public class UI_SkillTree : MonoBehaviour
     {
         UI_TreeNode[] skillNodes = GetComponentsInChildren<UI_TreeNode>();
 
-        foreach(var node in skillNodes)
+        foreach (var node in skillNodes)
         {
             node.Refund();
         }
@@ -32,5 +41,7 @@ public class UI_SkillTree : MonoBehaviour
         {
             node.UpdateAllConnections();
         }
+
+        GetComponentInChildren<UI_SkillToolTip>()?.transform.SetAsLastSibling();
     }
 }

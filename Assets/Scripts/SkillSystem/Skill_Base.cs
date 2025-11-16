@@ -3,12 +3,19 @@ using UnityEngine;
 public class Skill_Base : MonoBehaviour
 {
     [Header("General Details")]
+    [SerializeField] private SkillType skillType;
+    [SerializeField] private SkillUpgradeType upgradeType;
     [SerializeField] private float cooldown;
     private float lastTimeUsed;
 
     protected virtual void Awake()
     {
         lastTimeUsed -= cooldown;
+    }
+
+    public void SetSkillUpgrade(SkillUpgradeType upgrade)
+    {
+        upgradeType = upgrade;
     }
     public bool CanUseSkill()
     {

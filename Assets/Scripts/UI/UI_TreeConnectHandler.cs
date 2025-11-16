@@ -8,7 +8,7 @@ public class UI_TreeConnectDetails
 {
     public UI_TreeConnectHandler childNode;
     public NodeDirectionType direction;
-    [Range(100f, 350f)] public float length;
+    [Range(100f, 350f)] public float length = 150f;
     [Range(-50f, 50f)] public float rotation;
 }
 [ExecuteAlways]
@@ -18,12 +18,13 @@ public class UI_TreeConnectHandler : MonoBehaviour
     [SerializeField] private UI_TreeConnectDetails[] connectionDetails;
     [SerializeField] private UI_TreeConnection[] connections;
 
+    private Vector2 lastTargetPosition;
     private Image connectionImage;
     private Color originalColor;
 
     private void Awake()
     {
-        if(connectionImage != null)
+        if (connectionImage != null)
             originalColor = connectionImage.color;
     }
 
@@ -34,32 +35,35 @@ public class UI_TreeConnectHandler : MonoBehaviour
 
         if (connectionDetails.Length != connections.Length)
         {
-            Debug.LogWarning($"[UI_TreeConnectHandler] Details length {connectionDetails.Length} is not equal to connection length {connections.Length}. Adjusting connection array size.");
+            Debug.Log("Amount of details should be same as amount of connections. - " + gameObject.name);
             return;
         }
-
-        UpdateConnections();
+        UpdateConnections(false); // Don't reorder hierarchy during validation
     }
 
-    public void UpdateConnections()
+    public void UpdateConnections(bool reorderHierarchy = true)
     {
-        for(int i = 0; i < connectionDetails.Length; i++)
+        for (int i = 0; i < connectionDetails.Length; i++)
         {
             var detail = connectionDetails[i];
-            var conn = connections[i];
+            var connection = connections[i];
 
-            Vector2 targetPosition = conn.GetChildNodeConnectionPoint(rect);
-            Image connectionImage = conn.GetConnectionImage();
+            Vector2 targetPosition = connection.GetConnectionPoint(rect);
+            Image connectionImage = connection.GetConnectionImage();
 
-            conn.DirectConnection(detail.direction, detail.length, detail.rotation);
-            if(detail.childNode == null)
+            connection.DirectConnection(detail.direction, detail.length, detail.rotation);
+
+            if (detail.childNode == null)
                 continue;
 
             detail.childNode.SetPosition(targetPosition);
             detail.childNode.SetConnectionImage(connectionImage);
-            detail.childNode.transform.SetAsLastSibling();
+
+            if (reorderHierarchy)
+                detail.childNode.transform.SetAsLastSibling();
         }
     }
+
 
     public void UpdateAllConnections()
     {
@@ -67,8 +71,8 @@ public class UI_TreeConnectHandler : MonoBehaviour
 
         foreach (var node in connectionDetails)
         {
-            if(node.childNode == null) continue;
-                node.childNode?.UpdateConnections();
+            if (node.childNode == null) continue;
+            node.childNode?.UpdateConnections();
         }
     }
 
@@ -79,6 +83,7 @@ public class UI_TreeConnectHandler : MonoBehaviour
 
         connectionImage.color = unlocked ? Color.white : originalColor;
     }
+
     public void SetConnectionImage(Image image) => connectionImage = image;
     public void SetPosition(Vector2 position) => rect.anchoredPosition = position;
 }
