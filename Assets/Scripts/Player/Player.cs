@@ -149,7 +149,7 @@ public class Player : Entity
         input.PlayerCharacter.Movement.canceled += ctx => moveInput = Vector2.zero;
 
         input.PlayerCharacter.ToggleSkillTreeUi.performed += ctx => ui.ToggleSkillTreeUI();
-        input.PlayerCharacter.Spell.performed += ctx => skillManager.shard.CreateShard();
+        input.PlayerCharacter.Spell.performed += ctx => skillManager.shard.TryUseSkill();
     }
 
     private void OnDisable()

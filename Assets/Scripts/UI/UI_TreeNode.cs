@@ -180,7 +180,10 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             return;
 
         skillName = skillData.displayName;
-        skillIcon.sprite = skillData.icon;
+
+        if (skillIcon != null)
+            skillIcon.sprite = skillData.icon;
+
         skillCost = skillData.cost;
         gameObject.name = "UI - Treenode - " + skillData.displayName;
     }

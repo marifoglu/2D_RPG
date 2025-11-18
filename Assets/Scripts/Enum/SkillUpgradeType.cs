@@ -14,7 +14,7 @@ public enum SkillUpgradeType
     // Shard Tree ---
     Shard, // Shard explose when touches by enemy or when time goes up.
     Shard_MoveToEnemy, // Shard moves to nearest enemy.
-    Shard_TripleCast, // Shard ability can have up to N charges. You can cast them al in row.
+    Shard_MultiCast, // Shard ability can have up to N charges. You can cast them al in row.
     Shard_Teleport, // You can Teleport to the places with the last shard position.
     Shard_TeleportAndHeal // When you Teleport to the your HP % is restored.
 }

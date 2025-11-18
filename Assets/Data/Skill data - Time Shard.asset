@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Skill data - Time Shard
   m_EditorClassIdentifier: Assembly-CSharp::Skill_DataSO
   cost: 0
+  unlockedByDefault: 1
   skillType: 2
   upgradeData:
     upgradeType: 6

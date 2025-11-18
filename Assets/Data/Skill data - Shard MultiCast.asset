@@ -10,16 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7912fbb8459f0a34b9f6c72870fc05ec, type: 3}
-  m_Name: Skill data - Quick Dash
+  m_Name: Skill data - Shard MultiCast
   m_EditorClassIdentifier: Assembly-CSharp::Skill_DataSO
-  cost: 0
-  unlockedByDefault: 1
-  skillType: 0
+  cost: 3
+  unlockedByDefault: 0
+  skillType: 2
   upgradeData:
-    upgradeType: 0
-    cooldown: 3
-  displayName: Quick Dash
-  description: 'Dash to avoid attacks.
-
-    You cannot take damage while dashing.'
-  icon: {fileID: -30642816, guid: a6fce76df2a1d3e4784e5f1873d64b42, type: 3}
+    upgradeType: 8
+    cooldown: 4
+  displayName: Mirror Shard
+  description: Tim Shard has 3 charges
+  icon: {fileID: 603167724, guid: a6fce76df2a1d3e4784e5f1873d64b42, type: 3}
