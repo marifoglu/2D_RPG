@@ -17,7 +17,7 @@ public class Player_GroundedState : PlayerState
         base.Update();
 
 
-        bool jumpPressed = input.Player.Jump.WasPressedThisFrame();
+        bool jumpPressed = input.PlayerCharacter.Jump.WasPressedThisFrame();
         float x = player.moveInput.x;
         float y = player.moveInput.y;
 
@@ -46,14 +46,14 @@ public class Player_GroundedState : PlayerState
             return;
 
         // ✅ Basic attack
-        if (input.Player.Attack.WasPressedThisFrame())
+        if (input.PlayerCharacter.Attack.WasPressedThisFrame())
         {
             stateMachine.ChangeState(player.basicAttackState);
             return;
         }
 
         // ✅ Counter
-        if (input.Player.CounterAttack.WasPressedThisFrame())
+        if (input.PlayerCharacter.CounterAttack.WasPressedThisFrame())
         {
             stateMachine.ChangeState(player.counterAttackState);
             return;

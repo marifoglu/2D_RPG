@@ -145,10 +145,11 @@ public class Player : Entity
             input = new PlayerInputSet();
 
         input.Enable();
-        input.Player.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-        input.Player.Movement.canceled += ctx => moveInput = Vector2.zero;
+        input.PlayerCharacter.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
+        input.PlayerCharacter.Movement.canceled += ctx => moveInput = Vector2.zero;
 
-        input.Player.ToggleSkillTreeUi.performed += ctx => ui.ToggleSkillTreeUI();
+        input.PlayerCharacter.ToggleSkillTreeUi.performed += ctx => ui.ToggleSkillTreeUI();
+        input.PlayerCharacter.Spell.performed += ctx => skillManager.shard.CreateShard();
     }
 
     private void OnDisable()

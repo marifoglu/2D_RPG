@@ -12,7 +12,7 @@ public class Player_MoveState : PlayerState
         float x = player.moveInput.x;
 
         // Handle Jump
-        if (input.Player.Jump.WasPressedThisFrame() && player.groundDetected)
+        if (input.PlayerCharacter.Jump.WasPressedThisFrame() && player.groundDetected)
         {
             stateMachine.ChangeState(player.jumpState);
             return;
@@ -26,14 +26,14 @@ public class Player_MoveState : PlayerState
         }
 
         // Allow attacking while moving
-        if (input.Player.Attack.WasPressedThisFrame())
+        if (input.PlayerCharacter.Attack.WasPressedThisFrame())
         {
             stateMachine.ChangeState(player.basicAttackState);
             return;
         }
 
         // Allow counter while moving
-        if (input.Player.CounterAttack.WasPressedThisFrame())
+        if (input.PlayerCharacter.CounterAttack.WasPressedThisFrame())
         {
             stateMachine.ChangeState(player.counterAttackState);
             return;

@@ -20,7 +20,7 @@ public class OneWayPlatform : MonoBehaviour
             return;
 
         // Access input through the Player
-        Vector2 movement = player.input.Player.Movement.ReadValue<Vector2>();
+        Vector2 movement = player.input.PlayerCharacter.Movement.ReadValue<Vector2>();
         if (movement.y < -0.5f) // pressed DOWN
         {
             StartCoroutine(DisablePlatformTemporarily(collision.collider));

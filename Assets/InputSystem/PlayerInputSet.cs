@@ -145,6 +145,15 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Spell"",
+                    ""type"": ""Button"",
+                    ""id"": ""e0dad808-64f8-4d4a-aa88-5996a02b0e70"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -352,7 +361,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""path"": ""<Keyboard>/l"",
                     ""interactions"": """",
                     ""processors"": """",
-                    ""groups"": """",
+                    ""groups"": "";Keyboard & Mouse"",
                     ""action"": ""ToggleSkillTreeUi"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
@@ -378,6 +387,17 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""action"": ""ToggleSkillTreeUi"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""2b47cd5a-7965-4987-b25c-b491825750fd"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard & Mouse"",
+                    ""action"": ""Spell"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -398,6 +418,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         m_PlayerCharacter_Attack = m_PlayerCharacter.FindAction("Attack", throwIfNotFound: true);
         m_PlayerCharacter_CounterAttack = m_PlayerCharacter.FindAction("CounterAttack", throwIfNotFound: true);
         m_PlayerCharacter_ToggleSkillTreeUi = m_PlayerCharacter.FindAction("ToggleSkillTreeUi", throwIfNotFound: true);
+        m_PlayerCharacter_Spell = m_PlayerCharacter.FindAction("Spell", throwIfNotFound: true);
     }
 
     ~@PlayerInputSet()
@@ -484,6 +505,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerCharacter_Attack;
     private readonly InputAction m_PlayerCharacter_CounterAttack;
     private readonly InputAction m_PlayerCharacter_ToggleSkillTreeUi;
+    private readonly InputAction m_PlayerCharacter_Spell;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerCharacter".
     /// </summary>
@@ -519,6 +541,10 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerCharacter/ToggleSkillTreeUi".
         /// </summary>
         public InputAction @ToggleSkillTreeUi => m_Wrapper.m_PlayerCharacter_ToggleSkillTreeUi;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerCharacter/Spell".
+        /// </summary>
+        public InputAction @Spell => m_Wrapper.m_PlayerCharacter_Spell;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -563,6 +589,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @ToggleSkillTreeUi.started += instance.OnToggleSkillTreeUi;
             @ToggleSkillTreeUi.performed += instance.OnToggleSkillTreeUi;
             @ToggleSkillTreeUi.canceled += instance.OnToggleSkillTreeUi;
+            @Spell.started += instance.OnSpell;
+            @Spell.performed += instance.OnSpell;
+            @Spell.canceled += instance.OnSpell;
         }
 
         /// <summary>
@@ -592,6 +621,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @ToggleSkillTreeUi.started -= instance.OnToggleSkillTreeUi;
             @ToggleSkillTreeUi.performed -= instance.OnToggleSkillTreeUi;
             @ToggleSkillTreeUi.canceled -= instance.OnToggleSkillTreeUi;
+            @Spell.started -= instance.OnSpell;
+            @Spell.performed -= instance.OnSpell;
+            @Spell.canceled -= instance.OnSpell;
         }
 
         /// <summary>
@@ -624,7 +656,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
     /// <summary>
     /// Provides a new <see cref="PlayerCharacterActions" /> instance referencing this action map.
     /// </summary>
-    public PlayerCharacterActions Player => new PlayerCharacterActions(this);
+    public PlayerCharacterActions @PlayerCharacter => new PlayerCharacterActions(this);
     private int m_KeyboardMouseSchemeIndex = -1;
     /// <summary>
     /// Provides access to the input control scheme.
@@ -687,5 +719,12 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnToggleSkillTreeUi(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Spell" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnSpell(InputAction.CallbackContext context);
     }
 }
