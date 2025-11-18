@@ -16,6 +16,9 @@ public class Skill_Shard : Skill_Base
     [SerializeField] private int currentCharges;
     [SerializeField] private bool isCharging;
 
+    [Header("Review Shard Upgrades")]
+    [SerializeField] private float shardExistDuration = 10;
+
     protected override void Awake()
     {
         base.Awake();
@@ -35,13 +38,24 @@ public class Skill_Shard : Skill_Base
 
         if(Unlocked(SkillUpgradeType.Shard_MultiCast))
             HandleShardMultiCast();
+
+        if (Unlocked(SkillUpgradeType.Shard_Teleport))
+            HandleShardTeleport();
+
     }
     public void CreateShard()
     {
+        float detonateTime = GetDetonateTime();
+
         GameObject shard = Instantiate(shardPrefab, transform.position, Quaternion.identity);
         currentShard = shard.GetComponent<Skill_ObjectShard>();
 
         currentShard.SetupShard(detonateTime);
+
+        if (Unlocked(SkillUpgradeType.Shard_Teleport) || Unlocked(SkillUpgradeType.Shard_TeleportAndHeal))
+        {
+            currentShard.onExplode += ForceCooldown;
+        }
 
     }
     private void HandleShardRegular()
@@ -80,5 +94,47 @@ public class Skill_Shard : Skill_Base
             currentCharges++;
         }
     isCharging = false;
+    }
+
+    private void HandleShardTeleport()
+    {
+        if (currentShard == null)
+        {
+            CreateShard();
+        }
+        else
+        {
+            SwapPlayerWithShard();
+            SetSkillOnCooldown();
+        }
+    }
+
+    private void SwapPlayerWithShard()
+    {
+        Vector3 shardPosition = currentShard.transform.position;
+        Vector3 playerPosition = player.transform.position;
+
+        currentShard.transform.position = playerPosition;
+        currentShard.Explode();
+
+        player.TeleportPlayer(shardPosition);
+    }
+
+    public float GetDetonateTime()
+    {
+        if(Unlocked(SkillUpgradeType.Shard_Teleport) || Unlocked(SkillUpgradeType.Shard_TeleportAndHeal))
+        {
+            return  shardExistDuration;
+        }
+        return detonateTime;
+    }
+
+    private void ForceCooldown()
+    {
+        if (OnCoolDown() == false)
+        {
+            SetSkillOnCooldown();
+            currentShard.onExplode -= ForceCooldown;
+        }
     }
 }

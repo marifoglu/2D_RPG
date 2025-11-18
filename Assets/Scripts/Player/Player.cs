@@ -54,6 +54,8 @@ public class Player : Entity
     public float ledgeClimbCooldown = 0.5f;
     private float lastLedgeClimbTime;
 
+    public void TeleportPlayer(Vector3 position) => transform.position = position;
+
     public bool CanLedgeClimb => Time.time >= lastLedgeClimbTime + ledgeClimbCooldown;
 
     public void SetLedgeClimbCooldown()
@@ -126,8 +128,6 @@ public class Player : Entity
             attackVelocity[i] = originalAttackVelocity[i];
         }
     }
-
-
 
     public override void EntityDeath()
     {

@@ -1,8 +1,12 @@
+using System;
 using UnityEngine;
 
 public class Skill_ObjectShard : Skill_ObjectBase
 {
+    public event Action onExplode;
+
     [SerializeField] private GameObject vfxPrefab;
+
     public Transform target;
     private float speed;
 
@@ -24,10 +28,12 @@ public class Skill_ObjectShard : Skill_ObjectBase
         this.speed = moveSpeed;
     }
 
-    private void Explode()
+    public void Explode()
     {
         DamageEnemiesInRadius(targetCheck, checkRadius);
         Instantiate(vfxPrefab, transform.position, Quaternion.identity);
+
+        onExplode?.Invoke();
 
         Destroy(gameObject);
     }
