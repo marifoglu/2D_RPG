@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -28,17 +29,16 @@ public class UI_TreeConnectHandler : MonoBehaviour
             originalColor = connectionImage.color;
     }
 
-    private void OnValidate()
+    public UI_TreeNode[] GetChildNodes()
     {
-        if (connectionDetails.Length <= 0)
-            return;
-
-        if (connectionDetails.Length != connections.Length)
+        List<UI_TreeNode> childToReturn = new List<UI_TreeNode>();
+        
+        foreach (var node in connectionDetails)
         {
-            Debug.Log("Amount of details should be same as amount of connections. - " + gameObject.name);
-            return;
+            if (node.childNode != null)
+                childToReturn.Add(node.childNode.GetComponent<UI_TreeNode>());
         }
-        UpdateConnections(false); // Don't reorder hierarchy during validation
+        return childToReturn.ToArray();
     }
 
     public void UpdateConnections(bool reorderHierarchy = true)
@@ -83,7 +83,19 @@ public class UI_TreeConnectHandler : MonoBehaviour
 
         connectionImage.color = unlocked ? Color.white : originalColor;
     }
-
     public void SetConnectionImage(Image image) => connectionImage = image;
     public void SetPosition(Vector2 position) => rect.anchoredPosition = position;
+
+    private void OnValidate()
+    {
+        if (connectionDetails.Length <= 0)
+            return;
+
+        if (connectionDetails.Length != connections.Length)
+        {
+            Debug.Log("Amount of details should be same as amount of connections. - " + gameObject.name);
+            return;
+        }
+        UpdateConnections(false); // Don't reorder hierarchy during validation
+    }
 }
