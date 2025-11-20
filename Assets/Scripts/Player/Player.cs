@@ -54,6 +54,24 @@ public class Player : Entity
     public float ledgeClimbCooldown = 0.5f;
     private float lastLedgeClimbTime;
 
+    [Header("One-Way Platform")]
+    public bool isDroppingThroughPlatform { get; set; } = false;
+
+    public void ForceFallState()
+    {
+        stateMachine.ChangeState(fallState);
+    }
+
+    public void StartDropThrough()
+    {
+        isDroppingThroughPlatform = true;
+        stateMachine.ChangeState(fallState);
+    }
+
+    public void EndDropThrough()
+    {
+        isDroppingThroughPlatform = false;
+    }
     public void TeleportPlayer(Vector3 position) => transform.position = position;
 
     public bool CanLedgeClimb => Time.time >= lastLedgeClimbTime + ledgeClimbCooldown;
@@ -62,6 +80,7 @@ public class Player : Entity
     {
         lastLedgeClimbTime = Time.time;
     }
+
 
     protected override void Awake()
     {
@@ -100,7 +119,7 @@ public class Player : Entity
         Vector2 originalWallJump = wallJumpForce;
         Vector2 originalJumpAttack = jumpAttackVelocity;
         Vector2[] originalAttackVelocity = new Vector2[attackVelocity.Length];
-        Array.Copy(attackVelocity, originalAttackVelocity, attackVelocity.Length);
+        //Array.Copy(attackVelocity, originalAttackVelocity, attackVelocity.Length);
 
         float speedMultiplier = 1 - slowMultiplier;
 
@@ -121,7 +140,7 @@ public class Player : Entity
         jumpForce = originalJumpForce;
         anim.speed = originalAnimSpeed;
         wallJumpForce = originalWallJump;
-        jumpAttackVelocity = originalWallJump;
+        jumpAttackVelocity = originalJumpAttack;
 
         for (int i = 0; i < attackVelocity.Length; i++)
         {

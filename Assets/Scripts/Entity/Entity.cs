@@ -208,7 +208,7 @@ public class Entity : MonoBehaviour
 
     private void HandleCollisionDetection()
     {
-        // Ground detection - simple raycast from groundCheck
+        // Ground detection for simple raycast from groundCheck
         if (useEnemyEdgeDetection)
         {
             // Enemy uses simple ground check
@@ -398,12 +398,47 @@ public class Entity : MonoBehaviour
         }
     }
 
+    //public void ApplySlopeFriction()
+    //{
+    //    if (noFriction == null || fullFriction == null) return;
+
+    //    var col = GetComponent<Collider2D>();
+    //    if (col == null) return;
+
+    //    // Both enemy and player use similar friction logic
+    //    bool slopeWalk = isOnSlope && canWalkOnSlope && groundDetected && (rb.linearVelocity.y > -0.6f && rb.linearVelocity.y < 0.6f);
+
+    //    if (slopeWalk)
+    //    {
+    //        col.sharedMaterial = fullFriction;
+
+    //        if (groundDetected && Mathf.Abs(rb.linearVelocity.y) < 0.1f)
+    //            rb.gravityScale = 0f;
+    //        else
+    //            rb.gravityScale = defaultGravity;
+    //    }
+    //    else
+    //    {
+    //        col.sharedMaterial = noFriction;
+    //        rb.gravityScale = defaultGravity;
+    //    }
+    //}
     public void ApplySlopeFriction()
     {
         if (noFriction == null || fullFriction == null) return;
 
         var col = GetComponent<Collider2D>();
         if (col == null) return;
+
+        // Check if this is a Player dropping through a platform
+        var player = this as Player;
+        if (player != null && player.isDroppingThroughPlatform)
+        {
+            // Use no friction and full gravity when dropping through platform
+            col.sharedMaterial = noFriction;
+            rb.gravityScale = defaultGravity;
+            return;
+        }
 
         // Both enemy and player use similar friction logic
         bool slopeWalk = isOnSlope && canWalkOnSlope && groundDetected && (rb.linearVelocity.y > -0.6f && rb.linearVelocity.y < 0.6f);
@@ -423,7 +458,6 @@ public class Entity : MonoBehaviour
             rb.gravityScale = defaultGravity;
         }
     }
-
     protected virtual void OnDrawGizmos()
     {
         if (groundCheck == null) return;

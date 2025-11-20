@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Windows;
 
 public abstract class PlayerState : EntityState

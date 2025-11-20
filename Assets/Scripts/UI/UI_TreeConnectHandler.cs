@@ -93,7 +93,6 @@ public class UI_TreeConnectHandler : MonoBehaviour
 
         if (connectionDetails.Length != connections.Length)
         {
-            Debug.Log("Amount of details should be same as amount of connections. - " + gameObject.name);
             return;
         }
         UpdateConnections(false); // Don't reorder hierarchy during validation

@@ -21,45 +21,45 @@ public class Player_GroundedState : PlayerState
         float x = player.moveInput.x;
         float y = player.moveInput.y;
 
-        // ✅ ONLY zero Y velocity when grounded and not trying to jump
+        // Zero Y velocity when grounded and not trying to jump
         if (player.groundDetected && rb.linearVelocity.y != 0f && !jumpPressed && stateMachine.currentState != player.jumpState)
         {
             player.SetVelocity(rb.linearVelocity.x, 0f);
         }
 
-        // ✅ If no longer grounded, fall
+        // if no longer grounded, fall
         if (!player.groundDetected)
         {
             stateMachine.ChangeState(player.fallState);
             return;
         }
 
-        // ✅ Jump while grounded
+        // Jump while grounded
         if (jumpPressed)
         {
             stateMachine.ChangeState(player.jumpState);
             return;
         }
 
-        // ✅ Handle wall interaction — block ONLY while airborne and hugging wall
+        // handle wall interaction
         if (player.wallDetected && !player.groundDetected)
             return;
 
-        // ✅ Basic attack
+        // Basic attack
         if (input.PlayerCharacter.Attack.WasPressedThisFrame())
         {
             stateMachine.ChangeState(player.basicAttackState);
             return;
         }
 
-        // ✅ Counter
+        // Counter
         if (input.PlayerCharacter.CounterAttack.WasPressedThisFrame())
         {
             stateMachine.ChangeState(player.counterAttackState);
             return;
         }
 
-        // ✅ If there IS movement input, transition to MoveState
+        // If there IS movement input, transition to MoveState
         if (x != 0f)
         {
             stateMachine.ChangeState(player.moveState);
