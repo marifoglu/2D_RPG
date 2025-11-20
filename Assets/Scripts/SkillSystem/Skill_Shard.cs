@@ -4,7 +4,9 @@ using UnityEngine;
 
 public class Skill_Shard : Skill_Base
 {
-    Skill_ObjectShard currentShard;
+    private Skill_ObjectShard currentShard;
+    private Entity_Health playerHealth;
+
     [SerializeField] private GameObject shardPrefab;
     [SerializeField] private float detonateTime = 2f;
 
@@ -16,13 +18,17 @@ public class Skill_Shard : Skill_Base
     [SerializeField] private int currentCharges;
     [SerializeField] private bool isCharging;
 
-    [Header("Review Shard Upgrades")]
+    [Header("Teleport Shard Upgrades")]
     [SerializeField] private float shardExistDuration = 10;
+        
+    [Header("Health Rewind Shard Upgrades")]
+    [SerializeField] private float savedHealthPercent;
 
     protected override void Awake()
     {
         base.Awake();
         currentCharges = maxCharges;
+        playerHealth = player.GetComponentInParent<Entity_Health>();
     }
 
     public override void TryUseSkill()
@@ -42,6 +48,12 @@ public class Skill_Shard : Skill_Base
         if (Unlocked(SkillUpgradeType.Shard_Teleport))
             HandleShardTeleport();
 
+        if (Unlocked(SkillUpgradeType.Shard_TeleportHpRewind))
+            HandleShardHealthRewind();
+        {
+            
+        }
+
     }
     public void CreateShard()
     {
@@ -52,7 +64,7 @@ public class Skill_Shard : Skill_Base
 
         currentShard.SetupShard(detonateTime);
 
-        if (Unlocked(SkillUpgradeType.Shard_Teleport) || Unlocked(SkillUpgradeType.Shard_TeleportAndHeal))
+        if (Unlocked(SkillUpgradeType.Shard_Teleport) || Unlocked(SkillUpgradeType.Shard_TeleportHpRewind))
         {
             currentShard.onExplode += ForceCooldown;
         }
@@ -122,7 +134,7 @@ public class Skill_Shard : Skill_Base
 
     public float GetDetonateTime()
     {
-        if(Unlocked(SkillUpgradeType.Shard_Teleport) || Unlocked(SkillUpgradeType.Shard_TeleportAndHeal))
+        if(Unlocked(SkillUpgradeType.Shard_Teleport) || Unlocked(SkillUpgradeType.Shard_TeleportHpRewind))
         {
             return  shardExistDuration;
         }
@@ -135,6 +147,21 @@ public class Skill_Shard : Skill_Base
         {
             SetSkillOnCooldown();
             currentShard.onExplode -= ForceCooldown;
+        }
+    }
+
+    private void HandleShardHealthRewind()
+    {
+        if(currentShard == null)
+        {
+            CreateShard();
+            savedHealthPercent = playerHealth.GetHealthPercentage();
+        }
+        else
+        {
+            SwapPlayerWithShard();
+            playerHealth.SetHealthToPercentage(savedHealthPercent);
+            SetSkillOnCooldown();
         }
     }
 }

@@ -127,10 +127,20 @@ public class Entity_Health : MonoBehaviour, IDamageable
             entity.EntityDeath();
         }
     }
+    
     private bool AttackEvaded()
     {
         return Random.Range(0,100) < entityStats.GetEvasion();
     }
+
+    public float GetHealthPercentage() => currentHealth / entityStats.GetMaxHealth();
+
+    public void SetHealthToPercentage(float percentage) // Use it in Skill_Shard Teleport HP Rewind upgrade
+    {
+        currentHealth = entityStats.GetMaxHealth() * Mathf.Clamp01(percentage);
+        UpdateHealthBar();
+    }
+
     private void TakeKnockback(Transform damageDealer, float finalDamage)
     {
         Vector2 knockback = CalculateKnockback(damageDealer, finalDamage);
