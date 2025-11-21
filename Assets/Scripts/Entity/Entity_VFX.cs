@@ -77,14 +77,11 @@ public class Entity_VFX : MonoBehaviour
         sr.color = Color.white;
 
     }
-    public void CreateOnHitVFX(Transform target, bool isCrit)
+    public void CreateOnHitVFX(Transform target, bool isCrit, ElementType elementType)
     {
         GameObject hitPrefab = isCrit ? critHitVfx : hitVfx;
-        if (hitPrefab == null) 
-            return;
-        
         GameObject vfx = Instantiate(hitPrefab, target.position, Quaternion.identity);
-        vfx.GetComponentInChildren<SpriteRenderer>().color = hitVfxColor;
+        //vfx.GetComponentInChildren<SpriteRenderer>().color = GetElementColor(elementType);
 
         if (entity != null && entity.facingDir == -1 && isCrit)
             vfx.transform.Rotate(0f, 180f, 0);
@@ -98,13 +95,22 @@ public class Entity_VFX : MonoBehaviour
         onDamageVfxCoroutine = StartCoroutine(OnDamageVfxCo());
     }
 
-    public void UpdateOnHitColor(ElementType elementType)
+    public Color GetElementColor(ElementType elementType)
     {
-        if(elementType == ElementType.Ice)
-            hitVfxColor = chillVfx;
 
-        if(elementType == ElementType.None)
-            hitVfxColor = originalHitVfxColor;
+        switch(elementType)
+        {
+            case ElementType.Ice:
+                return chillVfx;
+            case ElementType.Fire:
+                return burnVfx;
+            case ElementType.Lighting:
+                return electricVfx;
+
+            default:
+                return Color.white;
+        }
+      
     }
     private IEnumerator OnDamageVfxCo()
     {

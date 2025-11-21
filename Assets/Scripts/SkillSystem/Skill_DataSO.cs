@@ -4,16 +4,19 @@ using System;
 [CreateAssetMenu(fileName = "Skill data - ", menuName = "RPG Setup/Skill data")]
 public class Skill_DataSO : ScriptableObject
 {
-    public int cost;
-    public bool unlockedByDefault;
-    public SkillType skillType;
-    public UpgradeData upgradeData;
-
     [Header("Skill description")]
     public string displayName;
     [TextArea]
     public string description;
     public Sprite icon;
+
+    [Header("Unlock & Upgrades")]
+    public int cost;
+    public bool unlockedByDefault;
+    public SkillType skillType;
+    public UpgradeData upgradeData;
+
+
 }
 
 [Serializable]

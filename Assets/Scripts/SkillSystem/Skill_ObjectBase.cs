@@ -8,6 +8,7 @@ public class Skill_ObjectBase : MonoBehaviour
 
     protected Entity_Stats entityStats;
     protected DamageScaleData damageScaleData;
+    protected ElementType usedElement;
 
     protected Collider2D[] EnemiesAround(Transform transform, float radius)
     {
@@ -23,16 +24,20 @@ public class Skill_ObjectBase : MonoBehaviour
             if (damageable == null)
                 continue;
 
-            ElementalEffectData elementalEffectData = new ElementalEffectData(entityStats, damageScaleData);
+            AttackData attackData = entityStats.GetAttackData(damageScaleData);  
+            Entity_StatusHandler statusHandler = target.GetComponent<Entity_StatusHandler>();
 
-            float physicalDamage = entityStats.GetPhysicalDamage(out bool isCrit, damageScaleData.physical);
-            float elementalDamage = entityStats.GetElementelDamage(out ElementType element, damageScaleData.elemental);
+            float physicalDamage = attackData.physicalDamage;
+            float elementalDamage = attackData.elementaldamage;
+            ElementType elementType = attackData.elementType;
 
-            damageable.TakeDamage(physicalDamage, elementalDamage, element, transform); // Example damage values
 
-            if (element != ElementType.None)
-                target.GetComponent<Entity_StatusHandler>().ApplyStatusEffect(element, elementalEffectData);
+            damageable.TakeDamage(physicalDamage, elementalDamage, elementType, transform); // Example damage values
 
+            if (elementType != ElementType.None)
+                statusHandler?.ApplyStatusEffect(elementType, attackData.elementalEffectData);
+
+            usedElement = elementType;
         }
     }
     protected Transform FindClosestTarget()
