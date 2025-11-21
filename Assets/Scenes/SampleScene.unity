@@ -12401,11 +12401,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1662391619}
+  - component: {fileID: 1662391620}
+  - component: {fileID: 1662391621}
   - component: {fileID: 1662391618}
   - component: {fileID: 1662391626}
   - component: {fileID: 1662391625}
-  - component: {fileID: 1662391620}
-  - component: {fileID: 1662391621}
   - component: {fileID: 1662391628}
   - component: {fileID: 1662391629}
   - component: {fileID: 1662391631}
@@ -12584,6 +12584,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 842ec76f0c8385948b8995078bd5c9cf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player_Combat
+  basicAttackScale:
+    physical: 1
+    elemental: 0.4
+    chillDuration: 3
+    chillSlowMultiplier: 0.2
+    burnDuration: 3
+    burnDamageScale: 1
+    lightningDuration: 3
+    lightningDamageScale: 1
+    lightningCharge: 0.4
   targetCheck: {fileID: 83486591}
   targetCheckRadius: 1
   whatIsTarget:

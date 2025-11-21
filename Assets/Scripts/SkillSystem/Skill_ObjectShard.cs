@@ -4,6 +4,7 @@ using UnityEngine;
 public class Skill_ObjectShard : Skill_ObjectBase
 {
     public event Action onExplode;
+    private Skill_Shard shardManager;
 
     [SerializeField] private GameObject vfxPrefab;
 
@@ -17,8 +18,13 @@ public class Skill_ObjectShard : Skill_ObjectBase
 
         transform.position = Vector3 .MoveTowards(transform.position, target.position, speed * Time.deltaTime);
     }
-    public void SetupShard(float destinationTime)
+    public void SetupShard(Skill_Shard shardManager)
     {
+        this.shardManager = shardManager;
+        entityStats = shardManager.player.stats;
+        damageScaleData = shardManager.damageScaleData;
+
+        float destinationTime = shardManager.GetDetonateTime();
         Invoke(nameof(Explode), destinationTime);
     }
 

@@ -9,11 +9,11 @@ public class Entity_StatusHandler : MonoBehaviour
     private Entity_Health entityHealth;
     private ElementType currentEffect = ElementType.None;
 
-    [Header("Electrify Effect Settings")]
+    [Header("Lightning Effect Settings")]
     [SerializeField] private GameObject lightingStrikeVfx;
     [SerializeField] private float currentCharge;
     [SerializeField] private float maximumCharge = 1;
-    private Coroutine electrifyCo;
+    private Coroutine lightningCo;
     
     private void Awake()
     {
@@ -22,24 +22,35 @@ public class Entity_StatusHandler : MonoBehaviour
         entityStats = GetComponent<Entity_Stats>();
         entityHealth = GetComponent<Entity_Health>();
     }
+    public void ApplyStatusEffect(ElementType element, ElementalEffectData effectData)
+    {
+        if(element == ElementType.Ice && CanBeApplied(ElementType.Ice))
+            ApplyChillEffect(effectData.chillDuration, effectData.chillSlowMultiplier);
 
-    public void ApplyElectricEffect(float duration, float damage, float charge)
+        if(element == ElementType.Fire && CanBeApplied(ElementType.Fire))
+            ApplyBurnEffect(effectData.burnDuration, effectData.burnDamage);
+
+        if(element == ElementType.Lighting && CanBeApplied(ElementType.Lighting))
+            ApplyLightingEffect(effectData.lightningDuration, effectData.lightningDamage, effectData.lightningCharge);
+
+    }
+    public void ApplyLightingEffect(float duration, float damage, float charge)
     {
 
-        float electricResistance = entityStats.GetElementalResistance(ElementType.Lighting);
-        float finalCharge = charge * (1 - electricResistance);
+        float lightningResistance = entityStats.GetElementalResistance(ElementType.Lighting);
+        float finalCharge = charge * (1 - lightningResistance);
         currentCharge += finalCharge;
 
         if (currentCharge >= maximumCharge)
         {
             DoLightingStrike(damage);
-            StopElectrifyEffect();
+            StopLightningEffect();
             return;
         }
 
-        if(electrifyCo != null)
-            StopCoroutine(electrifyCo);
-        electrifyCo = StartCoroutine(ElectrifyEffectCo(duration));
+        if(lightningCo != null)
+            StopCoroutine(lightningCo);
+        lightningCo = StartCoroutine(LightningEffectCo(duration));
     }
 
     private void DoLightingStrike(float damage)
@@ -49,21 +60,21 @@ public class Entity_StatusHandler : MonoBehaviour
     }
 
 
-    private void StopElectrifyEffect()
+    private void StopLightningEffect()
     {
         currentEffect = ElementType.None;
         currentCharge = 0;
         entityVFX.StopAllVFX();
     }
 
-    private IEnumerator ElectrifyEffectCo(float duration)
+    private IEnumerator LightningEffectCo(float duration)
     {
         currentEffect = ElementType.Lighting;
         entityVFX.PlayStatusVfx(duration, ElementType.Lighting);
 
         yield return new WaitForSeconds(duration);
 
-        StopElectrifyEffect();
+        StopLightningEffect();
     }
     public void ApplyBurnEffect(float duration, float fireDamage)
     {
@@ -94,7 +105,7 @@ public class Entity_StatusHandler : MonoBehaviour
     }
 
 
-    public void AppliedChillEffect(float duration, float slowMultiplier)
+    public void ApplyChillEffect(float duration, float slowMultiplier)
     {
         float iceResistance = entityStats.GetElementalResistance(ElementType.Ice);  
         float finalDuration = duration * (1 - iceResistance);

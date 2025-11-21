@@ -6,6 +6,9 @@ public class Skill_ObjectBase : MonoBehaviour
     [SerializeField] protected Transform targetCheck;
     [SerializeField] protected float checkRadius = 1f;
 
+    protected Entity_Stats entityStats;
+    protected DamageScaleData damageScaleData;
+
     protected Collider2D[] EnemiesAround(Transform transform, float radius)
     {
         return Physics2D.OverlapCircleAll(transform.position, radius, whatIsEnemy);
@@ -19,9 +22,17 @@ public class Skill_ObjectBase : MonoBehaviour
 
             if (damageable == null)
                 continue;
-            
-                damageable.TakeDamage(10, 0, ElementType.None, transform); // Example damage values
-            
+
+            ElementalEffectData elementalEffectData = new ElementalEffectData(entityStats, damageScaleData);
+
+            float physicalDamage = entityStats.GetPhysicalDamage(out bool isCrit, damageScaleData.physical);
+            float elementalDamage = entityStats.GetElementelDamage(out ElementType element, damageScaleData.elemental);
+
+            damageable.TakeDamage(physicalDamage, elementalDamage, element, transform); // Example damage values
+
+            if (element != ElementType.None)
+                target.GetComponent<Entity_StatusHandler>().ApplyStatusEffect(element, elementalEffectData);
+
         }
     }
     protected Transform FindClosestTarget()
