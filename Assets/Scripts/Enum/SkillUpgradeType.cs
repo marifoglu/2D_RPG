@@ -16,6 +16,12 @@ public enum SkillUpgradeType
     Shard_MoveToEnemy, // Shard moves to nearest enemy.
     Shard_MultiCast, // Shard ability can have up to N charges. You can cast them al in row.
     Shard_Teleport, // You can Teleport to the places with the last shard position.
-    Shard_TeleportHpRewind // When you Teleport to the your HP % is restored.
+    Shard_TeleportHpRewind, // When you Teleport to the your HP % is restored.
+
+    // Shard Tree ---
+    SwordThrow, // Throw a sword that damages enemies from distance.
+    SwordThrow_Spin, // Thrown sword spins, damaging all enemies in its path.
+    SwordThrow_Pierce, // Thrown sword pierces through multiple enemies.
+    SwordThrow_Bouncen// Thrown sword bounces between enemies.
 }
 

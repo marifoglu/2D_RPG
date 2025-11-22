@@ -11,6 +11,8 @@ public class Player : Entity
     public PlayerInputSet input { get; private set; }
     public Player_SkillManager skillManager { get; private set; }
     public Player_VFX vfx {get; private set; }
+    public Entity_Health health { get; private set; }
+    public Entity_StatusHandler statusHandler { get; private set; }
 
 
     #region State variables
@@ -26,6 +28,7 @@ public class Player : Entity
     public Player_LedgeClimbState ledgeClimbState { get; private set; }
     public Player_DeadState deadState { get; private set; }
     public Player_CounterAttackState counterAttackState { get; private set; }
+    public Player_SwordThrowState swordThrowState { get; private set; }
     
     #endregion
 
@@ -49,6 +52,7 @@ public class Player : Entity
     public float dashDuration = .25f;
     public float dashSpeed = 20f;
     public Vector2 moveInput { get; private set; }
+    public Vector2 mousePosition { get; private set; }
 
     [Header("Ledge Climb Cooldown")]
     public float ledgeClimbCooldown = 0.5f;
@@ -56,6 +60,33 @@ public class Player : Entity
 
     [Header("One-Way Platform")]
     public bool isDroppingThroughPlatform { get; set; } = false;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        
+        input = new PlayerInputSet();
+
+        ui = FindAnyObjectByType<UI>(); 
+        vfx = GetComponent<Player_VFX>();
+        health = GetComponent<Entity_Health>();    
+        statusHandler = GetComponent<Entity_StatusHandler>();
+        skillManager = GetComponent<Player_SkillManager>();
+
+        idleState = new Player_IdleState(this, stateMachine, "Idle");
+        moveState = new Player_MoveState(this, stateMachine, "Move");
+        jumpState = new Player_JumpState(this, stateMachine, "JumpFall");
+        fallState = new Player_FallState(this, stateMachine, "JumpFall");
+        wallSlideState = new Player_WallSlideState(this, stateMachine, "WallSlide");
+        wallJumpState = new Player_WallJumpState(this, stateMachine, "JumpFall");
+        dashState = new Player_DashState(this, stateMachine, "Dash");
+        basicAttackState = new Player_BasicAttackState(this, stateMachine, "BasicAttack");
+        jumpAttackState = new Player_JumpAttackState(this, stateMachine, "JumpAttack");
+        ledgeClimbState = new Player_LedgeClimbState(this, stateMachine, "LedgeClimb");
+        deadState = new Player_DeadState(this, stateMachine, "Dead");
+        counterAttackState = new Player_CounterAttackState(this, stateMachine, "CounterAttack");
+        swordThrowState = new Player_SwordThrowState(this, stateMachine, "SwordThrow");
+    }
 
     public void ForceFallState()
     {
@@ -82,28 +113,6 @@ public class Player : Entity
     }
 
 
-    protected override void Awake()
-    {
-        base.Awake();
-
-        ui = FindAnyObjectByType<UI>(); 
-        input = new PlayerInputSet();
-        skillManager = GetComponent<Player_SkillManager>();
-        vfx = GetComponent<Player_VFX>();
-
-        idleState = new Player_IdleState(this, stateMachine, "Idle");
-        moveState = new Player_MoveState(this, stateMachine, "Move");
-        jumpState = new Player_JumpState(this, stateMachine, "JumpFall");
-        fallState = new Player_FallState(this, stateMachine, "JumpFall");
-        wallSlideState = new Player_WallSlideState(this, stateMachine, "WallSlide");
-        wallJumpState = new Player_WallJumpState(this, stateMachine, "JumpFall");
-        dashState = new Player_DashState(this, stateMachine, "Dash");
-        basicAttackState = new Player_BasicAttackState(this, stateMachine, "BasicAttack");
-        jumpAttackState = new Player_JumpAttackState(this, stateMachine, "JumpAttack");
-        ledgeClimbState = new Player_LedgeClimbState(this, stateMachine, "LedgeClimb");
-        deadState = new Player_DeadState(this, stateMachine, "Dead");
-        counterAttackState = new Player_CounterAttackState(this, stateMachine, "CounterAttack");
-    }
 
     override protected void Start()
     {
@@ -169,6 +178,8 @@ public class Player : Entity
 
         input.PlayerCharacter.ToggleSkillTreeUi.performed += ctx => ui.ToggleSkillTreeUI();
         input.PlayerCharacter.Spell.performed += ctx => skillManager.shard.TryUseSkill();
+
+        input.PlayerCharacter.Mouse.performed += ctx => mousePosition = ctx.ReadValue<Vector2>();
     }
 
     private void OnDisable()
