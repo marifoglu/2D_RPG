@@ -2,19 +2,22 @@ using UnityEngine;
 
 public class Skill_ObjectBase : MonoBehaviour
 {
+    [SerializeField] private GameObject onHitVfx;
+    [Space]
     [SerializeField] protected LayerMask whatIsEnemy;
     [SerializeField] protected Transform targetCheck;
     [SerializeField] protected float checkRadius = 1f;
 
+    protected Animator anim;
     protected Entity_Stats entityStats;
     protected DamageScaleData damageScaleData;
     protected ElementType usedElement;
+    protected bool targetGotHit;
 
-    protected Collider2D[] EnemiesAround(Transform transform, float radius)
+    protected virtual void Awake()
     {
-        return Physics2D.OverlapCircleAll(transform.position, radius, whatIsEnemy);
+        anim = GetComponentInChildren<Animator>();
     }
-
     protected void DamageEnemiesInRadius(Transform transform, float radius)
     {
         foreach(var target in EnemiesAround(transform, radius))
@@ -32,14 +35,18 @@ public class Skill_ObjectBase : MonoBehaviour
             ElementType elementType = attackData.elementType;
 
 
-            damageable.TakeDamage(physicalDamage, elementalDamage, elementType, transform); // Example damage values
+            targetGotHit = damageable.TakeDamage(physicalDamage, elementalDamage, elementType, transform);
 
             if (elementType != ElementType.None)
                 statusHandler?.ApplyStatusEffect(elementType, attackData.elementalEffectData);
 
+            if(targetGotHit)
+                Instantiate(onHitVfx, target.transform.position, Quaternion.identity);
+
             usedElement = elementType;
         }
     }
+
     protected Transform FindClosestTarget()
     {
         Transform target = null;
@@ -57,6 +64,11 @@ public class Skill_ObjectBase : MonoBehaviour
         return target;
     }
 
+    protected Collider2D[] EnemiesAround(Transform transform, float radius)
+    {
+        return Physics2D.OverlapCircleAll(transform.position, radius, whatIsEnemy);
+    }
+ 
     protected virtual void OnDrawGizmos()
     {
         if (targetCheck == null)

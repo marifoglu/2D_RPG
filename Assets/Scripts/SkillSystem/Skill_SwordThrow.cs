@@ -2,28 +2,75 @@ using UnityEngine;
 
 public class Skill_SwordThrow : Skill_Base
 {
+    private SkillObject_Sword currentSword;
+
+    [Header("Regular Sword upgrade")]
+    [SerializeField] private GameObject swordPrefab;
+    [Range(0f, 10f)]
+    [SerializeField] private float throwPower = 6.0f;
+
+    [Header("Pierce Sword upgrade")]
+    [SerializeField] private GameObject pierceSwordPrefab;
+    public int pierceAmount = 2;
+
+    [Header("Spin Sword Upgrade")]
+    [SerializeField] private GameObject spinSwordPrefab;
+    public int maxDistance = 5;
+    public float attackPerSecond = 6;
+    public int maxSpinDuration = 3;
+
     [Header("Trajectory prediction")]
     [SerializeField] private GameObject predictionDot;
     [SerializeField] private int numberOfDots = 20;
-    [SerializeField] private float spaceBetweenDots = .50f;
-    [Space]
-    [Range(0f, 10f)]
-    [SerializeField] private float throwPower = 6.0f;
-    [SerializeField] private float swordGravity = 3.5f;
-
+    [SerializeField] private float spaceBetweenDots = .05f;
+    private float swordGravity;
     private Transform[] dots;
     private Vector2 throwDirection;
+
 
     protected override void Awake()
     {
         base.Awake();
+        swordGravity = swordPrefab.GetComponent<Rigidbody2D>().gravityScale;
         dots = GenerateDots();
     }
-
+    public override bool CanUseSkill()
+    {
+        if (currentSword != null)
+        {
+            currentSword.GetSwordBackToPlayer();
+            return false;
+        }
+        return base.CanUseSkill();
+    }
     public void ThrowSword()
     {
-        Debug.Log("Sword Thrown!");
+        GameObject swordPrefab = GetSwordPrefab();
+
+        GameObject newSword = Instantiate(swordPrefab, dots[1].position, Quaternion.identity);
+
+        currentSword = newSword.GetComponent<SkillObject_Sword>();
+        currentSword.SetupSword(this, GetThrowPower());
     }
+
+    private GameObject GetSwordPrefab()
+    {
+        if (Unlocked(SkillUpgradeType.SwordThrow))
+            return swordPrefab;
+        
+        if(Unlocked(SkillUpgradeType.SwordThrow_Pierce))
+            return pierceSwordPrefab;
+
+        if(Unlocked(SkillUpgradeType.SwordThrow_Spin))
+            return spinSwordPrefab;
+
+        Debug.Log("No valid sword upgrade selected, defaulting to regular sword.");
+
+        return null;
+    }
+
+
+    private Vector2 GetThrowPower() => throwDirection * (throwPower * 10);
 
     private Vector2 GetTrajectoryPoint(Vector2 direction, float time)
     {
@@ -42,13 +89,11 @@ public class Skill_SwordThrow : Skill_Base
         Vector2 playerPosition = transform.root.position;
 
         return playerPosition + predictionPoint;
-
-
     }
 
     public void predictTrajectory(Vector2 direction)
     {
-        for(int i = 0; i < dots.Length; i++)
+        for(int i = 0; i < dots.Length; i++)    
         {
             dots[i].position = GetTrajectoryPoint(direction, i * spaceBetweenDots);
         }

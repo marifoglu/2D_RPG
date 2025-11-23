@@ -159,12 +159,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 390f5b846f43af44da5be08e4b928d1d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Skill_ObjectShard
+  onHitVfx: {fileID: 3902961829865244433, guid: 98eedea8b5a906440a3c9a553737987d, type: 3}
   whatIsEnemy:
     serializedVersion: 2
     m_Bits: 256
   targetCheck: {fileID: 6256326350059175868}
-  checkRadius: 1.37
+  checkRadius: 1.15
   vfxPrefab: {fileID: 2380946257547771737, guid: f4fa6cca1e06bf64aac54b764a5ac9b1, type: 3}
+  target: {fileID: 0}
 --- !u!58 &2456798702209496916
 CircleCollider2D:
   m_ObjectHideFlags: 0

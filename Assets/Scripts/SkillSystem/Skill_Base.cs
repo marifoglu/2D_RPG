@@ -3,9 +3,7 @@ using UnityEngine;
 public class Skill_Base : MonoBehaviour
 {
     public Player player { get; private set; }
-
     public Player_SkillManager skillManager { get; private set; }
-
     public DamageScaleData damageScaleData { get; protected set; }
 
     [Header("General Details")]
@@ -18,8 +16,8 @@ public class Skill_Base : MonoBehaviour
     {
         player = GetComponentInParent<Player>();
         skillManager = GetComponentInParent<Player_SkillManager>(); 
-
         lastTimeUsed -= cooldown;
+        damageScaleData = new DamageScaleData();
     }
 
     public virtual void TryUseSkill()
@@ -32,8 +30,11 @@ public class Skill_Base : MonoBehaviour
         cooldown = upgrade.cooldown;
         damageScaleData = upgrade.damageScaleData;
     }
-    public bool CanUseSkill()
+    public virtual bool CanUseSkill()
     {
+        if(upgradeType == SkillUpgradeType.None)
+            return false;
+
         if (OnCoolDown())
         {
             Debug.Log("Skill on Cooldown");

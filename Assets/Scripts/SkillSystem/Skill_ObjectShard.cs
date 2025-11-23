@@ -8,7 +8,7 @@ public class Skill_ObjectShard : Skill_ObjectBase
 
     [SerializeField] private GameObject vfxPrefab;
 
-    public Transform target;
+    private Transform target;
     private float speed;
 
     private void Update()
