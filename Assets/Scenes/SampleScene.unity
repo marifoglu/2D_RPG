@@ -3633,7 +3633,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.039999522, y: 14.370001, z: 42390}
+  m_LocalPosition: {x: 0.039999522, y: 14.370001, z: 40890}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -9010,7 +9010,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 86.73456, y: -183.01187}
+  m_AnchoredPosition: {x: 86.73462, y: -183.01187}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &791339402
@@ -9315,7 +9315,7 @@ MonoBehaviour:
     AmplitudeGain: 2
     FrequencyGain: 1
     Duration: 0.25
-    m_NoiseOffsets: {x: 0, y: 0, z: 0}
+    m_NoiseOffsets: {x: 211.68265, y: 843.9479, z: -154.6351}
 --- !u!1 &809667620
 GameObject:
   m_ObjectHideFlags: 0
@@ -11011,7 +11011,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -86.57829, y: -177.51184}
+  m_AnchoredPosition: {x: -86.57831, y: -177.51184}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1002706704
@@ -12989,7 +12989,7 @@ GameObject:
   - component: {fileID: 1460183726}
   - component: {fileID: 1460183727}
   m_Layer: 5
-  m_Name: UI - Treenode - Phantom Recall
+  m_Name: UI - Treenode - XenaBlade
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13036,8 +13036,8 @@ MonoBehaviour:
   - {fileID: 1002706704}
   isUnlocked: 0
   isLocked: 0
-  skillData: {fileID: 11400000, guid: 212910c527b74c945b6af556cd09b064, type: 2}
-  skillName: Phantom Recall
+  skillData: {fileID: 11400000, guid: 0647ef041610cd342a30b97b3e9b2f95, type: 2}
+  skillName: XenaBlade
   skillIcon: {fileID: 1992409064}
   skillCost: 2
   lockedColorHex: '#9F9797'
@@ -13349,16 +13349,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Skill_Throw
   skillType: 3
-  upgradeType: 11
+  upgradeType: 14
   cooldown: 0
   swordPrefab: {fileID: 2195551132230635799, guid: 418f44e5cb4e56a439a8c08338fc2646, type: 3}
-  throwPower: 1.98
+  regularThrowPower: 5
   pierceSwordPrefab: {fileID: 4208971234491323614, guid: f0fac49d704c31f47abf5edd26c61a33, type: 3}
   pierceAmount: 5
+  pierceThrowPower: 5
   spinSwordPrefab: {fileID: 5185238113730501654, guid: aae720ccc1cc8594bb4196b7ddc0bf39, type: 3}
   maxDistance: 5
   attackPerSecond: 6
   maxSpinDuration: 5
+  spinThrowPower: 5
+  bounceSwordPrefab: {fileID: 2041502050181922860, guid: fdaa1413c9523ef4daf510baeafea004, type: 3}
+  bounceCount: 5
+  bounceSpeed: 12
+  bounceThrowPower: 5
   predictionDot: {fileID: 7401883200568031234, guid: 86b0e1f455ff98f47b9320c04419bbcb, type: 3}
   numberOfDots: 20
   spaceBetweenDots: 0.05
@@ -27067,7 +27073,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -769562099, guid: a6fce76df2a1d3e4784e5f1873d64b42, type: 3}
+  m_Sprite: {fileID: 1063817663, guid: a6fce76df2a1d3e4784e5f1873d64b42, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

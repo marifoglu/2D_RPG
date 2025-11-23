@@ -22,6 +22,6 @@ public enum SkillUpgradeType
     SwordThrow, // Throw a sword that damages enemies from distance.
     SwordThrow_Spin, // Thrown sword spins, damaging all enemies in its path.
     SwordThrow_Pierce, // Thrown sword pierces through multiple enemies.
-    SwordThrow_Bouncen// Thrown sword bounces between enemies.
+    SwordThrow_Bounce// Thrown sword bounces between enemies.
 }
 

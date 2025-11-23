@@ -13,7 +13,7 @@ public class SkillObject_Sword : Skill_ObjectBase
     protected virtual void Update()
     {
         transform.right = rb.linearVelocity;
-        HandleComeback();
+        HandleComeBack();
     }
 
     public virtual void SetupSword(Skill_SwordThrow swordManager, Vector2 direction)
@@ -27,7 +27,7 @@ public class SkillObject_Sword : Skill_ObjectBase
         damageScaleData = swordManager.damageScaleData;
     }
     public void GetSwordBackToPlayer() => shouldCombeBack = true;
-    protected void HandleComeback()
+    protected void HandleComeBack()
     {
         float distance = Vector2.Distance(transform.position, playerTransform.position);
 

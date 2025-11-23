@@ -26,7 +26,7 @@ public class SkillObject_SwordSpin : SkillObject_Sword
 
         HandleAttack();
         HandleStopping();
-        HandleComeback();
+        HandleComeBack();
     }
     private void HandleAttack()
     {

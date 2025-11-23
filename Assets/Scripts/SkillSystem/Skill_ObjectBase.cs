@@ -20,7 +20,7 @@ public class Skill_ObjectBase : MonoBehaviour
     }
     protected void DamageEnemiesInRadius(Transform transform, float radius)
     {
-        foreach(var target in EnemiesAround(transform, radius))
+        foreach(var target in GetEnemiesAround(transform, radius))
         {
             IDamageable damageable = target.GetComponent<IDamageable>();
 
@@ -52,7 +52,7 @@ public class Skill_ObjectBase : MonoBehaviour
         Transform target = null;
         float closestDistance = Mathf.Infinity;
 
-        foreach(var enemy in EnemiesAround(transform, 10))
+        foreach(var enemy in GetEnemiesAround(transform, 10))
         {
             float distance = Vector2.Distance(transform.position, enemy.transform.position);
             if (distance < closestDistance)
@@ -64,7 +64,7 @@ public class Skill_ObjectBase : MonoBehaviour
         return target;
     }
 
-    protected Collider2D[] EnemiesAround(Transform transform, float radius)
+    protected Collider2D[] GetEnemiesAround(Transform transform, float radius)
     {
         return Physics2D.OverlapCircleAll(transform.position, radius, whatIsEnemy);
     }
