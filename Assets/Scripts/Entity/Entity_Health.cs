@@ -39,15 +39,20 @@ public class Entity_Health : MonoBehaviour, IDamageable
         impulseSource = GetComponentInParent<CinemachineImpulseSource>();
 
         // Check if entityStats exists before using it
+        SetupHealth();
+    }
+
+    private void SetupHealth()
+    {
         if (entityStats == null)
-            return;   
+            return;
 
         currentHealth = entityStats.GetMaxHealth();
         UpdateHealthBar();
 
         InvokeRepeating(nameof(RegenerateHealth), 0, regenInterval);
     }
-
+        
     public virtual bool TakeDamage(float damage, float elementalDamage, ElementType elementType, Transform damageDealer)
     {
         if (isDead)
@@ -60,24 +65,24 @@ public class Entity_Health : MonoBehaviour, IDamageable
         Entity_Stats attackerStats = damageDealer.GetComponent<Entity_Stats>();
         float armorReduction = attackerStats != null ? attackerStats.GetArmorReduction() : 0f;
 
-        float mitigation = entityStats.GetArmorMitigation(armorReduction);
-        float physicalDamageTaken = damage * (1 - mitigation);
-
+        float mitigation = entityStats != null ? entityStats.GetArmorMitigation(armorReduction) : 0;
+        float elementalResistance = entityStats != null ? entityStats.GetElementalResistance(elementType) : 0;
 
         // Calculate elemental resistance
-        float elementalResistance = entityStats.GetElementalResistance(elementType);
         float elementalDamageTaken = elementalDamage * (1 - elementalResistance);
+        float physicalDamageTaken = damage * (1 - mitigation);
 
         // Knockback
         TakeKnockback(damageDealer, physicalDamageTaken);
-
         ReduceHealth(physicalDamageTaken + elementalDamageTaken);
+
 
         // Trigger camera shake when this entity takes damage
         TriggerCameraShake();
 
         return true;
     }
+
 
     public void RegenerateHealth()
     {
@@ -130,7 +135,10 @@ public class Entity_Health : MonoBehaviour, IDamageable
     
     private bool AttackEvaded()
     {
-        return Random.Range(0,100) < entityStats.GetEvasion();
+        if (entityStats == null)
+            return false;
+        else
+            return Random.Range(0, 100) < entityStats.GetEvasion();
     }
 
     public float GetHealthPercentage() => currentHealth / entityStats.GetMaxHealth();
@@ -165,8 +173,8 @@ public class Entity_Health : MonoBehaviour, IDamageable
     {
         if (entityStats == null)
             return false;
-
-        return damage / entityStats.GetMaxHealth() > heavyDamageTreshold;
+        else
+            return damage / entityStats.GetMaxHealth() > heavyDamageTreshold;
     }
     private void TriggerCameraShake()
     {

@@ -2,6 +2,8 @@
 
 public class Enemy_BattleState : EnemyState
 {
+    private Transform player;
+    private Transform lastTarget;
     private float lastTimeWasInBattle;
     private const float FLIP_DEAD_ZONE = 0.1f;
 
@@ -15,14 +17,8 @@ public class Enemy_BattleState : EnemyState
 
         UpdateBattleTimer();
 
-        if (enemy.player == null)
-        {
-            var hit = enemy.PlayerDetected();
-            if (hit.collider != null)
-            {
-                enemy.TryEnterBattleState(hit.transform);
-            }
-        }
+        if (player == null)
+            player = enemy.GetPlayerDetection();
 
         if (ShouldRetreat())
         {
@@ -43,25 +39,40 @@ public class Enemy_BattleState : EnemyState
             return;
         }
 
-        // normal battle logic below, this one only runs when we're safe
-        bool playerDetected = enemy.PlayerDetected();
-
-        if (playerDetected)
+        // Update target tracking
+        if (enemy.PlayerDetected())
+        {
+            UpdateTargetIfNeeded();
             UpdateBattleTimer();
+        }
         else if (BattleTimeOver())
         {
             stateMachine.ChangeState(enemy.idleState);
             return;
         }
 
-        if (WithinAttackRange() && playerDetected)
+        if (WithinAttackRange() && enemy.PlayerDetected())
         {
             stateMachine.ChangeState(enemy.attackState);
             return;
         }
 
         int dir = DirectToPlayer();
-        enemy.SetVelocity(enemy.battleMoveSpeed * dir, rb.linearVelocity.y);
+        enemy.SetVelocity(enemy.GetBattleMoveSpeed() * dir, rb.linearVelocity.y);
+    }
+
+    private void UpdateTargetIfNeeded()
+    {
+        if (enemy.PlayerDetected() == false)
+            return;
+
+        Transform newTarget = enemy.PlayerDetected().transform;
+
+        if (newTarget != lastTarget)
+        {
+            lastTarget = newTarget;
+            player = newTarget;
+        }
     }
 
     private void UpdateBattleTimer() => lastTimeWasInBattle = Time.time;
@@ -70,37 +81,20 @@ public class Enemy_BattleState : EnemyState
 
     private bool ShouldRetreat() => DistanceToPlayer() < enemy.minRetreatDistance;
 
-    private bool CanSafelyAttack()
-    {
-        if (enemy.player == null)
-            return false;
-
-        if (enemy.edgeDetected)
-            return false;
-
-        if (enemy.wallDetected)
-            return false;
-
-        if (!enemy.groundDetected)
-            return false;
-
-        return true;
-    }
-
     private float DistanceToPlayer()
     {
-        if (enemy.player == null)
+        if (player == null)
             return float.MaxValue;
 
-        return Mathf.Abs(enemy.player.position.x - enemy.transform.position.x);
+        return Mathf.Abs(player.position.x - enemy.transform.position.x);
     }
 
     private int DirectToPlayer()
     {
-        if (enemy.player == null)
+        if (player == null)
             return 0;
 
-        float distance = enemy.player.position.x - enemy.transform.position.x;
+        float distance = player.position.x - enemy.transform.position.x;
 
         if (Mathf.Abs(distance) < FLIP_DEAD_ZONE)
             return 0; // too close - don't flip

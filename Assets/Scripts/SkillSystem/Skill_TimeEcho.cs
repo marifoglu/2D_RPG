@@ -5,6 +5,7 @@ public class Skill_TimeEcho : Skill_Base
     [SerializeField] private GameObject timeEchoPrefab;
     [SerializeField] private float timeEchoDuration;
 
+    public float GetEchoDuration => timeEchoDuration; // returns duration of the echo
     public override void TryUseSkill()
     {
         if (CanUseSkill() == false)
