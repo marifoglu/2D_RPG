@@ -1,8 +1,7 @@
 using UnityEngine;
 
-public class SkillObject_Sword : Skill_ObjectBase
+public class SkillObject_Sword : SkillObject_Base
 {
-    protected Rigidbody2D rb;
     protected Skill_SwordThrow swordManager;
 
     protected Transform playerTransform;
@@ -18,7 +17,6 @@ public class SkillObject_Sword : Skill_ObjectBase
 
     public virtual void SetupSword(Skill_SwordThrow swordManager, Vector2 direction)
     {
-        rb = GetComponent<Rigidbody2D>();
         rb.linearVelocity = direction;
         this.swordManager = swordManager;
 

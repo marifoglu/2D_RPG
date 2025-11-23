@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Skill_Shard : Skill_Base
 {
-    private Skill_ObjectShard currentShard;
+    private SkillObject_Shard currentShard;
     private Entity_Health playerHealth;
 
     [SerializeField] private GameObject shardPrefab;
@@ -60,7 +60,7 @@ public class Skill_Shard : Skill_Base
         float detonateTime = GetDetonateTime();
 
         GameObject shard = Instantiate(shardPrefab, transform.position, Quaternion.identity);
-        currentShard = shard.GetComponent<Skill_ObjectShard>();
+        currentShard = shard.GetComponent<SkillObject_Shard>();
 
         currentShard.SetupShard(this);
 
@@ -75,7 +75,7 @@ public class Skill_Shard : Skill_Base
         bool canMove = Unlocked(SkillUpgradeType.Shard_MoveToEnemy) || Unlocked(SkillUpgradeType.Shard_MultiCast); 
 
         GameObject shard = Instantiate(shardPrefab, transform.position, Quaternion.identity);
-        shard.GetComponent<Skill_ObjectShard>().SetupShard(this, detonateTime, canMove, shardSpeed);
+        shard.GetComponent<SkillObject_Shard>().SetupShard(this, detonateTime, canMove, shardSpeed);
     }
 
     private void HandleShardRegular()

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Skill_ObjectBase : MonoBehaviour
+public class SkillObject_Base : MonoBehaviour
 {
     [SerializeField] private GameObject onHitVfx;
     [Space]
@@ -8,6 +8,8 @@ public class Skill_ObjectBase : MonoBehaviour
     [SerializeField] protected Transform targetCheck;
     [SerializeField] protected float checkRadius = 1f;
 
+
+    protected Rigidbody2D rb;
     protected Animator anim;
     protected Entity_Stats entityStats;
     protected DamageScaleData damageScaleData;
@@ -17,6 +19,7 @@ public class Skill_ObjectBase : MonoBehaviour
     protected virtual void Awake()
     {
         anim = GetComponentInChildren<Animator>();
+        rb = GetComponent<Rigidbody2D>();
     }
     protected void DamageEnemiesInRadius(Transform transform, float radius)
     {

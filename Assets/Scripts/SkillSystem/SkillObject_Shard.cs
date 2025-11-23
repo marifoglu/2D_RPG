@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
 
-public class Skill_ObjectShard : Skill_ObjectBase
+public class SkillObject_Shard : SkillObject_Base
 {
     public event Action onExplode;
     private Skill_Shard shardManager;

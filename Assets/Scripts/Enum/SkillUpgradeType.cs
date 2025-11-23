@@ -22,6 +22,16 @@ public enum SkillUpgradeType
     SwordThrow, // Throw a sword that damages enemies from distance.
     SwordThrow_Spin, // Thrown sword spins, damaging all enemies in its path.
     SwordThrow_Pierce, // Thrown sword pierces through multiple enemies.
-    SwordThrow_Bounce// Thrown sword bounces between enemies.
+    SwordThrow_Bounce,// Thrown sword bounces between enemies.
+
+    // Shard Tree ---
+    TimeEcho, // Create clone of player, it can take damage from enemies.
+    TimeEcho_SingleAttack, // The clone attacks a single time before disappearing.
+    TimeEcho_MultiAttack, // The clone attacks multiple times before disappearing.
+    TimeEcho_ChanceToMultiply, // There is a chance that after disappearing, the clone creates another clone.
+    TimeEcho_HealWisp, // When the clone dies it creates a wisp that flies to the player and heals him. Heal amount is based on clones recieved damage before die
+    TimeEcho_CleanseWisp, // wisp will remove negative status effects from the player.
+    TimeEcho_CoolDownWisp, // wisp will reduce all skills cooldown.
+
 }
 
