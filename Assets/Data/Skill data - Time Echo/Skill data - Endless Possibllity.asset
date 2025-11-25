@@ -10,17 +10,19 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7912fbb8459f0a34b9f6c72870fc05ec, type: 3}
-  m_Name: Skill data - Phantom Recall
+  m_Name: Skill data - Endless Possibllity
   m_EditorClassIdentifier: Assembly-CSharp::Skill_DataSO
-  displayName: Phantom Recall
-  description: Press skill buton again, to change place with shard you created.
-  icon: {fileID: -769562099, guid: a6fce76df2a1d3e4784e5f1873d64b42, type: 3}
-  cost: 2
+  displayName: Endless Possibllity
+  description: 'Create a time echo of yourself.
+
+    The echo will distracts enemies.'
+  icon: {fileID: 1836287490, guid: a6fce76df2a1d3e4784e5f1873d64b42, type: 3}
+  cost: 1
   unlockedByDefault: 0
-  skillType: 2
+  skillType: 1
   upgradeData:
-    upgradeType: 9
-    cooldown: 3
+    upgradeType: 18
+    cooldown: 0
     damageScaleData:
       physical: 1
       elemental: 1

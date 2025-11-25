@@ -17,7 +17,7 @@ public class Entity : MonoBehaviour
 
     
     [Header("Collision Detection")]
-    [SerializeField] protected LayerMask whatIsGround;
+    public LayerMask whatIsGround;
     [SerializeField] private float groundCheckRadius = 0.1f;
     [SerializeField] private float wallCheckDistance;
     [SerializeField] private Transform groundCheck;
@@ -141,7 +141,14 @@ public class Entity : MonoBehaviour
         rb.linearVelocity = Vector2.zero;
         isKnocked = false;
     }
+    public void SetVelocityRaw(float xVelocity, float yVelocity)
+    {
+        if (isKnocked)
+            return;
 
+        rb.linearVelocity = new Vector2(xVelocity, yVelocity);
+        HandleFlip(xVelocity);
+    }
     public void SetVelocity(float xInput, float yVelocity)
     {
         if (isKnocked) return;
@@ -437,6 +444,13 @@ public class Entity : MonoBehaviour
             // Use no friction and full gravity when dropping through platform
             col.sharedMaterial = noFriction;
             rb.gravityScale = defaultGravity;
+            return;
+        }
+
+        // Don't apply slope friction or gravity changes during Domain Expansion
+        if (player != null && stateMachine.currentState == player.domainExpansionState)
+        {
+            col.sharedMaterial = noFriction;
             return;
         }
 

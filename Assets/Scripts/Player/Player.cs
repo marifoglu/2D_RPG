@@ -29,7 +29,9 @@ public class Player : Entity
     public Player_DeadState deadState { get; private set; }
     public Player_CounterAttackState counterAttackState { get; private set; }
     public Player_SwordThrowState swordThrowState { get; private set; }
-    
+    public Player_DomainExpansionState domainExpansionState { get; private set; }
+
+
     #endregion
 
     [Header("Attack Details")]
@@ -43,7 +45,6 @@ public class Player : Entity
     public float moveSpeed;
     public float jumpForce = 5;
     public Vector2 wallJumpForce;
-
     [Range(0, 1)]
     public float inAirMoveMultiplier = .7f;
     [Range(0, 1)]
@@ -60,6 +61,11 @@ public class Player : Entity
 
     [Header("One-Way Platform")]
     public bool isDroppingThroughPlatform { get; set; } = false;
+
+    [Header("Ultimate Attack")]
+    public float riseSpeed = 25f;
+    public float riseMaxDistance = 3f;
+
 
     protected override void Awake()
     {
@@ -86,6 +92,7 @@ public class Player : Entity
         deadState = new Player_DeadState(this, stateMachine, "Dead");
         counterAttackState = new Player_CounterAttackState(this, stateMachine, "CounterAttack");
         swordThrowState = new Player_SwordThrowState(this, stateMachine, "SwordThrow");
+        domainExpansionState = new Player_DomainExpansionState(this, stateMachine, "JumpFall");
     }
 
     public void ForceFallState()
@@ -111,8 +118,6 @@ public class Player : Entity
     {
         lastLedgeClimbTime = Time.time;
     }
-
-
 
     override protected void Start()
     {
