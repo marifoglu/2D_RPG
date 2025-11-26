@@ -10,19 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7912fbb8459f0a34b9f6c72870fc05ec, type: 3}
-  m_Name: Skill data - Quick Dash
+  m_Name: Skill data - Shards of time
   m_EditorClassIdentifier: Assembly-CSharp::Skill_DataSO
-  displayName: Quick Dash
-  description: 'Dash to avoid attacks.
-
-    You cannot take damage while dashing.'
-  icon: {fileID: -30642816, guid: a6fce76df2a1d3e4784e5f1873d64b42, type: 3}
-  cost: 0
+  displayName: Shards of time
+  description: spawn multiple clones to hit enemy
+  icon: {fileID: 634074437, guid: a6fce76df2a1d3e4784e5f1873d64b42, type: 3}
+  cost: 4
   unlockedByDefault: 0
-  skillType: 0
+  skillType: 4
   upgradeData:
-    upgradeType: 1
-    cooldown: 3
+    upgradeType: 23
+    cooldown: 120
     damageScaleData:
       physical: 1
       elemental: 1
@@ -32,4 +30,4 @@ MonoBehaviour:
       burnDamageScale: 1
       lightningDuration: 3
       lightningDamageScale: 1
-      lightningCharge: 1
+      lightningCharge: 0.4

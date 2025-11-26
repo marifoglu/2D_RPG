@@ -18,6 +18,14 @@ public class SkillObject_SwordBounce : SkillObject_Sword
 
         bounceSpeed = swordManager.bounceSpeed;
         bounceCount = swordManager.bounceCount;
+
+        // Initialize enemy list and try to pick a first target immediately
+        enemyTargets = GetEnemiesAround(transform, 10f);
+        if (enemyTargets != null && enemyTargets.Length > 0)
+        {
+            rb.simulated = false; // control movement manually
+            nextTarget = GetNextTarget();
+        }
     }
 
     protected override void Update()
@@ -33,7 +41,7 @@ public class SkillObject_SwordBounce : SkillObject_Sword
 
         transform.position = Vector2.MoveTowards(transform.position, nextTarget.position, bounceSpeed * Time.deltaTime);
 
-        if(Vector2.Distance(transform.position, nextTarget.position) < 0.75f)
+        if (Vector2.Distance(transform.position, nextTarget.position) < 0.75f)
         {
             DamageEnemiesInRadius(transform, 1f);
             BounceToNextTarget();
@@ -46,13 +54,11 @@ public class SkillObject_SwordBounce : SkillObject_Sword
         }
     }
 
-
     private void BounceToNextTarget()
     {
         nextTarget = GetNextTarget();
         bounceCount--;
     }
-            
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
@@ -61,9 +67,10 @@ public class SkillObject_SwordBounce : SkillObject_Sword
             enemyTargets = GetEnemiesAround(transform, 10f);
             rb.simulated = false;
         }
+
         DamageEnemiesInRadius(transform, 1f);
 
-        if(enemyTargets.Length <= 1 || bounceCount == 0)
+        if (enemyTargets.Length <= 1 || bounceCount == 0)
             GetSwordBackToPlayer();
         else
             nextTarget = GetNextTarget();
@@ -73,28 +80,31 @@ public class SkillObject_SwordBounce : SkillObject_Sword
     {
         List<Transform> validTarget = GetValidTargets();
 
+        if (validTarget == null || validTarget.Count == 0)
+            return null;
+
         int randomIndex = Random.Range(0, validTarget.Count);
 
-        Transform nextTarget = validTarget[randomIndex];
-        selectedBefore.Add(nextTarget);
+        Transform next = validTarget[randomIndex];
+        selectedBefore.Add(next);
 
-        return nextTarget;
+        return next;
     }
 
     private List<Transform> GetValidTargets()
-    { 
+    {
         List<Transform> validTargets = new List<Transform>();
         List<Transform> aliveTargets = GetAliveTargets();
-        
+
         foreach (var enemy in aliveTargets)
         {
-            if (enemy != null && selectedBefore.Contains(enemy.transform) == false)
+            if (enemy != null && !selectedBefore.Contains(enemy.transform))
                 validTargets.Add(enemy.transform);
         }
-        
+
         if (validTargets.Count > 0)
         {
-            return aliveTargets;
+            return validTargets; // <-- fixed: return filtered list, not full aliveTargets
         }
         else
         {
@@ -103,10 +113,12 @@ public class SkillObject_SwordBounce : SkillObject_Sword
         }
     }
 
-
     private List<Transform> GetAliveTargets()
     {
         List<Transform> aliveTargets = new List<Transform>();
+
+        if (enemyTargets == null)
+            return aliveTargets;
 
         foreach (var enemy in enemyTargets)
         {
