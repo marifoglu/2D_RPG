@@ -23,6 +23,7 @@ public class Enemy : Entity
     [Range(0, 2)]
     public float moveAnimSpeedMultiplier = 1.0f;
 
+
     [Header("Player Detection Settings")]
     [SerializeField] private LayerMask whatIsPlayer;
     [SerializeField] private Transform playerCheck;
@@ -80,21 +81,13 @@ public class Enemy : Entity
 
     protected override IEnumerator SlowDownEntityCo(float duration, float slowMultiplier)
     {
-        float originalMoveSpeed = moveSpeed;
-        float originalBattleSpeed = battleMoveSpeed;
-        float originalAnimSpeed = anim.speed;
+        activeSlowMultiplier = 1 - slowMultiplier;
 
-        float speedMultiplier = 1 - slowMultiplier;
-
-        moveSpeed *= speedMultiplier;
-        battleMoveSpeed *= speedMultiplier;
-        anim.speed *= speedMultiplier;
+        anim.speed *= activeSlowMultiplier;
 
         yield return new WaitForSeconds(duration);
 
-        moveSpeed = originalMoveSpeed;
-        battleMoveSpeed = originalBattleSpeed;
-        anim.speed = originalAnimSpeed;
+        StopSlowDown();
     }
 
     public void EnableCounterWindow(bool enable)
@@ -183,6 +176,13 @@ public class Enemy : Entity
             return default;
 
         return hit;
+    }
+
+    public override void StopSlowDown()
+    {
+        activeSlowMultiplier = 1;
+        anim.speed = 1;
+        base.StopSlowDown();
     }
 
     protected override void OnDrawGizmos()

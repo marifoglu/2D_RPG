@@ -29,7 +29,7 @@ public class SkillObject_Shard : SkillObject_Base
         Invoke(nameof(Explode), detotnationTime);
     }
 
-    public void SetupShard(Skill_Shard shardManager, float detotnationTime, bool canMove, float shardSpeed)
+    public void SetupShard(Skill_Shard shardManager, float detotnationTime, bool canMove, float shardSpeed, Transform target = null)
     {
         this.shardManager = shardManager;
         entityStats = shardManager.player.stats;
@@ -39,12 +39,12 @@ public class SkillObject_Shard : SkillObject_Base
         Invoke(nameof(Explode), detotnationTime);
 
         if(canMove)
-            MoveTowerdsClosestTarget(shardSpeed);
+            MoveTowerdsClosestTarget(shardSpeed, target);
     }
 
-    public void MoveTowerdsClosestTarget(float moveSpeed)
+    public void MoveTowerdsClosestTarget(float moveSpeed, Transform newTarget = null)
     {
-        target = FindClosestTarget();
+        target = newTarget == null ? FindClosestTarget() : newTarget;
         this.speed = moveSpeed;
     }
 

@@ -50,9 +50,7 @@ public class Skill_Shard : Skill_Base
 
         if (Unlocked(SkillUpgradeType.Shard_TeleportHpRewind))
             HandleShardHealthRewind();
-        {
-            
-        }
+
 
     }
     public void CreateShard()
@@ -70,12 +68,17 @@ public class Skill_Shard : Skill_Base
         }
     }
 
-    public void CreateRawShard()
+    public void CreateRawShard(Transform target = null, bool shardsCanMove = false)
     {
-        bool canMove = Unlocked(SkillUpgradeType.Shard_MoveToEnemy) || Unlocked(SkillUpgradeType.Shard_MultiCast); 
+        bool canMove = shardsCanMove != false ? shardsCanMove : Unlocked(SkillUpgradeType.Shard_MoveToEnemy) || Unlocked(SkillUpgradeType.Shard_MultiCast); 
 
         GameObject shard = Instantiate(shardPrefab, transform.position, Quaternion.identity);
-        shard.GetComponent<SkillObject_Shard>().SetupShard(this, detonateTime, canMove, shardSpeed);
+        shard.GetComponent<SkillObject_Shard>().SetupShard(this, detonateTime, canMove, shardSpeed, target);
+    }
+
+    public void CreateDomainShard(Transform target)
+    {
+
     }
 
     private void HandleShardRegular()

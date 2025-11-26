@@ -22,7 +22,7 @@ public class Enemy_BattleState : EnemyState
 
         if (ShouldRetreat())
         {
-            rb.linearVelocity = new Vector2(enemy.retreatVelocity.x * -DirectToPlayer(), enemy.retreatVelocity.y);
+            rb.linearVelocity = new Vector2((enemy.retreatVelocity.x * enemy.activeSlowMultiplier) * -DirectToPlayer(), enemy.retreatVelocity.y);
             enemy.HandleFlip(DirectToPlayer());
         }
     }
@@ -58,6 +58,7 @@ public class Enemy_BattleState : EnemyState
         }
 
         int dir = DirectToPlayer();
+
         enemy.SetVelocity(enemy.GetBattleMoveSpeed() * dir, rb.linearVelocity.y);
     }
 

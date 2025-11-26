@@ -99,10 +99,22 @@ public class Entity : MonoBehaviour
             stateMachine.UpdateActiveState();
         }
     }
-    public virtual void SlowDownEntity(float duration, float slowMultiplier)
+
+    public virtual void StopSlowDown()
+    {
+        slowDownCo = null;
+        
+    }
+    public virtual void SlowDownEntity(float duration, float slowMultiplier, bool canOverrideSlowDownEffect = false)
     {
         if(slowDownCo != null)
-            StopCoroutine(slowDownCo);
+        {
+            if(canOverrideSlowDownEffect)
+                StopCoroutine(slowDownCo);
+            else
+                return; 
+
+        }
 
         slowDownCo = StartCoroutine(SlowDownEntityCo(duration, slowMultiplier));
     }

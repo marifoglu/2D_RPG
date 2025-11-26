@@ -11,7 +11,7 @@ public class Enemy_MoveState : Enemy_GroundedState
     public override void Enter()
     {
         base.Enter();
-        // allow a brief step away from the edge after entering move
+        // step away from the edge after entering move
         edgeGraceTimer = 0.18f; 
     }
 
@@ -19,7 +19,7 @@ public class Enemy_MoveState : Enemy_GroundedState
     {
         base.Update();
 
-        // Always fall back to Idle if lose ground
+        // Fall back to Idle if lose ground
         if (!enemy.groundDetected)
         {
             enemy.SetVelocity(0f, rb.linearVelocity.y);
@@ -27,7 +27,7 @@ public class Enemy_MoveState : Enemy_GroundedState
             return;
         }
 
-        // While grace timer is active, ignore all edge/wall checks,
+        // While timer is active, ignore all edge/ wall checks,
         if (edgeGraceTimer > 0f)
         {
             edgeGraceTimer -= Time.deltaTime;
@@ -45,6 +45,6 @@ public class Enemy_MoveState : Enemy_GroundedState
         }
 
         // Normal roam
-        enemy.SetVelocity(enemy.moveSpeed * enemy.facingDir, rb.linearVelocity.y);
+        enemy.SetVelocity(enemy.GetMoveSpeed() * enemy.facingDir, rb.linearVelocity.y);
     }
 }
