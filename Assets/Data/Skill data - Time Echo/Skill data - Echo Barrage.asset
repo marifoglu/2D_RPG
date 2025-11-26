@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7912fbb8459f0a34b9f6c72870fc05ec, type: 3}
   m_Name: Skill data - Echo Barrage
   m_EditorClassIdentifier: Assembly-CSharp::Skill_DataSO
-  displayName: Endless Possibllity
+  displayName: Echo Barrage
   description: 'Create a time echo can peform 3 attack
 
 '

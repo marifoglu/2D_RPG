@@ -10772,7 +10772,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -131.11096, y: -139.17819}
+  m_AnchoredPosition: {x: -131.11084, y: -139.17825}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &897723055
@@ -13642,7 +13642,7 @@ GameObject:
   - component: {fileID: 1290065853}
   - component: {fileID: 1290065852}
   m_Layer: 5
-  m_Name: UI - Treenode - Endless Possibllity
+  m_Name: UI - Treenode - Echo Barrage
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -13686,7 +13686,7 @@ MonoBehaviour:
   isUnlocked: 0
   isLocked: 0
   skillData: {fileID: 11400000, guid: 0f48ce2e20098ca4cb470f221c7a3f7e, type: 2}
-  skillName: Endless Possibllity
+  skillName: Echo Barrage
   skillIcon: {fileID: 131741428}
   skillCost: 1
   lockedColorHex: '#9F9797'
@@ -15059,7 +15059,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Skill_Throw
   skillType: 3
-  upgradeType: 14
+  upgradeType: 11
   cooldown: 0
   swordPrefab: {fileID: 2195551132230635799, guid: 418f44e5cb4e56a439a8c08338fc2646, type: 3}
   regularThrowPower: 5
