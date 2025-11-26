@@ -32,8 +32,30 @@ public class Player_DomainExpansionState : PlayerState
     {
         base.Update();
 
-        if (Vector2.Distance(originalPosition, player.transform.position) >= maxDistanceToGoUp && isLevitating == false)
+        // Calculate current distance traveled
+        float currentDistance = Vector2.Distance(originalPosition, player.transform.position);
+
+        if (currentDistance >= maxDistanceToGoUp && isLevitating == false)
+        {
             Lavitate();
+        }
+        else if (!isLevitating)
+        {
+            // Continue rising but check if we need to slow down near the max distance
+            // This prevents overshooting
+            float remainingDistance = maxDistanceToGoUp - currentDistance;
+
+            if (remainingDistance < 0.5f)
+            {
+                // Slow down when very close to max distance
+                player.SetVelocity(0, rb.linearVelocity.y * 0.5f);
+            }
+            else
+            {
+                // Maintain rise speed
+                player.SetVelocity(0, player.riseSpeed);
+            }
+        }
 
         if (isLevitating)
         {
@@ -42,7 +64,6 @@ public class Player_DomainExpansionState : PlayerState
             if (stateTimer < 0)
             {
                 isLevitating = false;
-                //rb.gravityScale = originalGravity;
                 stateMachine.ChangeState(player.idleState);
             }
         }

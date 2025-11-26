@@ -10,7 +10,7 @@ public class Player : Entity
     public static event Action OnPlayerDeath;
     public PlayerInputSet input { get; private set; }
     public Player_SkillManager skillManager { get; private set; }
-    public Player_VFX vfx {get; private set; }
+    public Player_VFX vfx { get; private set; }
     public Entity_Health health { get; private set; }
     public Entity_StatusHandler statusHandler { get; private set; }
 
@@ -70,12 +70,12 @@ public class Player : Entity
     protected override void Awake()
     {
         base.Awake();
-        
+
         input = new PlayerInputSet();
 
-        ui = FindAnyObjectByType<UI>(); 
+        ui = FindAnyObjectByType<UI>();
         vfx = GetComponent<Player_VFX>();
-        health = GetComponent<Entity_Health>();    
+        health = GetComponent<Entity_Health>();
         statusHandler = GetComponent<Entity_StatusHandler>();
         skillManager = GetComponent<Player_SkillManager>();
 
@@ -142,8 +142,8 @@ public class Player : Entity
         anim.speed *= speedMultiplier;
         wallJumpForce *= speedMultiplier;
         jumpAttackVelocity *= speedMultiplier;
-        
-        for(int i = 0; i < attackVelocity.Length; i++)
+
+        for (int i = 0; i < attackVelocity.Length; i++)
         {
             attackVelocity[i] *= speedMultiplier;
         }

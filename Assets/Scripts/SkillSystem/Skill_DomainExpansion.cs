@@ -36,8 +36,9 @@ public class Skill_DomainExpansion : Skill_Base
         // Guard against division by zero
         if (duration <= 0f)
         {
+            Debug.LogWarning("Domain duration is 0 or negative!");
             spellPerSecond = 0f;
-            return duration;
+            return 1f; // Return at least 1 second to prevent division by zero
         }
 
         // Calculate spells per second based on chosen duration
@@ -64,24 +65,61 @@ public class Skill_DomainExpansion : Skill_Base
     {
         GameObject domainObject = Instantiate(domainPrefab, player.transform.position, Quaternion.identity);
         domainObject.GetComponent<SkillObject_DomainExpansion>().SetupDomain(this);
+
+        // Initialize spell casting timer properly
+        if (spellPerSecond > 0f)
+            spellCasterTime = 1f / spellPerSecond;
+        else
+            spellCasterTime = float.MaxValue;
+
+        Debug.Log($"Domain created. Upgrade type: {upgradeType}, SpellPerSecond: {spellPerSecond}, Initial timer: {spellCasterTime}");
     }
 
     public void AddTarget(Enemy addTarrget)
     {
-        trappedTargets.Add(addTarrget);
+        if (addTarrget != null && !trappedTargets.Contains(addTarrget))
+        {
+            trappedTargets.Add(addTarrget);
+            Debug.Log($"Target added to domain: {addTarrget.name}. Total targets: {trappedTargets.Count}");
+        }
     }
 
     public void DoSpellCasting()
     {
-        spellCasterTime -= Time.deltaTime;
-        if (currentTargets == null)
-            currentTargets = FindTargetInDomain();
+        // CHECK: Only specific upgrade types should cast spells
+        // Domain_EchoSpam and Domain_ShardSpam should spawn clones
+        // But if upgradeType is something like TimeEcho_SingleAttack, it means
+        // you're trying to use a TimeEcho upgrade on the Domain skill, which is wrong
 
-        if (currentTargets != null && spellCasterTime < 0)
+        bool shouldCastEchoes = upgradeType == SkillUpgradeType.Domain_EchoSpam;
+        bool shouldCastShards = upgradeType == SkillUpgradeType.Domain_ShardSpam;
+
+        if (!shouldCastEchoes && !shouldCastShards)
         {
-            CastSpell(currentTargets);
-            spellCasterTime = spellPerSecond > 0f ? 1f / spellPerSecond : float.MaxValue;
-            currentTargets = null;
+            Debug.LogWarning($"Domain upgrade type '{upgradeType}' does not support spell casting. Use Domain_EchoSpam or Domain_ShardSpam.");
+            return;
+        }
+
+        spellCasterTime -= Time.deltaTime;
+
+        if (spellCasterTime <= 0)
+        {
+            if (currentTargets == null)
+                currentTargets = FindTargetInDomain();
+
+            if (currentTargets != null)
+            {
+                Debug.Log($"Casting spell at target: {currentTargets.name}");
+                CastSpell(currentTargets);
+                spellCasterTime = spellPerSecond > 0f ? 1f / spellPerSecond : float.MaxValue;
+                currentTargets = null;
+            }
+            else
+            {
+                Debug.LogWarning("No valid targets found in domain!");
+                // Reset timer even if no target found to prevent rapid checking
+                spellCasterTime = 0.5f;
+            }
         }
     }
     private void CastSpell(Transform target)
@@ -89,11 +127,13 @@ public class Skill_DomainExpansion : Skill_Base
         if (upgradeType == SkillUpgradeType.Domain_EchoSpam)
         {
             Vector3 offset = Random.value < .5f ? new Vector2(1, 0) : new Vector2(-1, 0);
+            Debug.Log($"Creating Time Echo at position: {target.position + offset}");
             skillManager.timeEcho.CreateTimeEcho(target.position + offset);
         }
 
         if (upgradeType == SkillUpgradeType.Domain_ShardSpam)
         {
+            Debug.Log($"Creating Shard targeting: {target.name}");
             skillManager.shard.CreateRawShard(target, true);
         }
 
@@ -109,7 +149,10 @@ public class Skill_DomainExpansion : Skill_Base
         }
 
         if (trappedTargets.Count == 0)
+        {
+            Debug.Log("No targets in domain!");
             return null;
+        }
 
         int randomIndex = Random.Range(0, trappedTargets.Count);
         Enemy chosen = trappedTargets[randomIndex];
@@ -126,6 +169,8 @@ public class Skill_DomainExpansion : Skill_Base
 
     public void ClearTargets()
     {
+        Debug.Log($"Clearing {trappedTargets.Count} targets from domain");
+
         // Defensive: only call StopSlowDown on still-alive references
         foreach (var enemy in trappedTargets)
         {
@@ -133,6 +178,6 @@ public class Skill_DomainExpansion : Skill_Base
                 enemy.StopSlowDown();
         }
 
-        trappedTargets = new List<Enemy>();
+        trappedTargets.Clear();
     }
 }

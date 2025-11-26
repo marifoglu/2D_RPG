@@ -41,12 +41,11 @@ public class Skill_TimeEcho : Skill_Base
         CreateTimeEcho();
     }
 
-    public void CreateTimeEcho(Vector3? targetPosition = null) 
-    { 
-
+    public void CreateTimeEcho(Vector3? targetPosition = null)
+    {
         Vector3 position = targetPosition ?? transform.position;
-    
-        GameObject timeEcho = Instantiate(timeEchoPrefab, transform.position, transform.rotation);
+
+        GameObject timeEcho = Instantiate(timeEchoPrefab, position, transform.rotation);
         timeEcho.GetComponent<SkillObject_TimeEcho>().SetupEcho(this);
     }
 }
