@@ -131,7 +131,7 @@ public class Player_DomainExpansionState : PlayerState
         if (createdDomain == false)
         {
             createdDomain = true;
-            Debug.Log("Domain Expansion Created!");
+            skillManager.domainExpansion.CreateDomain();
         }
     }
 
