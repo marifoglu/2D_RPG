@@ -26,6 +26,7 @@ public class Player_DomainExpansionState : PlayerState
         rb.gravityScale = 0f;
 
         player.SetVelocity(0, player.riseSpeed);
+        player.health.SetCanTakeDamage(false);
     }
 
     public override void Update()
@@ -104,7 +105,9 @@ public class Player_DomainExpansionState : PlayerState
     public override void Exit()
     {
         base.Exit();
-        rb.gravityScale = originalGravity;
+        //rb.gravityScale = originalGravity;
         createdDomain = false;
+        player.health.SetCanTakeDamage(true);
+
     }
 }

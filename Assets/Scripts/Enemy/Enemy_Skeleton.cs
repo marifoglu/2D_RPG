@@ -2,7 +2,6 @@ using UnityEngine;
 
 public class Enemy_Skeleton : Enemy, ICounterable
 {
-
     protected override void Awake()
     {
         base.Awake();

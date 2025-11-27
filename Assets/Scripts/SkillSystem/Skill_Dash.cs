@@ -28,6 +28,6 @@ public class Skill_Dash : Skill_Base
 
     private void CreateClone()
     {
-        Debug.Log("Create Dash Clone"); 
+        skillManager.timeEcho.CreateTimeEcho();
     }
 }

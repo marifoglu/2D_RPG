@@ -10,6 +10,7 @@ public class UI_SkillToolTip : UI_ToolTip
 
     [SerializeField] private TextMeshProUGUI skillName;
     [SerializeField] private TextMeshProUGUI skillDescription;
+    [SerializeField] private TextMeshProUGUI skillCoolDown;
     [SerializeField] private TextMeshProUGUI skillRequirements;
 
     [Space]
@@ -42,6 +43,7 @@ public class UI_SkillToolTip : UI_ToolTip
 
         skillName.text = node.skillData.displayName;
         skillDescription.text = node.skillData.description;
+        skillCoolDown.text = $"Cooldown: {node.skillData.upgradeData.cooldown} sec";
 
         string skillLockedText = GetColoredText(importantInfoHex, lockedSkillText);
         string requirements = node.isLocked ? skillLockedText : GetRequirements(node.skillData.cost, node.neededNodes, node.conflictNodes);

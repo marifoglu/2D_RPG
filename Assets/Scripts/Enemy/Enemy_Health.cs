@@ -11,6 +11,9 @@ public class Enemy_Health : Entity_Health
 
     public override bool TakeDamage(float damage, float elementalDamage,ElementType elementType, Transform damageDealer)
     {
+        if(canTakeDamage == false)
+            return false;
+
         // Enemy can't be interrupted, ignore damage
         if (enemy != null && enemy.IsInUninterruptibleState)
             return false;
