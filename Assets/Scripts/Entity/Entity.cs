@@ -416,13 +416,29 @@ public class Entity : MonoBehaviour
             rb.sharedMaterial = noFriction;
         }
     }
-
     //public void ApplySlopeFriction()
     //{
     //    if (noFriction == null || fullFriction == null) return;
 
     //    var col = GetComponent<Collider2D>();
     //    if (col == null) return;
+
+    //    // Check if this is a Player dropping through a platform
+    //    var player = this as Player;
+    //    if (player != null && player.isDroppingThroughPlatform)
+    //    {
+    //        // Use no friction and full gravity when dropping through platform
+    //        col.sharedMaterial = noFriction;
+    //        rb.gravityScale = defaultGravity;
+    //        return;
+    //    }
+
+    //    // Don't apply slope friction or gravity changes during Domain Expansion
+    //    if (player != null && stateMachine.currentState == player.domainExpansionState)
+    //    {
+    //        col.sharedMaterial = noFriction;
+    //        return;
+    //    }
 
     //    // Both enemy and player use similar friction logic
     //    bool slopeWalk = isOnSlope && canWalkOnSlope && groundDetected && (rb.linearVelocity.y > -0.6f && rb.linearVelocity.y < 0.6f);
@@ -442,6 +458,8 @@ public class Entity : MonoBehaviour
     //        rb.gravityScale = defaultGravity;
     //    }
     //}
+    // Replace your ApplySlopeFriction method in Entity.cs with this updated version:
+
     public void ApplySlopeFriction()
     {
         if (noFriction == null || fullFriction == null) return;
@@ -449,8 +467,17 @@ public class Entity : MonoBehaviour
         var col = GetComponent<Collider2D>();
         if (col == null) return;
 
-        // Check if this is a Player dropping through a platform
+        // Check if this is a Player on a ladder
         var player = this as Player;
+        if (player != null && player.IsOnLadder())
+        {
+            // Disable friction completely while on ladder
+            col.sharedMaterial = noFriction;
+            rb.gravityScale = 0f; // Keep gravity disabled
+            return;
+        }
+
+        // Check if this is a Player dropping through a platform
         if (player != null && player.isDroppingThroughPlatform)
         {
             // Use no friction and full gravity when dropping through platform

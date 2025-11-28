@@ -3,7 +3,7 @@ using UnityEngine;
 public class Player_FallState : Player_AiredState
 {
     private float wallJumpGraceTimer = 0f;
-    private float wallJumpGracePeriod = 0.15f; // Short grace period for wall jump recovery
+    private float wallJumpGracePeriod = 0.15f;
     private bool justFromWallJump = false;
 
     public Player_FallState(Player player, StateMachine stateMachine, string animBoolName)
@@ -13,8 +13,6 @@ public class Player_FallState : Player_AiredState
     {
         base.Enter();
 
-        // Check if we just came from a wall jump by checking the previous state
-        // We can detect this by seeing if we have horizontal velocity opposite to facing direction
         justFromWallJump = Mathf.Abs(rb.linearVelocity.x) > 1f && Mathf.Sign(rb.linearVelocity.x) != player.facingDir;
 
         if (justFromWallJump)
@@ -31,6 +29,27 @@ public class Player_FallState : Player_AiredState
     {
         base.Update();
 
+        // Check for ladder grab while falling - WITH POSITION CHECK
+        if (player.CanGrabLadder())
+        {
+            Ladder currentLadder = player.GetCurrentLadder();
+            if (currentLadder != null)
+            {
+                Vector2 ladderTop = currentLadder.GetTopPosition();
+
+                // Only allow grab if player is MORE THAN 1 unit BELOW ladder top
+                if (player.transform.position.y < ladderTop.y - 0.5f)
+                {
+                    // Player is well below ladder top, allow grab
+                    if (player.moveInput.y > 0.1f || Mathf.Abs(player.moveInput.y) < 0.1f)
+                    {
+                        player.TryGrabLadder();
+                        return;
+                    }
+                }
+            }
+        }
+
         if (player.ledgeDetected && player.moveInput.y > 0.2f)
         {
             stateMachine.ChangeState(player.ledgeClimbState);
@@ -46,12 +65,8 @@ public class Player_FallState : Player_AiredState
         // Wall detection logic
         if (player.wallDetected && !player.groundDetected)
         {
-            // UPDATED: Check for wall direction input (including with up button)
             bool holdingWallDirection = player.moveInput.x != 0 && Mathf.Sign(player.moveInput.x) == player.facingDir;
 
-            // Enter wall slide if:
-            // 1. Holding correct direction (even with up button), OR
-            // 2. Just from wall jump and still in grace period
             if (holdingWallDirection)
             {
                 stateMachine.ChangeState(player.wallSlideState);
@@ -61,9 +76,6 @@ public class Player_FallState : Player_AiredState
             {
                 stateMachine.ChangeState(player.wallSlideState);
                 return;
-            }
-            else
-            {
             }
         }
 

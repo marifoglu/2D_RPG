@@ -21,7 +21,6 @@ public class Skill_DomainExpansion : Skill_Base
     [SerializeField] public int echoToCast = 8;
     [SerializeField] private float echoCastDomainSlow = 1f;
     [SerializeField] private float echoCastDomainDuration = 8f;
-    [SerializeField] private float healthToRestoreWithEcho = .05f;
 
     [Header("Domain Details")]
     [SerializeField] public float maxDomainSize = 10f;
