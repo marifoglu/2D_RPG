@@ -74,7 +74,6 @@
 
 //    }
 //}
-
 using UnityEngine;
 
 public class Player_GroundedState : PlayerState
@@ -101,7 +100,8 @@ public class Player_GroundedState : PlayerState
         float x = player.moveInput.x;
         float y = player.moveInput.y;
 
-        // Check for ladder climbing (up input while on ladder)
+        // Check for ladder climbing - ONLY when pressing UP and can grab
+        // This prevents accidentally grabbing ladder when walking past it
         if (y > 0.5f && player.CanGrabLadder())
         {
             player.TryGrabLadder();

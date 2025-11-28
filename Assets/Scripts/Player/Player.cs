@@ -279,10 +279,10 @@ public class Player : Entity
     private Ladder currentLadder;
     [SerializeField] private LayerMask whatIsLadder;
     [SerializeField] private float ladderDetectionRadius = 0.5f;
-    // New tuning fields (exposed for inspector)
-    [SerializeField] private float ladderEnterYOffset = 0.4f;             // detection origin above feet (chest)
-    [SerializeField] private float minDistanceBelowTopToGrab = 0.5f;     // must be at least this far below ladder top to grab
-    [SerializeField] private float ladderExitIgnoreDuration = 0.2f;      // short window after exiting to ignore re-detection
+    // Increased ignore duration to 0.5 seconds to prevent re-grab after exiting at top
+    [SerializeField] private float ladderEnterYOffset = 0.4f;
+    [SerializeField] private float minDistanceBelowTopToGrab = 0.5f;
+    [SerializeField] private float ladderExitIgnoreDuration = 0.5f; // Increased from 0.2f
     private float ladderIgnoreUntil = 0f;
 
 
@@ -469,14 +469,14 @@ public class Player : Entity
 
     public bool CanGrabLadder()
     {
-        // Respect the short ignore window after exit
+        // Respect the ignore window after exit
         if (Time.time < ladderIgnoreUntil)
             return false;
 
         if (currentLadder == null || isOnLadder)
             return false;
 
-        // Require player to be sufficiently below the ladder top to allow a "grab" (avoids half-top grabs)
+        // Require player to be sufficiently below the ladder top to allow a "grab"
         Vector2 ladderTop = currentLadder.GetTopPosition();
         if (transform.position.y >= ladderTop.y - minDistanceBelowTopToGrab)
             return false;
@@ -489,7 +489,7 @@ public class Player : Entity
         isOnLadder = onLadder;
         currentLadder = ladder;
 
-        // When leaving ladder, start a brief ignore window so we don't immediately re-detect/re-grab
+        // When leaving ladder, start ignore window so we don't immediately re-detect/re-grab
         if (!onLadder)
             ladderIgnoreUntil = Time.time + ladderExitIgnoreDuration;
     }
@@ -500,18 +500,13 @@ public class Player : Entity
 
     public void TryGrabLadder()
     {
-        Debug.Log($"TryGrabLadder called: CanGrab={CanGrabLadder()}, currentLadder={currentLadder?.name}");
 
         if (CanGrabLadder())
         {
-            Debug.Log("GRABBING LADDER - changing to ladder state");
             SetLadderState(true, currentLadder);
             stateMachine.ChangeState(ladderClimbState);
         }
-        else
-        {
-            Debug.LogWarning($"CAN'T GRAB: currentLadder={currentLadder}, isOnLadder={isOnLadder}");
-        }
+
     }
     #endregion
 

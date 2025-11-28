@@ -37,10 +37,10 @@ public class Player_FallState : Player_AiredState
             {
                 Vector2 ladderTop = currentLadder.GetTopPosition();
 
-                // Only allow grab if player is MORE THAN 1 unit BELOW ladder top
-                if (player.transform.position.y < ladderTop.y - 0.5f)
+                // Only allow grab if player is BELOW ladder top
+                if (player.transform.position.y <= ladderTop.y + 0.5f)
                 {
-                    // Player is well below ladder top, allow grab
+                    // Player is at or below ladder top, allow grab
                     if (player.moveInput.y > 0.1f || Mathf.Abs(player.moveInput.y) < 0.1f)
                     {
                         player.TryGrabLadder();
