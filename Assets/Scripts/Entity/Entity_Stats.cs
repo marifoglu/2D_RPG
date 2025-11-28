@@ -46,6 +46,30 @@ public class Entity_Stats : MonoBehaviour
         return finalDamage * scaleFactor;
     }
 
+    // Heavy Attack Damage Section
+    public float GetHeavyAttackDamage(out bool isCrit, float scaleFactor = 1)
+    {
+        float baseDamage = offense.damage.GetValue();
+        float bonusDamage = major.strength.GetValue();
+        float totalBaseDamage = baseDamage + bonusDamage;
+
+        // Heavy attacks deal 150% base damage (adjust multiplier as needed: 1.5f = 150%, 2.0f = 200%, etc.)
+        totalBaseDamage *= 1.5f;
+
+        float baseCritChance = offense.critChance.GetValue();
+        float bonusCritChance = major.agility.GetValue() * 0.5f;  // bonus crit chance from Agility 0.5% per AGI
+        float totalCritChance = baseCritChance + bonusCritChance;
+
+        float baseCritPower = offense.critPower.GetValue();
+        float bonusCritPower = major.strength.GetValue() * 0.5f; // bonus crit power from Strength +1% per STR
+        float totalCritPower = (baseCritPower + bonusCritPower) / 100; // Total crit power as a multiplier
+
+        isCrit = Random.Range(0f, 100f) < totalCritChance;
+        float finalDamage = isCrit ? totalBaseDamage * totalCritPower : totalBaseDamage;
+
+        return finalDamage * scaleFactor;
+    }
+
     // Evasion Section
     public float GetEvasion()
     {

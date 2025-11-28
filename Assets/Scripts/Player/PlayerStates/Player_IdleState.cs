@@ -1,4 +1,4 @@
-using Unity.VisualScripting;
+﻿using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player_IdleState : Player_GroundedState
@@ -10,10 +10,7 @@ public class Player_IdleState : Player_GroundedState
     public override void Enter()
     {
         base.Enter();
-
-        //player.SetVelocity(0, rb.linearVelocity.y);
-        player.SetVelocity(0, 0f);   //  grounded = zero vertical velocity
-
+        player.SetVelocity(0, 0f);
     }
 
     public override void Update()

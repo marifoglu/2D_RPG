@@ -9,7 +9,7 @@ public class Player_LadderClimbState : PlayerState
     private bool isExitingTop;
     private Vector2 exitStartPosition;
     private Vector2 exitEndPosition;
-    private float exitProgress;
+    //private float exitProgress;
     private float exitDuration = 0.5f;
 
     public Player_LadderClimbState(Player player, StateMachine stateMachine, string animBoolName)
@@ -136,7 +136,7 @@ public class Player_LadderClimbState : PlayerState
 
         exitStartPosition = player.transform.position;
         exitEndPosition = new Vector2(ladderX, topPos.y + playerHalfHeight + 0.3f);
-        exitProgress = 0f;
+        //exitProgress = 0f;
 
         player.StartCoroutine(TopExitCoroutine());
     }
