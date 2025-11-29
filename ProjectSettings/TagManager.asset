@@ -16,7 +16,7 @@ TagManager:
   - Enemy
   - Slope
   - OneWayPlatform
-  - BuffArea
+  - PlayerPickups
   - ObjectChest
   - SkillObjectSword
   - Ladder
