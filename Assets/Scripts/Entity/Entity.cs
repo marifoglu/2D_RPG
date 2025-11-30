@@ -839,9 +839,6 @@ public class Entity : MonoBehaviour
             wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         }
 
-        // Ledge detection:
-        // - treat regular solid walls as before
-        // - treat one-way platform as ledge ONLY when body hit is near platform horizontal edge and head is free
         if (ledgeCheck != null && !useEnemyEdgeDetection)
         {
             RaycastHit2D bodyHit = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, combinedMask);
@@ -1035,60 +1032,6 @@ public class Entity : MonoBehaviour
             isOnSlope = false;
         }
         canWalkOnSlope = slopeDownAngle > 0.1f && slopeDownAngle <= maxSlopeAngle;
-    }
-
-    private void SlopeCheckHorizontal(Vector2 checkPos)
-    {
-        RaycastHit2D slopeHitFront = Physics2D.Raycast(checkPos, Vector2.down + Vector2.right * facingDir, slopeCheckDistance, whatIsGround | whatIsOneWayPlatform);
-        RaycastHit2D slopeHitBack = Physics2D.Raycast(checkPos, Vector2.down - Vector2.right * facingDir, slopeCheckDistance, whatIsGround | whatIsOneWayPlatform);
-        if (slopeHitFront)
-        {
-            isOnSlope = true;
-            slopeSideAngle = Vector2.Angle(slopeHitFront.normal, Vector2.up);
-        }
-        else if (slopeHitBack)
-        {
-            isOnSlope = true;
-            slopeSideAngle = Vector2.Angle(slopeHitBack.normal, Vector2.up);
-        }
-        else
-        {
-            slopeSideAngle = 0.0f;
-            isOnSlope = false;
-        }
-    }
-
-    private void SlopeCheckVertical(Vector2 checkPos)
-    {
-        RaycastHit2D hit = Physics2D.Raycast(checkPos, Vector2.down, slopeCheckDistance, whatIsGround | whatIsOneWayPlatform);
-        if (hit)
-        {
-            slopeNormalPerp = Vector2.Perpendicular(hit.normal).normalized;
-            slopeDownAngle = Vector2.Angle(hit.normal, Vector2.up);
-            if (slopeDownAngle != lastSlopeAngle)
-            {
-                isOnSlope = true;
-            }
-            lastSlopeAngle = slopeDownAngle;
-            Debug.DrawRay(hit.point, slopeNormalPerp, Color.blue);
-            Debug.DrawRay(hit.point, hit.normal, Color.green);
-        }
-        if (slopeDownAngle > maxSlopeAngle || slopeSideAngle > maxSlopeAngle)
-        {
-            canWalkOnSlope = false;
-        }
-        else
-        {
-            canWalkOnSlope = true;
-        }
-        if (isOnSlope && canWalkOnSlope && rb.linearVelocity.x >= 0.0f)
-        {
-            rb.sharedMaterial = fullFriction;
-        }
-        else
-        {
-            rb.sharedMaterial = noFriction;
-        }
     }
 
     public void ApplySlopeFriction()

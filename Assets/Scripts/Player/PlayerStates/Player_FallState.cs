@@ -62,6 +62,7 @@ public class Player_FallState : Player_AiredState
             return;
         }
 
+
         // Wall detection logic
         if (player.wallDetected && !player.groundDetected)
         {
