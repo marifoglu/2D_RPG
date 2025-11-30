@@ -102,7 +102,7 @@ public class Player : Entity
         jumpState = new Player_JumpState(this, stateMachine, "JumpFall");
         fallState = new Player_FallState(this, stateMachine, "JumpFall");
         wallSlideState = new Player_WallSlideState(this, stateMachine, "WallSlide");
-        wallJumpState = new Player_WallJumpState(this, stateMachine, "WallJump");
+        wallJumpState = new Player_WallJumpState(this, stateMachine, "JumpFall");
         dashState = new Player_DashState(this, stateMachine, "Dash");
         basicAttackState = new Player_BasicAttackState(this, stateMachine, "BasicAttack");
         jumpAttackState = new Player_JumpAttackState(this, stateMachine, "JumpAttack");

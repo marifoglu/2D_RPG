@@ -8,13 +8,10 @@ public class Entity : MonoBehaviour
     public Animator anim { get; private set; }
     public Rigidbody2D rb { get; private set; }
     public Entity_Stats stats { get; private set; }
-
     protected StateMachine stateMachine;
-
 
     private bool facingRight = true;
     public int facingDir { get; private set; } = 1;
-
 
     [Header("Collision Detection")]
     public LayerMask whatIsGround;
