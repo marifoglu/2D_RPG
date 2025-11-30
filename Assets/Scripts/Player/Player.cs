@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.Windows;
 
 public class Player : Entity
 {
@@ -32,6 +31,7 @@ public class Player : Entity
     public Player_DomainExpansionState domainExpansionState { get; private set; }
     public Player_LadderClimbState ladderClimbState { get; private set; }
     public Player_HeavyAttackState heavyAttackState { get; private set; }
+    public Player_DodgeBackState dodgeBackState { get; private set; }
     #endregion
 
     [Header("Attack Details")]
@@ -56,6 +56,10 @@ public class Player : Entity
     [Space]
     public float dashDuration = .25f;
     public float dashSpeed = 20f;
+    [Space]
+    public float dodgeBackDistance = 5f;
+    public float dodgeBackSpeed = 5f;
+
     public Vector2 moveInput { get; private set; }
     public Vector2 mousePosition { get; private set; }
 
@@ -109,6 +113,7 @@ public class Player : Entity
         domainExpansionState = new Player_DomainExpansionState(this, stateMachine, "JumpFall");
         ladderClimbState = new Player_LadderClimbState(this, stateMachine, "LadderClimb");
         heavyAttackState = new Player_HeavyAttackState(this, stateMachine, "HeavyAttack");
+        dodgeBackState = new Player_DodgeBackState(this, stateMachine, "BackwardDodge");
     }
 
     public void ForceFallState()

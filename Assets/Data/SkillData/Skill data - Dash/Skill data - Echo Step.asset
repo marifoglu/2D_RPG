@@ -12,6 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7912fbb8459f0a34b9f6c72870fc05ec, type: 3}
   m_Name: Skill data - Echo Step
   m_EditorClassIdentifier: Assembly-CSharp::Skill_DataSO
+  displayName: Echo Step
+  description: 'Create a time echo before you dash
+
+    (Inherit all upgrades of
+    Time Echo Ability)'
+  icon: {fileID: 6592680923324011761, guid: e31822c94ae12a844a2145f2fb7c2403, type: 3}
   cost: 3
   unlockedByDefault: 0
   skillType: 0
@@ -28,9 +34,3 @@ MonoBehaviour:
       lightningDuration: 3
       lightningDamageScale: 1
       lightningCharge: 1
-  displayName: Echo Step
-  description: 'Create a time echo before you dash
-
-    (Inherit all upgrades of
-    Time Echo Ability)'
-  icon: {fileID: 61865037, guid: a6fce76df2a1d3e4784e5f1873d64b42, type: 3}
