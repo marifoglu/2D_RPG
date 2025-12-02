@@ -6,7 +6,7 @@ public class Inventory_Item
 {
     public ItemDataSO itemData;
     public int stackSize = 1;
-
+    private string itemId;
     public ItemModifier[] modifiers {  get; private set; }
 
     public Inventory_Item(ItemDataSO itemData)
@@ -14,6 +14,8 @@ public class Inventory_Item
         this.itemData = itemData;
 
         modifiers = EquipmentData()?.modifiers;
+
+        itemId = itemData.itemName + " - " + Guid.NewGuid();
     }
 
     public void AddModifiers(Entity_Stats playerStats)
@@ -21,7 +23,7 @@ public class Inventory_Item
         foreach (var mod in modifiers)
         {
             Stat statToModify = playerStats.GetStatByType(mod.statType);
-            statToModify.AddModifier(mod.value, itemData.itemName);
+            statToModify.AddModifier(mod.value, itemId);
         }
     }
 
@@ -30,7 +32,7 @@ public class Inventory_Item
         foreach (var mod in modifiers)
         {
             Stat statToModify = playerStats.GetStatByType(mod.statType);
-            statToModify.RemoveModifier(itemData.itemName);
+            statToModify.RemoveModifier(itemId);
         }
     }
 

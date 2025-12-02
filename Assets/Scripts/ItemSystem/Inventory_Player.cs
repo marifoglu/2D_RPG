@@ -26,14 +26,44 @@ public class Inventory_Player : Inventory_Base
                 return;
             }
         }
+
+        var slotReplace = matchingSlots[0]; 
+        var itemToUnequip = slotReplace.equipedItem;
+
+        EquipItem(inventoryItem, slotReplace);
+        UnEquipItem(itemToUnequip);
     }
 
-    private void EquipItem(Inventory_Item itemToEquip, in Inventory_EquipmentSlot slot)
+    private void EquipItem(Inventory_Item itemToEquip, Inventory_EquipmentSlot slot)
     {
         slot.equipedItem = itemToEquip;
         slot.equipedItem.AddModifiers(playerStats);
         RemoveItem(itemToEquip);
+    }
 
+    public void UnEquipItem(Inventory_Item itemToUnequip)
+    {
+        if(CanAddItem() == false)
+        {
+            Debug.Log("Not enough space in inventory to unequip item.");
+            return;
+        }
+
+        foreach(var slot in equipList)
+        {
+            if (slot.equipedItem == itemToUnequip)
+            {
+                slot.equipedItem.RemoveModifiers(playerStats);
+                slot.equipedItem = null;
+                //var unequipped = slot.equipedItem;
+                //unequipped.RemoveModifiers(playerStats);
+                //slot.equipedItem = null;
+                break;
+            }
+        }
+
+        itemToUnequip.RemoveModifiers(playerStats); 
+        AddItem(itemToUnequip);
     }
 
 
