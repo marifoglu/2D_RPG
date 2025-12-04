@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentDataSO
   itemType: 3
   itemName: Amulet of doom
-  itemIcon: {fileID: -3474997026479423400, guid: e31822c94ae12a844a2145f2fb7c2403, type: 3}
+  itemIcon: {fileID: -4959899092030057782, guid: 06f2bf475be353d478ef86911e451192, type: 3}
   maxStackSize: 1
   modifiers:
   - statType: 2

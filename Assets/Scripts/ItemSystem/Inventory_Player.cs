@@ -11,12 +11,24 @@ public class Inventory_Player : Inventory_Base
         base.Awake();
         playerStats = GetComponent<Entity_Stats>();
     }
-        
+
     public void TryEquipItem(Inventory_Item item)
     {
+        // Check if the item is actually equipment
+        if (item.itemData is not EquipmentDataSO)
+        {
+            Debug.Log($"Cannot equip {item.itemData.itemName}. This item is not equipment.");
+            return;
+        }
+
         var inventoryItem = FindItem(item.itemData);
         var matchingSlots = equipList.FindAll(slot => slot.slotType == item.itemData.itemType);
 
+        if (matchingSlots.Count == 0)
+        {
+            Debug.LogWarning($"No equipment slot available for item type: {item.itemData.itemType}");
+            return;
+        }
 
         foreach (var slot in matchingSlots)
         {
@@ -27,7 +39,7 @@ public class Inventory_Player : Inventory_Base
             }
         }
 
-        var slotReplace = matchingSlots[0]; 
+        var slotReplace = matchingSlots[0];
         var itemToUnequip = slotReplace.equipedItem;
 
         EquipItem(inventoryItem, slotReplace);
@@ -43,26 +55,23 @@ public class Inventory_Player : Inventory_Base
 
     public void UnEquipItem(Inventory_Item itemToUnequip)
     {
-        if(CanAddItem() == false)
+        if (CanAddItem() == false)
         {
             Debug.Log("Not enough space in inventory to unequip item.");
             return;
         }
 
-        foreach(var slot in equipList)
+        foreach (var slot in equipList)
         {
             if (slot.equipedItem == itemToUnequip)
             {
                 slot.equipedItem.RemoveModifiers(playerStats);
                 slot.equipedItem = null;
-                //var unequipped = slot.equipedItem;
-                //unequipped.RemoveModifiers(playerStats);
-                //slot.equipedItem = null;
                 break;
             }
         }
 
-        itemToUnequip.RemoveModifiers(playerStats); 
+        itemToUnequip.RemoveModifiers(playerStats);
         AddItem(itemToUnequip);
     }
 
