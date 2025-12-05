@@ -5,6 +5,7 @@ public class UI : MonoBehaviour
 {
     public UI_SkillToolTip skillToolTip;
     public UI_ItemToolTip itemToolTip;
+    public UI_StatToolTip statToolTip;
 
     public UI_SkillTree skillTree;
     private bool skillTreeEnabled;
@@ -16,6 +17,9 @@ public class UI : MonoBehaviour
 
         if (itemToolTip == null)
             itemToolTip = GetComponentInChildren<UI_ItemToolTip>();
+
+        if (statToolTip == null)
+            statToolTip = GetComponentInChildren<UI_StatToolTip>();
 
         if (skillTree == null)
             skillTree = GetComponentInChildren<UI_SkillTree>(true);

@@ -252,7 +252,7 @@ public class Entity_Stats : MonoBehaviour
         major.vitality.SetBaseValue(defaultStatSetup.vitality);
 
         offense.damage.SetBaseValue(defaultStatSetup.damage);
-        offense.attackSpeed.SetBaseValue(defaultStatSetup.attacckSpeed);
+        offense.attackSpeed.SetBaseValue(defaultStatSetup.attackSpeed);
         offense.critChance.SetBaseValue(defaultStatSetup.critChance);
         offense.critPower.SetBaseValue(defaultStatSetup.critPower);
         offense.armorReduction.SetBaseValue(defaultStatSetup.armorReduction);

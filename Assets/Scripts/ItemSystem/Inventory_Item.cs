@@ -42,7 +42,7 @@ public class Inventory_Item
             return equipment;
         return null;
     }
-    public bool CanAttackStack() => stackSize < itemData.maxStackSize;
+    public bool CanAddStack() => stackSize < itemData.maxStackSize;
     public void AddStack() => stackSize++;
     public void RemoveStack() => stackSize--;
 

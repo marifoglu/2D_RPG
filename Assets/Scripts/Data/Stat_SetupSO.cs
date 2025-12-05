@@ -9,7 +9,7 @@ public class Stat_SetupSO : ScriptableObject
 
     [Header("Offense - Physical Damage")]
     public float damage = 10f;
-    public float attacckSpeed = 1f;
+    public float attackSpeed = 1f;
     public float critChance;
     public float critPower = 150f;
     public float armorReduction;
