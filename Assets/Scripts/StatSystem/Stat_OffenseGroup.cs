@@ -18,5 +18,5 @@ public class Stat_OffenseGroup
     //Elemental Attack Power    
     public Stat fireDamage;
     public Stat iceDamage;
-    public Stat lightingDamage;
+    public Stat lightningDamage;
 }

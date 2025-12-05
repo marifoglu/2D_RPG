@@ -33,7 +33,7 @@ public class Player_HeavyCombat : MonoBehaviour
 
             // Use heavy attack damage calculation
             float heavyDamage = entityStats.GetHeavyAttackDamage(out bool isCrit, heavyAttackScale.physical);
-            float elementalDamage = entityStats.GetElementelDamage(out ElementType elementType, heavyAttackScale.elemental);
+            float elementalDamage = entityStats.GetElementalDamage(out ElementType elementType, heavyAttackScale.elemental);
 
             Entity_StatusHandler statusHandler = target.GetComponent<Entity_StatusHandler>();
 

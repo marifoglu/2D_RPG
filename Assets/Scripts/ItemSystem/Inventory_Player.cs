@@ -65,7 +65,6 @@ public class Inventory_Player : Inventory_Base
         {
             if (slot.equipedItem == itemToUnequip)
             {
-                slot.equipedItem.RemoveModifiers(playerStats);
                 slot.equipedItem = null;
                 break;
             }

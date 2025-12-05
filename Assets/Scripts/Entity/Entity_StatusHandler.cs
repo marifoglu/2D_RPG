@@ -30,14 +30,14 @@ public class Entity_StatusHandler : MonoBehaviour
         if(element == ElementType.Fire && CanBeApplied(ElementType.Fire))
             ApplyBurnEffect(effectData.burnDuration, effectData.burnDamage);
 
-        if(element == ElementType.Lighting && CanBeApplied(ElementType.Lighting))
+        if(element == ElementType.Lightning && CanBeApplied(ElementType.Lightning))
             ApplyLightingEffect(effectData.lightningDuration, effectData.lightningDamage, effectData.lightningCharge);
 
     }
     public void ApplyLightingEffect(float duration, float damage, float charge)
     {
 
-        float lightningResistance = entityStats.GetElementalResistance(ElementType.Lighting);
+        float lightningResistance = entityStats.GetElementalResistance(ElementType.Lightning);
         float finalCharge = charge * (1 - lightningResistance);
         currentCharge += finalCharge;
 
@@ -69,8 +69,8 @@ public class Entity_StatusHandler : MonoBehaviour
 
     private IEnumerator LightningEffectCo(float duration)
     {
-        currentEffect = ElementType.Lighting;
-        entityVFX.PlayStatusVfx(duration, ElementType.Lighting);
+        currentEffect = ElementType.Lightning;
+        entityVFX.PlayStatusVfx(duration, ElementType.Lightning);
 
         yield return new WaitForSeconds(duration);
 
@@ -124,7 +124,7 @@ public class Entity_StatusHandler : MonoBehaviour
     }
     public bool CanBeApplied(ElementType element)
     {
-        if(currentEffect == ElementType.Lighting && element == ElementType.Lighting)
+        if(currentEffect == ElementType.Lightning && element == ElementType.Lightning)
             return true;
 
 

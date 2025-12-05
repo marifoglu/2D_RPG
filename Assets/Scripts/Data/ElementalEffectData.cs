@@ -20,7 +20,7 @@ public class ElementalEffectData
         burnDamage = entityStats.offense.fireDamage.GetValue() * damageScale.burnDamageScale;
         burnDuration = damageScale.burnDuration;
 
-        lightningDamage = entityStats.offense.lightingDamage.GetValue() * damageScale.lightningDamageScale;
+        lightningDamage = entityStats.offense.lightningDamage.GetValue() * damageScale.lightningDamageScale;
         lightningDuration = damageScale.lightningDuration;
         lightningCharge = damageScale.lightningCharge;
 

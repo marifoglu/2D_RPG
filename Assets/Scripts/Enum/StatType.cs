@@ -15,9 +15,11 @@ public enum StatType
     FireDamage,
     IceDamage,
     LightningDamage,
+    Vitality,
     Armor,
     Evasion,
     FireResistance,
     IceResistance,
-    LightningResistance
+    LightningResistance,
+    ElementalDamage
 }

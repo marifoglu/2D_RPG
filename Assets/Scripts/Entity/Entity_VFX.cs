@@ -44,7 +44,7 @@ public class Entity_VFX : MonoBehaviour
         if (elementType == ElementType.Fire)
             StartCoroutine(PlayStatusVfxCo(duration, burnVfx));
 
-        if(elementType == ElementType.Lighting)
+        if(elementType == ElementType.Lightning)
             StartCoroutine(PlayStatusVfxCo(duration, electricVfx));
     }
 
@@ -104,7 +104,7 @@ public class Entity_VFX : MonoBehaviour
                 return chillVfx;
             case ElementType.Fire:
                 return burnVfx;
-            case ElementType.Lighting:
+            case ElementType.Lightning:
                 return electricVfx;
 
             default:

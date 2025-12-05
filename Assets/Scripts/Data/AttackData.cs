@@ -14,7 +14,7 @@ public class AttackData
     public AttackData(Entity_Stats entityStats, DamageScaleData damageScaleData)
     {
         physicalDamage = entityStats.GetPhysicalDamage(out isCrit, damageScaleData.physical);
-        elementaldamage = entityStats.GetElementelDamage(out elementType, damageScaleData.elemental);
+        elementaldamage = entityStats.GetElementalDamage(out elementType, damageScaleData.elemental);
 
         elementalEffectData = new ElementalEffectData(entityStats, damageScaleData);
     }
