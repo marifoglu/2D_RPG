@@ -8,10 +8,12 @@ public class Inventory_Item
     public int stackSize = 1;
     private string itemId;
     public ItemModifier[] modifiers {  get; private set; }
+    public ItemEffectDataSO itemEffect;
 
     public Inventory_Item(ItemDataSO itemData)
     {
         this.itemData = itemData;
+        itemEffect  = itemData.itemEffect;
 
         modifiers = EquipmentData()?.modifiers;
 

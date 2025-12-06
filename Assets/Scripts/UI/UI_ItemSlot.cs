@@ -20,6 +20,23 @@ public class UI_ItemSlot : MonoBehaviour, IPointerDownHandler, IPointerEnterHand
         rect = GetComponent<RectTransform>();
         inventory = FindAnyObjectByType<Inventory_Player>();
     }
+
+    public virtual void OnPointerDown(PointerEventData eventData)
+    {
+        if (itemInSlot == null || itemInSlot.itemData.itemType == ItemType.Material)
+            return;
+
+        if (itemInSlot.itemData.itemType == ItemType.Consumable)
+            inventory.TryUseItem(itemInSlot);
+        else
+            inventory.TryEquipItem(itemInSlot);
+
+        inventory.TryEquipItem(itemInSlot);
+
+        if (itemInSlot == null)
+            ui.itemToolTip.ShowToolTip(false, null);
+    }
+
     public void UpdateSlot(Inventory_Item item)
     {
         itemInSlot = item;
@@ -35,17 +52,6 @@ public class UI_ItemSlot : MonoBehaviour, IPointerDownHandler, IPointerEnterHand
         itemIcon.color = color;
         itemIcon.sprite = itemInSlot.itemData.itemIcon;
         itemStackSize.text = item.stackSize > 1 ? itemInSlot.stackSize.ToString() : "";
-    }
-
-    public virtual void OnPointerDown(PointerEventData eventData)
-    {
-        if (itemInSlot == null || itemInSlot.itemData.itemType == ItemType.Material)
-            return;
-
-        inventory.TryEquipItem(itemInSlot);
-
-        if(itemInSlot == null)
-            ui.itemToolTip.ShowToolTip(false, null);
     }
 
     public void OnPointerEnter(PointerEventData eventData)
