@@ -208,11 +208,13 @@ public class Player : Entity
         input.Enable();
         input.PlayerCharacter.Movement.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
         input.PlayerCharacter.Movement.canceled += ctx => moveInput = Vector2.zero;
-        input.PlayerCharacter.ToggleSkillTreeUi.performed += ctx => ui.ToggleSkillTreeUI();
         input.PlayerCharacter.Mouse.performed += ctx => mousePosition = ctx.ReadValue<Vector2>();
 
         input.PlayerCharacter.Spell.performed += ctx => skillManager.shard.TryUseSkill();
         input.PlayerCharacter.Spell.performed += ctx => skillManager.timeEcho.TryUseSkill();
+
+        input.PlayerCharacter.ToggleSkillTreeUi.performed += ctx => ui.ToggleSkillTreeUI();
+        input.PlayerCharacter.ToggleInventoryUI.performed += ctx => ui.ToggleInventoryUI();
     }
 
     private void OnDisable()

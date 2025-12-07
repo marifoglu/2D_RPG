@@ -115,7 +115,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "ToggleCharacterUI",
+                    "name": "ToggleInventoryUI",
                     "type": "Button",
                     "id": "82e33b80-6a78-4b72-8881-693dd482348e",
                     "expectedControlType": "",
@@ -469,11 +469,11 @@
                 {
                     "name": "",
                     "id": "9bed2a44-86de-4101-b685-6c6493ce30b9",
-                    "path": "<Keyboard>/c",
+                    "path": "<Keyboard>/i",
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard & Mouse",
-                    "action": "ToggleCharacterUI",
+                    "action": "ToggleInventoryUI",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }
