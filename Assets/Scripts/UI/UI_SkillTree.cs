@@ -29,6 +29,15 @@ public class UI_SkillTree : MonoBehaviour
             node.Refund();
         }
     }
+
+    public void RefundAllSkills()
+    {
+        UI_TreeNode[] skillNodes = GetComponentsInChildren<UI_TreeNode>();
+
+        foreach (var node in skillNodes)
+            node.Refund();
+    }
+
     public bool EnoughSkillPoints(int cost) => skillPoints >= cost;
     public void RemoveSkillPoints(int cost) => skillPoints -= cost;
     public void AddSkillPoints(int points) => skillPoints += points;

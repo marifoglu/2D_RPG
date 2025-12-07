@@ -23,6 +23,15 @@ public class UI_StatSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         gameObject.name = "UI_Stat - " + GetStatNameByType(statSlotType);
         statName.text = GetStatNameByType(statSlotType);
     }
+    public void OnPointerEnter(PointerEventData eventData)
+    {
+        ui.statToolTip.ShowToolTip(true, rect, statSlotType);
+    }
+
+    public void OnPointerExit(PointerEventData eventData)
+    {
+        ui.statToolTip.ShowToolTip(false, null);
+    }
 
     public void UpdateStaValue()
     {
@@ -36,10 +45,10 @@ public class UI_StatSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
         float value = 0;
 
-        switch(statSlotType)
+        switch (statSlotType)
         {
 
-                // Major Stats:
+            // Major Stats:
             case StatType.Strength:
                 value = playerStats.major.strength.GetValue();
                 break;
@@ -168,15 +177,5 @@ public class UI_StatSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
             default:
                 return "Unknown Stat";
         }
-    }
-
-    public void OnPointerEnter(PointerEventData eventData)
-    {
-      ui.statToolTip.ShowToolTip(true, rect, statSlotType);
-    }
-
-    public void OnPointerExit(PointerEventData eventData)
-    {
-        ui.statToolTip.ShowToolTip(false, null);
     }
 }

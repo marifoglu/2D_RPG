@@ -199,6 +199,15 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ToggleCharacterUI"",
+                    ""type"": ""Button"",
+                    ""id"": ""82e33b80-6a78-4b72-8881-693dd482348e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -542,6 +551,17 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""action"": ""Interaction"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""9bed2a44-86de-4101-b685-6c6493ce30b9"",
+                    ""path"": ""<Keyboard>/c"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard & Mouse"",
+                    ""action"": ""ToggleCharacterUI"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -579,6 +599,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         m_PlayerCharacter_UltimateSpell = m_PlayerCharacter.FindAction("UltimateSpell", throwIfNotFound: true);
         m_PlayerCharacter_HeavyAttack = m_PlayerCharacter.FindAction("HeavyAttack", throwIfNotFound: true);
         m_PlayerCharacter_Interaction = m_PlayerCharacter.FindAction("Interaction", throwIfNotFound: true);
+        m_PlayerCharacter_ToggleCharacterUI = m_PlayerCharacter.FindAction("ToggleCharacterUI", throwIfNotFound: true);
     }
 
     ~@PlayerInputSet()
@@ -671,6 +692,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerCharacter_UltimateSpell;
     private readonly InputAction m_PlayerCharacter_HeavyAttack;
     private readonly InputAction m_PlayerCharacter_Interaction;
+    private readonly InputAction m_PlayerCharacter_ToggleCharacterUI;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerCharacter".
     /// </summary>
@@ -730,6 +752,10 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerCharacter/Interaction".
         /// </summary>
         public InputAction @Interaction => m_Wrapper.m_PlayerCharacter_Interaction;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerCharacter/ToggleCharacterUI".
+        /// </summary>
+        public InputAction @ToggleCharacterUI => m_Wrapper.m_PlayerCharacter_ToggleCharacterUI;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -792,6 +818,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @Interaction.started += instance.OnInteraction;
             @Interaction.performed += instance.OnInteraction;
             @Interaction.canceled += instance.OnInteraction;
+            @ToggleCharacterUI.started += instance.OnToggleCharacterUI;
+            @ToggleCharacterUI.performed += instance.OnToggleCharacterUI;
+            @ToggleCharacterUI.canceled += instance.OnToggleCharacterUI;
         }
 
         /// <summary>
@@ -839,6 +868,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @Interaction.started -= instance.OnInteraction;
             @Interaction.performed -= instance.OnInteraction;
             @Interaction.canceled -= instance.OnInteraction;
+            @ToggleCharacterUI.started -= instance.OnToggleCharacterUI;
+            @ToggleCharacterUI.performed -= instance.OnToggleCharacterUI;
+            @ToggleCharacterUI.canceled -= instance.OnToggleCharacterUI;
         }
 
         /// <summary>
@@ -989,5 +1021,12 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnInteraction(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "ToggleCharacterUI" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnToggleCharacterUI(InputAction.CallbackContext context);
     }
 }

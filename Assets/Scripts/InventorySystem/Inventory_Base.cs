@@ -69,7 +69,7 @@ public class Inventory_Base : MonoBehaviour
 
     public void RemoveItem(Inventory_Item itemToRemove)
     {
-        itemList.Remove(FindItem(itemToRemove.itemData));
+        itemList.Remove(itemToRemove);
         OnInventoryChange?.Invoke();
     }
 
