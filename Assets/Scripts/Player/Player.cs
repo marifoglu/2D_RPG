@@ -13,6 +13,7 @@ public class Player : Entity
     public Entity_Health health { get; private set; }
     public Entity_StatusHandler statusHandler { get; private set; }
 
+    public Player_Combat combat;
 
     #region State variables
     public Player_IdleState idleState { get; private set; }
@@ -96,6 +97,7 @@ public class Player : Entity
         health = GetComponent<Entity_Health>();
         statusHandler = GetComponent<Entity_StatusHandler>();
         skillManager = GetComponent<Player_SkillManager>();
+        combat = GetComponent<Player_Combat>();
 
         idleState = new Player_IdleState(this, stateMachine, "Idle");
         moveState = new Player_MoveState(this, stateMachine, "Move");

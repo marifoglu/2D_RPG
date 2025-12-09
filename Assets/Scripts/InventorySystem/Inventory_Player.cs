@@ -43,8 +43,8 @@ public class Inventory_Player : Inventory_Base
         var itemToUnequip = slotReplace.equipedItem;
         
 
+        UnEquipItem(itemToUnequip, slotReplace != null);
         EquipItem(inventoryItem, slotReplace);
-        UnEquipItem(itemToUnequip);
     }
 
     private void EquipItem(Inventory_Item itemToEquip, Inventory_EquipmentSlot slot)
@@ -60,9 +60,9 @@ public class Inventory_Player : Inventory_Base
         RemoveItem(itemToEquip);
     }
 
-    public void UnEquipItem(Inventory_Item itemToUnequip)
+    public void UnEquipItem(Inventory_Item itemToUnequip, bool replacingItem = false)
     {
-        if (CanAddItem() == false)
+        if (CanAddItem() == false && replacingItem == false)
         {
             Debug.Log("Not enough space in inventory to unequip item.");
             return;
