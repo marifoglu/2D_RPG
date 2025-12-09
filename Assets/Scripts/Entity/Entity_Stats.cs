@@ -1,5 +1,6 @@
 using UnityEngine;
 
+
 public class Entity_Stats : MonoBehaviour
 {
     public Stat_SetupSO defaultStatSetup; 
@@ -8,6 +9,12 @@ public class Entity_Stats : MonoBehaviour
     public Stat_OffenseGroup offense;
     public Stat_DefenseGroup defense;
     public Stat_MajorGroup major;
+
+    protected virtual void Awake()
+    {
+        // Optionally apply default stats on awake
+        // ApplyStatSetup();
+    }
 
     public AttackData GetAttackData(DamageScaleData damageScaleData)
     {

@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 04a84efe835b1704bacf1e98b30cf5fb, type: 3}
-  m_Name: Consumable data - Book of oblivion
+  m_Name: Consumable data - Book of knowledge
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItemDataSO
   itemType: 4
-  itemName: Book of oblivion
-  itemIcon: {fileID: -3032231566403425396, guid: 06f2bf475be353d478ef86911e451192, type: 3}
+  itemName: Book of knowledge
+  itemIcon: {fileID: 5549134151593316301, guid: e31822c94ae12a844a2145f2fb7c2403, type: 3}
   maxStackSize: 1
-  itemEffect: {fileID: 11400000, guid: 822ed76daa6c4f2478db0109bc14f615, type: 2}
+  itemEffect: {fileID: 11400000, guid: 9c8135ec0616ea64593ef6056c2422f8, type: 2}
