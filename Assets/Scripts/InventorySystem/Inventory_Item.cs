@@ -2,18 +2,18 @@ using System;
 using UnityEngine;
 
 [Serializable]
-public class Inventory_Item 
+public class Inventory_Item
 {
     public ItemDataSO itemData;
     public int stackSize = 1;
     private string itemId;
-    public ItemModifier[] modifiers {  get; private set; }
+    public ItemModifier[] modifiers { get; private set; }
     public ItemEffectDataSO itemEffect;
 
     public Inventory_Item(ItemDataSO itemData)
     {
         this.itemData = itemData;
-        itemEffect  = itemData.itemEffect;
+        itemEffect = itemData.itemEffect;
 
         modifiers = EquipmentData()?.modifiers;
 
@@ -47,5 +47,9 @@ public class Inventory_Item
     public bool CanAddStack() => stackSize < itemData.maxStackSize;
     public void AddStack() => stackSize++;
     public void RemoveStack() => stackSize--;
+
+    public void AddItemEffect(Player player) => itemEffect?.Subscribe(player);
+    public void RemoveItemEffect() => itemEffect?.Unsubscribe();
+
 
 }

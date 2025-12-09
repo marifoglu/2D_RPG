@@ -16,13 +16,13 @@ MonoBehaviour:
   itemName: Winters Armor
   itemIcon: {fileID: 625480778395568090, guid: e31822c94ae12a844a2145f2fb7c2403, type: 3}
   maxStackSize: 1
-  itemEffect: {fileID: 0}
+  itemEffect: {fileID: 11400000, guid: 6364af703f9581f4797d37ba7ea88d7c, type: 2}
   modifiers:
   - statType: 0
     value: 122
   - statType: 0
     value: 0
-  - statType: 11
+  - statType: 17
     value: 125
   - statType: 1
     value: 21

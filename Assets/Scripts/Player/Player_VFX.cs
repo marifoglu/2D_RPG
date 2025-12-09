@@ -34,4 +34,9 @@ public class Player_VFX : Entity_VFX
         imageEcho.GetComponentsInChildren<SpriteRenderer>()[0].sprite = sr.sprite;
     }
 
+    public void CreateEffectOf(GameObject effectPrefab, Transform target)
+    {
+        Instantiate(effectPrefab, target.position, target.rotation);
+    }
+
 }

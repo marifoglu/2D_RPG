@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using Unity.Cinemachine;
+using System;
 
 public class Entity_Health : MonoBehaviour, IDamageable
 {
@@ -8,6 +9,8 @@ public class Entity_Health : MonoBehaviour, IDamageable
     private Entity_Stats entityStats;
     private Entity_VFX entityVFX;
     private Slider healthBar;
+
+    public event Action OnTakingDamage;
 
     [SerializeField] protected float currentHealth;
     public bool isDead { get; private set; }
@@ -82,6 +85,8 @@ public class Entity_Health : MonoBehaviour, IDamageable
         // Trigger camera shake when this entity takes damage
         TriggerCameraShake();
 
+        OnTakingDamage?.Invoke();
+
         return true;
     }
 
@@ -140,7 +145,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
         if (entityStats == null)
             return false;
         else
-            return Random.Range(0, 100) < entityStats.GetEvasion();
+            return UnityEngine.Random.Range(0, 100) < entityStats.GetEvasion();
     }
 
     public float GetHealthPercentage() => currentHealth / entityStats.GetMaxHealth();
