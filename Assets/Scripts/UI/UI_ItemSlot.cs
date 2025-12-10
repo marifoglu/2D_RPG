@@ -78,4 +78,3 @@ public class UI_ItemSlot : MonoBehaviour, IPointerDownHandler, IPointerEnterHand
             ui.itemToolTip.ShowToolTip(false, null);
     }
 }
-

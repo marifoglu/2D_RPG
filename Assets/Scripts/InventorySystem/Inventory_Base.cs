@@ -11,7 +11,6 @@ public class Inventory_Base : MonoBehaviour
 
     protected virtual void Awake()
     {
-
     }
     public void TryUseItem(Inventory_Item itemToUse)
     {
@@ -50,16 +49,11 @@ public class Inventory_Base : MonoBehaviour
     public void AddItem(Inventory_Item itemToAdd)
     {
         if (itemToAdd == null)
-        {
-            Debug.LogWarning("Attempted to AddItem with a null Inventory_Item.");
             return;
-        }
+        
 
         if (itemToAdd.itemData == null)
-        {
-            Debug.LogWarning("Attempted to AddItem with Inventory_Item that has null itemData.");
             return;
-        }
 
         Inventory_Item itemInInventory = FindStackable(itemToAdd);
 
@@ -86,6 +80,5 @@ public class Inventory_Base : MonoBehaviour
     {
         return itemList.Find(item => item.itemData == itemData);
     }
-
     public void TriggerUpdateUI() => OnInventoryChange?.Invoke();
 }

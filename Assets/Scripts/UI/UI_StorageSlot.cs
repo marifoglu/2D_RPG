@@ -17,11 +17,8 @@ public class UI_StorageSlot : UI_ItemSlot
 
     public override void OnPointerDown(PointerEventData eventData)
     {
-        // CRITICAL: Return early to prevent base class behavior
         if (itemInSlot == null || storage == null)
             return;
-
-        // DO NOT call base.OnPointerDown() - this prevents using/equipping items
 
         bool transferFullStack = Input.GetKey(KeyCode.LeftControl);
 

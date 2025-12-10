@@ -19,21 +19,14 @@ public class Inventory_Player : Inventory_Base
 
     public void TryEquipItem(Inventory_Item item)
     {
-        // Check if the item is actually equipment
         if (item.itemData is not EquipmentDataSO)
-        {
-            Debug.Log($"Cannot equip {item.itemData.itemName}. This item is not equipment.");
             return;
-        }
 
         var inventoryItem = FindItem(item.itemData);
         var matchingSlots = equipList.FindAll(slot => slot.slotType == item.itemData.itemType);
 
         if (matchingSlots.Count == 0)
-        {
-            Debug.LogWarning($"No equipment slot available for item type: {item.itemData.itemType}");
             return;
-        }
 
         foreach (var slot in matchingSlots)
         {
@@ -47,7 +40,6 @@ public class Inventory_Player : Inventory_Base
         var slotReplace = matchingSlots[0];
         var itemToUnequip = slotReplace.equipedItem;
 
-
         UnEquipItem(itemToUnequip, slotReplace != null);
         EquipItem(inventoryItem, slotReplace);
     }
@@ -55,17 +47,13 @@ public class Inventory_Player : Inventory_Base
     private void EquipItem(Inventory_Item itemToEquip, Inventory_EquipmentSlot slot)
     {
         if (player == null || itemToEquip == null || slot == null)
-        {
-            Debug.LogError("Cannot equip item: player, item, or slot is null.");
             return;
-        }
 
         float savedHealthPercent = player.health.GetHealthPercentage();
 
         slot.equipedItem = itemToEquip;
         slot.equipedItem.AddModifiers(player.stats);
         slot.equipedItem.AddItemEffect(player);
-
 
         player.health.SetHealthToPercentage(savedHealthPercent);
         RemoveOneItem(itemToEquip);
@@ -74,16 +62,10 @@ public class Inventory_Player : Inventory_Base
     public void UnEquipItem(Inventory_Item itemToUnequip, bool replacingItem = false)
     {
         if (CanAddItem(itemToUnequip) == false && replacingItem == false)
-        {
-            Debug.Log("Not enough space in inventory to unequip item.");
             return;
-        }
 
         if (player == null || itemToUnequip == null)
-        {
-            Debug.LogError("Cannot unequip item: player or item is null.");
             return;
-        }
 
         float savedHealthPercent = player.health.GetHealthPercentage();
 
