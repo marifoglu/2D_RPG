@@ -17,6 +17,9 @@ public class UI_ItemSlot : MonoBehaviour, IPointerDownHandler, IPointerEnterHand
     protected void Awake()
     {
         ui = GetComponentInParent<UI>();
+        if (ui == null)
+            ui = FindAnyObjectByType<UI>();
+
         rect = GetComponent<RectTransform>();
         inventory = FindAnyObjectByType<Inventory_Player>();
     }
@@ -26,19 +29,20 @@ public class UI_ItemSlot : MonoBehaviour, IPointerDownHandler, IPointerEnterHand
         if (itemInSlot == null || itemInSlot.itemData.itemType == ItemType.Material)
             return;
 
-        if (itemInSlot.itemData.itemType == ItemType.Consumable) { 
+        if (itemInSlot.itemData.itemType == ItemType.Consumable)
+        {
 
             if (itemInSlot.itemEffect.CanBeUsed() == false)
                 return;
 
             inventory.TryUseItem(itemInSlot);
         }
-        else 
-        { 
+        else
+        {
             inventory.TryEquipItem(itemInSlot);
         }
 
-        if (itemInSlot == null)
+        if (itemInSlot == null && ui != null && ui.itemToolTip != null)
             ui.itemToolTip.ShowToolTip(false, null);
     }
 
@@ -46,7 +50,7 @@ public class UI_ItemSlot : MonoBehaviour, IPointerDownHandler, IPointerEnterHand
     {
         itemInSlot = item;
 
-        if(itemInSlot == null)
+        if (itemInSlot == null)
         {
             itemStackSize.text = "";
             itemIcon.color = Color.clear;
@@ -61,14 +65,17 @@ public class UI_ItemSlot : MonoBehaviour, IPointerDownHandler, IPointerEnterHand
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if(itemInSlot == null)
+        if (itemInSlot == null)
             return;
 
-        ui.itemToolTip.ShowToolTip(true, rect, itemInSlot);
+        if (ui != null && ui.itemToolTip != null)
+            ui.itemToolTip.ShowToolTip(true, rect, itemInSlot);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        ui.itemToolTip.ShowToolTip(false, null);
+        if (ui != null && ui.itemToolTip != null)
+            ui.itemToolTip.ShowToolTip(false, null);
     }
 }
+

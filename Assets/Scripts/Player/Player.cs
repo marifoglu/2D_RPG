@@ -215,7 +215,7 @@ public class Player : Entity
         input.PlayerCharacter.Spell.performed += ctx => skillManager.shard.TryUseSkill();
         input.PlayerCharacter.Spell.performed += ctx => skillManager.timeEcho.TryUseSkill();
         
-        input.PlayerCharacter.Interact.performed += ctx => TryInteract();
+        input.PlayerCharacter.Interaction.performed += ctx => TryInteract();
 
         input.PlayerCharacter.ToggleSkillTreeUi.performed += ctx => ui.ToggleSkillTreeUI();
         input.PlayerCharacter.ToggleInventoryUI.performed += ctx => ui.ToggleInventoryUI();

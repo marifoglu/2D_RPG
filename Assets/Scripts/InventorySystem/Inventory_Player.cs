@@ -5,11 +5,16 @@ public class Inventory_Player : Inventory_Base
 {
     private Player player;
     public List<Inventory_EquipmentSlot> equipList;
+    public Inventory_Storage storage { get; private set; }
 
     protected override void Awake()
     {
         base.Awake();
         player = GetComponent<Player>();
+        if (player == null)
+            player = FindAnyObjectByType<Player>();
+
+        storage = FindFirstObjectByType<Inventory_Storage>();
     }
 
     public void TryEquipItem(Inventory_Item item)
@@ -41,7 +46,7 @@ public class Inventory_Player : Inventory_Base
 
         var slotReplace = matchingSlots[0];
         var itemToUnequip = slotReplace.equipedItem;
-        
+
 
         UnEquipItem(itemToUnequip, slotReplace != null);
         EquipItem(inventoryItem, slotReplace);
@@ -49,6 +54,12 @@ public class Inventory_Player : Inventory_Base
 
     private void EquipItem(Inventory_Item itemToEquip, Inventory_EquipmentSlot slot)
     {
+        if (player == null || itemToEquip == null || slot == null)
+        {
+            Debug.LogError("Cannot equip item: player, item, or slot is null.");
+            return;
+        }
+
         float savedHealthPercent = player.health.GetHealthPercentage();
 
         slot.equipedItem = itemToEquip;
@@ -57,14 +68,20 @@ public class Inventory_Player : Inventory_Base
 
 
         player.health.SetHealthToPercentage(savedHealthPercent);
-        RemoveItem(itemToEquip);
+        RemoveOneItem(itemToEquip);
     }
 
     public void UnEquipItem(Inventory_Item itemToUnequip, bool replacingItem = false)
     {
-        if (CanAddItem() == false && replacingItem == false)
+        if (CanAddItem(itemToUnequip) == false && replacingItem == false)
         {
             Debug.Log("Not enough space in inventory to unequip item.");
+            return;
+        }
+
+        if (player == null || itemToUnequip == null)
+        {
+            Debug.LogError("Cannot unequip item: player or item is null.");
             return;
         }
 
@@ -72,8 +89,8 @@ public class Inventory_Player : Inventory_Base
 
         var slotToUnequip = equipList.Find(slot => slot.equipedItem == itemToUnequip);
 
-        if(slotToUnequip != null)
-            slotToUnequip.equipedItem = null; 
+        if (slotToUnequip != null)
+            slotToUnequip.equipedItem = null;
 
         itemToUnequip.RemoveModifiers(player.stats);
         itemToUnequip.RemoveItemEffect();
@@ -82,7 +99,4 @@ public class Inventory_Player : Inventory_Base
 
         AddItem(itemToUnequip);
     }
-
-
-
 }

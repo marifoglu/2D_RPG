@@ -15,6 +15,9 @@ public class UI_StatSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     private void Awake()
     {
         ui = GetComponentInParent<UI>();
+        if (ui == null)
+            ui = FindAnyObjectByType<UI>();
+
         rect = GetComponent<RectTransform>();
         playerStats = FindFirstObjectByType<Player_Stats>();
     }
@@ -25,12 +28,14 @@ public class UI_StatSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     }
     public void OnPointerEnter(PointerEventData eventData)
     {
-        ui.statToolTip.ShowToolTip(true, rect, statSlotType);
+        if (ui != null && ui.statToolTip != null)
+            ui.statToolTip.ShowToolTip(true, rect, statSlotType);
     }
 
     public void OnPointerExit(PointerEventData eventData)
     {
-        ui.statToolTip.ShowToolTip(false, null);
+        if (ui != null && ui.statToolTip != null)
+            ui.statToolTip.ShowToolTip(false, null);
     }
 
     public void UpdateStaValue()
