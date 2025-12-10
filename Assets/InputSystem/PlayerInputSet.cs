@@ -208,6 +208,15 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Interact"",
+                    ""type"": ""Button"",
+                    ""id"": ""d005f14d-b6e2-4268-a792-17395645e27e"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -434,7 +443,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""2b47cd5a-7965-4987-b25c-b491825750fd"",
-                    ""path"": ""<Keyboard>/f"",
+                    ""path"": ""<Keyboard>/e"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Keyboard & Mouse"",
@@ -562,6 +571,17 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""action"": ""ToggleInventoryUI"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6a29f4cd-2eb6-40b9-b7b1-973192fe6032"",
+                    ""path"": ""<Keyboard>/f"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard & Mouse"",
+                    ""action"": ""Interact"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -600,6 +620,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         m_PlayerCharacter_HeavyAttack = m_PlayerCharacter.FindAction("HeavyAttack", throwIfNotFound: true);
         m_PlayerCharacter_Interaction = m_PlayerCharacter.FindAction("Interaction", throwIfNotFound: true);
         m_PlayerCharacter_ToggleInventoryUI = m_PlayerCharacter.FindAction("ToggleInventoryUI", throwIfNotFound: true);
+        m_PlayerCharacter_Interact = m_PlayerCharacter.FindAction("Interact", throwIfNotFound: true);
     }
 
     ~@PlayerInputSet()
@@ -693,6 +714,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerCharacter_HeavyAttack;
     private readonly InputAction m_PlayerCharacter_Interaction;
     private readonly InputAction m_PlayerCharacter_ToggleInventoryUI;
+    private readonly InputAction m_PlayerCharacter_Interact;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerCharacter".
     /// </summary>
@@ -756,6 +778,10 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "PlayerCharacter/ToggleInventoryUI".
         /// </summary>
         public InputAction @ToggleInventoryUI => m_Wrapper.m_PlayerCharacter_ToggleInventoryUI;
+        /// <summary>
+        /// Provides access to the underlying input action "PlayerCharacter/Interact".
+        /// </summary>
+        public InputAction @Interact => m_Wrapper.m_PlayerCharacter_Interact;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -821,6 +847,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @ToggleInventoryUI.started += instance.OnToggleInventoryUI;
             @ToggleInventoryUI.performed += instance.OnToggleInventoryUI;
             @ToggleInventoryUI.canceled += instance.OnToggleInventoryUI;
+            @Interact.started += instance.OnInteract;
+            @Interact.performed += instance.OnInteract;
+            @Interact.canceled += instance.OnInteract;
         }
 
         /// <summary>
@@ -871,6 +900,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @ToggleInventoryUI.started -= instance.OnToggleInventoryUI;
             @ToggleInventoryUI.performed -= instance.OnToggleInventoryUI;
             @ToggleInventoryUI.canceled -= instance.OnToggleInventoryUI;
+            @Interact.started -= instance.OnInteract;
+            @Interact.performed -= instance.OnInteract;
+            @Interact.canceled -= instance.OnInteract;
         }
 
         /// <summary>
@@ -1028,5 +1060,12 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnToggleInventoryUI(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Interact" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnInteract(InputAction.CallbackContext context);
     }
 }

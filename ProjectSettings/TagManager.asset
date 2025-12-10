@@ -16,7 +16,7 @@ TagManager:
   - Enemy
   - Slope
   - OneWayPlatform
-  - PlayerPickups
+  - PlayerInteractable
   - ObjectChest
   - SkillObjectSword
   - Ladder

@@ -214,6 +214,8 @@ public class Player : Entity
 
         input.PlayerCharacter.Spell.performed += ctx => skillManager.shard.TryUseSkill();
         input.PlayerCharacter.Spell.performed += ctx => skillManager.timeEcho.TryUseSkill();
+        
+        input.PlayerCharacter.Interact.performed += ctx => TryInteract();
 
         input.PlayerCharacter.ToggleSkillTreeUi.performed += ctx => ui.ToggleSkillTreeUI();
         input.PlayerCharacter.ToggleInventoryUI.performed += ctx => ui.ToggleInventoryUI();
@@ -235,6 +237,33 @@ public class Player : Entity
     {
         yield return new WaitForEndOfFrame();
         stateMachine.ChangeState(basicAttackState);
+    }
+
+    private void TryInteract()
+    {
+        Transform closest = null;
+        float closeToDistane = Mathf.Infinity;
+        Collider2D[] objectsAround = Physics2D.OverlapCircleAll(transform.position, 1.5f);
+
+        foreach(var target in objectsAround)
+        {
+            IInteractable interactable = target.GetComponent<IInteractable>();
+            if (interactable == null)
+                continue;
+
+            float distance = Vector2.Distance(transform.position, target.transform.position);
+
+            if(distance < closeToDistane)
+            {
+                closeToDistane = distance;
+                closest = target.transform;
+            }
+        }
+
+        if (closest == null)
+            return;
+
+        closest.GetComponent<IInteractable>().Interact();
     }
 
     #region Ladder Methods
