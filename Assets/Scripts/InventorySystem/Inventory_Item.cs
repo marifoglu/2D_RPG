@@ -11,10 +11,15 @@ public class Inventory_Item
     public ItemModifier[] modifiers { get; private set; }
     public ItemEffectDataSO itemEffect;
 
+    public int buyPrice { get; private set; }
+    public float sellPrice { get; private set; }
+
     public Inventory_Item(ItemDataSO itemData)
     {
         this.itemData = itemData;
         itemEffect = itemData.itemEffect;
+        buyPrice = itemData.itemPrice;
+        sellPrice = itemData.itemPrice * 0.35f; // Lower price for selling to merchants
 
         modifiers = EquipmentData()?.modifiers;
 

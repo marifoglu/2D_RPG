@@ -21,9 +21,9 @@ public class UI_CraftListButton : MonoBehaviour
             slot.gameObject.SetActive(false);
         }
 
-        for (int i = 0; i < craftData.items.Length; i++)
+        for (int i = 0; i < craftData.itemList.Length; i++)
         {
-            ItemDataSO itemData = craftData.items[i];
+            ItemDataSO itemData = craftData.itemList[i];
 
             craftSlots[i].gameObject.SetActive(true);
             craftSlots[i].SetupButton(itemData);
