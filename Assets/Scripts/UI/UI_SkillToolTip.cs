@@ -105,7 +105,7 @@ public class UI_SkillToolTip : UI_ToolTip
 
         foreach (var node in conflictNodes)
         {
-            if(node == null)
+            if (node == null)
                 continue;
 
             string nodeText = $"- {node.skillData.displayName}";

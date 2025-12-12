@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class Inventory_Storage : Inventory_Base
 {
-    private Inventory_Player playerInventory;
+    public Inventory_Player playerInventory { get; private set; }
     public List<Inventory_Item> materialStash = new List<Inventory_Item>();
 
     public void AddMaterialToStash(Inventory_Item itemToAdd)
@@ -131,5 +131,81 @@ public class Inventory_Storage : Inventory_Base
 
         playerInventory.TriggerUpdateUI();
         TriggerUpdateUI();
+    }
+
+    public int GetAvailableAmountOf(ItemDataSO requiredItem)
+    {
+        int amount = 0;
+
+        foreach (var item in playerInventory.itemList)
+        {
+            if (item.itemData == requiredItem)
+                amount += item.stackSize;
+        }
+
+        foreach(var item in itemList)
+        {
+            if (item.itemData == requiredItem)
+                amount += item.stackSize;
+        }
+
+        foreach(var item in materialStash)
+        {
+            if (item.itemData == requiredItem)
+                amount += item.stackSize;
+        }
+        return amount;
+    }
+
+    public bool HasEnoughMaterials(Inventory_Item itemToCraft)
+    {
+        foreach (var requiredMaterial in itemToCraft.itemData.craftReceipe)
+        {
+            if (GetAvailableAmountOf(requiredMaterial.itemData) < requiredMaterial.stackSize)
+                return false;
+        }
+        return true;
+    }
+
+    private int ConsumedMaterialsAmount(List<Inventory_Item> itemList, Inventory_Item neededItem)
+    {
+        int amountNeeded = neededItem.stackSize;
+        int consumedAmount = 0;
+
+        for (int i = itemList.Count - 1; i >= 0; i--)
+        {
+            var item = itemList[i];
+
+            if (item.itemData != neededItem.itemData)
+                continue;
+
+            int removeAmount = Mathf.Min(item.stackSize, amountNeeded - consumedAmount);
+            item.stackSize -= removeAmount;
+            consumedAmount += removeAmount;
+
+            if (item.stackSize <= 0)
+                itemList.RemoveAt(i);
+
+            if (consumedAmount >= amountNeeded)
+                break;
+        }
+        return consumedAmount;
+    }
+
+    public void ConsumeMaterials(Inventory_Item itemToCraft)
+    {
+        foreach(var requiredItem in itemToCraft.itemData.craftReceipe)
+        {
+            int amountToConsume = requiredItem.stackSize;
+
+            amountToConsume = amountToConsume - ConsumedMaterialsAmount(playerInventory.itemList, requiredItem);
+
+            if(amountToConsume > 0)
+                amountToConsume = amountToConsume - ConsumedMaterialsAmount(itemList, requiredItem);
+
+            if(amountToConsume > 0)
+                amountToConsume = amountToConsume - ConsumedMaterialsAmount(materialStash, requiredItem);
+            
+        }
     }
 }

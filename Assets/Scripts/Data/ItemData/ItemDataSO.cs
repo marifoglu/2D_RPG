@@ -1,7 +1,6 @@
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "Material data - ", menuName = "RPG Setup/Item data/Material item")]
-
 public class ItemDataSO : ScriptableObject
 {
     public ItemType itemType;
@@ -11,4 +10,7 @@ public class ItemDataSO : ScriptableObject
 
     [Header("Item Effects")]
     public ItemEffectDataSO itemEffect;
+
+    [Header("Craft Details")]
+    public Inventory_Item[] craftReceipe;
 }

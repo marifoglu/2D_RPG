@@ -8,6 +8,7 @@ public class UI : MonoBehaviour
     public UI_SkillTree skillTreeUI { get; private set; }
     public UI_Inventory inventoryUI { get; private set; }
     public UI_Storage storageUI { get; private set; }
+    public UI_Craft craftUI { get; set; }
 
     private bool skillTreeEnabled;
     private bool inventoryEnabled;
@@ -33,6 +34,8 @@ public class UI : MonoBehaviour
         if (storageUI == null)
             storageUI = GetComponentInChildren<UI_Storage>(true);
 
+        if (craftUI == null)
+            craftUI = GetComponentInChildren<UI_Craft>(true);
 
         skillTreeEnabled = skillTreeUI != null && skillTreeUI.gameObject.activeSelf;
         inventoryEnabled = inventoryUI != null && inventoryUI.gameObject.activeSelf;

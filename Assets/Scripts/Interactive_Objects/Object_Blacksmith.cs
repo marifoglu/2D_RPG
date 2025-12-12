@@ -22,8 +22,11 @@ public class Object_Blacksmith : Object_NPC, IInteractable
             return;
         }
 
-        ui.storageUI.SetupStorage(inventory, storage);
+        ui.storageUI.SetupStorageUI(storage);
+        ui.craftUI.SetupCraftUI(storage);
+            
         ui.storageUI.gameObject.SetActive(true);
+        //ui.craftUI.gameObject.SetActive(true);
     }
 
     protected override void OnTriggerEnter2D(Collider2D collision)
@@ -43,6 +46,9 @@ public class Object_Blacksmith : Object_NPC, IInteractable
 
             if (ui.storageUI != null)
                 ui.storageUI.gameObject.SetActive(false);
+
+            if (ui.craftUI != null)
+                ui.craftUI.gameObject.SetActive(false);
         }
     }
 }

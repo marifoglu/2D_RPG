@@ -10,16 +10,10 @@ public class UI_Storage : MonoBehaviour
     [SerializeField] private UI_ItemSlotParent storageParent;
     [SerializeField] private UI_ItemSlotParent materialStashParent;
 
-    public void SetupStorage(Inventory_Player player, Inventory_Storage storage)
+    public void SetupStorageUI(Inventory_Storage storage)
     {
-        if (player == null || storage == null)
-        {
-            Debug.LogError("UI_Storage: Cannot setup with null player or storage!");
-            return;
-        }
-
-        this.inventory = player;
         this.storage = storage;
+        inventory = storage.playerInventory;
 
         storage.OnInventoryChange -= UpdateUI;
         inventory.OnInventoryChange -= UpdateUI;
@@ -36,6 +30,10 @@ public class UI_Storage : MonoBehaviour
             if (slot != null)
                 slot.SetStorage(storage);
         }
+    }
+    private void OnEnable()
+    {
+        UpdateUI();
     }
 
     private void UpdateUI()
@@ -62,6 +60,8 @@ public class UI_Storage : MonoBehaviour
         else
             Debug.LogWarning("UI_Storage: materialStashParent is not assigned in Inspector!");
     }
+
+
 
     private void OnDisable()
     {
