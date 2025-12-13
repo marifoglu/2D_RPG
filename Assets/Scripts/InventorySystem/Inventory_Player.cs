@@ -24,7 +24,7 @@ public class Inventory_Player : Inventory_Base
         if (item.itemData is not EquipmentDataSO)
             return;
 
-        var inventoryItem = FindItem(item.itemData);
+        var inventoryItem = FindItem(item);
         var matchingSlots = equipList.FindAll(slot => slot.slotType == item.itemData.itemType);
 
         if (matchingSlots.Count == 0)
@@ -42,8 +42,8 @@ public class Inventory_Player : Inventory_Base
         var slotReplace = matchingSlots[0];
         var itemToUnequip = slotReplace.equipedItem;
 
-        EquipItem(inventoryItem, slotReplace);
         UnEquipItem(itemToUnequip, slotReplace != null);
+        EquipItem(inventoryItem, slotReplace);
     }
 
     private void EquipItem(Inventory_Item itemToEquip, Inventory_EquipmentSlot slot)

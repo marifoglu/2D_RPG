@@ -98,15 +98,25 @@ public class UI : MonoBehaviour
 
     private void Awake()
     {
-        itemToolTip = GetComponentInChildren<UI_ItemToolTip>();
-        skillToolTip = GetComponentInChildren<UI_SkillToolTip>();
-        statToolTip = GetComponentInChildren<UI_StatToolTip>();
+        // Find tooltips - search more aggressively
+        itemToolTip = FindFirstObjectByType<UI_ItemToolTip>(FindObjectsInactive.Include);
+        if (itemToolTip == null)
+            Debug.LogError("UI_ItemToolTip not found in scene!");
 
-        skillTreeUI = GetComponentInChildren<UI_SkillTree>(true);
-        inventoryUI = GetComponentInChildren<UI_Inventory>(true);
-        storageUI = GetComponentInChildren<UI_Storage>(true);
-        craftUI = GetComponentInChildren<UI_Craft>(true);
-        merchantUI = GetComponentInChildren<UI_Merchant>(true);
+        skillToolTip = FindFirstObjectByType<UI_SkillToolTip>(FindObjectsInactive.Include);
+        if (skillToolTip == null)
+            Debug.LogError("UI_SkillToolTip not found in scene!");
+
+        statToolTip = FindFirstObjectByType<UI_StatToolTip>(FindObjectsInactive.Include);
+        if (statToolTip == null)
+            Debug.LogError("UI_StatToolTip not found in scene!");
+
+        // Find UI panels
+        skillTreeUI = FindFirstObjectByType<UI_SkillTree>(FindObjectsInactive.Include);
+        inventoryUI = FindFirstObjectByType<UI_Inventory>(FindObjectsInactive.Include);
+        storageUI = FindFirstObjectByType<UI_Storage>(FindObjectsInactive.Include);
+        craftUI = FindFirstObjectByType<UI_Craft>(FindObjectsInactive.Include);
+        merchantUI = FindFirstObjectByType<UI_Merchant>(FindObjectsInactive.Include);
 
         // Initialize enabled states with null checks
         skillTreeEnabled = skillTreeUI != null && skillTreeUI.gameObject.activeSelf;

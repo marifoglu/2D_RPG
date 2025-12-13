@@ -12,21 +12,40 @@ public class UI_MerchantSlot : UI_ItemSlot
     }
     public MerchantSlotType slotType;
 
+    protected override void Awake()
+    {
+        base.Awake();
+
+        // Extra validation for UI reference
+        if (ui == null)
+        {
+            ui = GetComponentInParent<UI>();
+            if (ui == null)
+                ui = FindFirstObjectByType<UI>();
+        }
+    }
+
     public override void OnPointerEnter(PointerEventData eventData)
     {
-        if(itemInSlot == null)
+        if (itemInSlot == null)
             return;
 
-        if(slotType == MerchantSlotType.MerchantSlot)
+        // Add null checks before using tooltip
+        if (ui == null || ui.itemToolTip == null)
+        {
+            Debug.LogWarning($"Cannot show tooltip - UI or ItemToolTip is null on {gameObject.name}");
+            return;
+        }
+
+        if (slotType == MerchantSlotType.MerchantSlot)
             ui.itemToolTip.ShowToolTip(true, rect, itemInSlot, true, true);
         else
             ui.itemToolTip.ShowToolTip(true, rect, itemInSlot, false, true);
-        
     }
 
     public override void OnPointerDown(PointerEventData eventData)
     {
-        if(itemInSlot == null) 
+        if (itemInSlot == null)
             return;
 
         bool rightButton = eventData.button == PointerEventData.InputButton.Right;
@@ -37,7 +56,8 @@ public class UI_MerchantSlot : UI_ItemSlot
             if (rightButton)
             {
                 bool sellFullStack = Input.GetKey(KeyCode.N);
-                merchant.TrySellItem(itemInSlot, sellFullStack);
+                if (merchant != null)
+                    merchant.TrySellItem(itemInSlot, sellFullStack);
             }
             else if (leftButton)
             {
@@ -51,9 +71,12 @@ public class UI_MerchantSlot : UI_ItemSlot
 
             //buy item from merchant
             bool buyFullStack = Input.GetKey(KeyCode.N);
-            merchant.TryBuyItem(itemInSlot, buyFullStack);
+            if (merchant != null)
+                merchant.TryBuyItem(itemInSlot, buyFullStack);
         }
-        ui.itemToolTip.ShowToolTip(false, null);
+
+        if (ui != null && ui.itemToolTip != null)
+            ui.itemToolTip.ShowToolTip(false, null);
     }
 
     public void SetupMerchantUI(Inventory_Merchant merchant) => this.merchant = merchant;

@@ -18,21 +18,36 @@ public class UI_ItemToolTip : UI_ToolTip
     {
         base.ShowToolTip(show, targetTransform);
 
+        // Safety check
+        if (!show || itemToShow == null || itemToShow.itemData == null)
+            return;
+
         merchantInfo.gameObject.SetActive(showMerchantInfo);
         inventoryInfo.gameObject.SetActive(!showMerchantInfo);
 
         int price = buyPrice ? itemToShow.buyPrice : Mathf.FloorToInt(itemToShow.sellPrice);
         int totalPrice = price * itemToShow.stackSize;
 
-        // Debug logging to see what's happening
-        Debug.Log($"Item: {itemToShow.itemData.itemName}, buyPrice: {itemToShow.buyPrice}, sellPrice: {itemToShow.sellPrice}, itemData.itemPrice: {itemToShow.itemData.itemPrice}");
-
         string fullStackPrice = ($"Price: {price}x{itemToShow.stackSize} - {totalPrice}g.");
         string singleStackPrice = ($"Price: {price}g.");
 
         itemPrice.text = itemToShow.stackSize > 1 ? fullStackPrice : singleStackPrice;
-        itemName.text = itemToShow.itemData.itemName;
         itemType.text = itemToShow.itemData.itemType.ToString();
-        itemInfo.text = itemToShow.GetItemInfo();
+
+        // Safe call to GetItemInfo with null check
+        itemInfo.text = itemToShow.GetItemInfo() ?? "No information available";
+
+        string color = GetColorByRarity(itemToShow.itemData.itemRarity);
+        itemName.text = GetColoredText(color, itemToShow.itemData.name);
+    }
+
+    private string GetColorByRarity(int rarity)
+    {
+        if (rarity <= 100) return "white"; // Common
+        if (rarity <= 300) return "green"; // Unommon
+        if (rarity <= 600) return "blue"; // Rare
+        if (rarity <= 860) return "purple"; // Epic
+        return "orange"; // Legendary
+
     }
 }

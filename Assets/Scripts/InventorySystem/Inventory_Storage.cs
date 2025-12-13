@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class Inventory_Storage : Inventory_Base
@@ -6,19 +7,31 @@ public class Inventory_Storage : Inventory_Base
     public Inventory_Player playerInventory { get; private set; }
     public List<Inventory_Item> materialStash = new List<Inventory_Item>();
 
+    public bool CanCraftItem(Inventory_Item itemToCraft)
+    {
+        return HasEnoughMaterials(itemToCraft) && playerInventory.CanAddItem(itemToCraft);
+    }
+
+    public void CraftItem(Inventory_Item itemToCraft)
+    {
+        ConsumeMaterials(itemToCraft);
+        playerInventory.AddItem(itemToCraft);
+    }
+
     public void AddMaterialToStash(Inventory_Item itemToAdd)
     {
         var stackableItem = StackableInStash(itemToAdd);
 
         if (stackableItem != null)
-        {
             stackableItem.AddStack();
-        }
         else
         {
-            materialStash.Add(itemToAdd);
+            var newItemToAdd = new Inventory_Item(itemToAdd.itemData);
+            materialStash.Add(newItemToAdd);
         }
+
         TriggerUpdateUI();
+        materialStash = materialStash.OrderBy(item => item.itemData.name).ToList();
     }
 
     public Inventory_Item StackableInStash(Inventory_Item itemToAdd)
@@ -30,110 +43,49 @@ public class Inventory_Storage : Inventory_Base
             if (stackable.CanAddStack())
                 return stackable;
         }
+
         return null;
     }
+
 
     public void SetInventory(Inventory_Player inventory) => this.playerInventory = inventory;
     public void FromPlayerToStorage(Inventory_Item item, bool transferFullStack)
     {
-        if (item == null || item.itemData == null || playerInventory == null)
-            return;
+        int transferAmount = transferFullStack ? item.stackSize : 1;
 
-        Inventory_Item playerItem = playerInventory.FindItem(item.itemData);
-        if (playerItem == null)
-            return;
-
-        int transferAmount = transferFullStack ? playerItem.stackSize : 1;
-
-        if (item.itemData.itemType == ItemType.Material)
+        for (int i = 0; i < transferAmount; i++)
         {
-            for (int i = 0; i < transferAmount; i++)
+            if (CanAddItem(item))
             {
-                playerItem = playerInventory.FindItem(item.itemData);
-                if (playerItem == null || playerItem.stackSize <= 0)
-                    break;
-
                 var itemToAdd = new Inventory_Item(item.itemData);
-                playerInventory.RemoveOneItem(playerItem);
-                AddMaterialToStash(itemToAdd);
-            }
-        }
-        else
-        {
-            for (int i = 0; i < transferAmount; i++)
-            {
-                playerItem = playerInventory.FindItem(item.itemData);
-                if (playerItem == null || playerItem.stackSize <= 0)
-                    break;
 
-                if (!CanAddItem(playerItem))
-                {
-                    Debug.LogWarning("Storage is full");
-                    break;
-                }
-                var itemToAdd = new Inventory_Item(item.itemData);
-                playerInventory.RemoveOneItem(playerItem);
+                playerInventory.RemoveOneItem(item);
                 AddItem(itemToAdd);
             }
         }
-        playerInventory.TriggerUpdateUI();
+
         TriggerUpdateUI();
     }
 
     public void FromStorageToPlayer(Inventory_Item item, bool transferFullStack)
     {
-        if (item == null || item.itemData == null || playerInventory == null)
-            return;
-
         int transferAmount = transferFullStack ? item.stackSize : 1;
 
-        if (item.itemData.itemType == ItemType.Material)
+        for (int i = 0; i < transferAmount; i++)
         {
-            for (int i = 0; i < transferAmount; i++)
+            if (playerInventory.CanAddItem(item))
             {
-                Inventory_Item materialItem = materialStash.Find(m => m.itemData == item.itemData);
-                if (materialItem == null || materialItem.stackSize <= 0)
-                    break;
-
-                if (!playerInventory.CanAddItem(materialItem))
-                    break;
-
                 var itemToAdd = new Inventory_Item(item.itemData);
 
-                if (materialItem.stackSize > 1)
-                {
-                    materialItem.RemoveStack();
-                }
-                else
-                {
-                    materialStash.Remove(materialItem);
-                }
-
+                RemoveOneItem(item);
                 playerInventory.AddItem(itemToAdd);
             }
         }
-        else
-        {
-            for (int i = 0; i < transferAmount; i++)
-            {
-                Inventory_Item storageItem = FindItem(item.itemData);
-                if (storageItem == null || storageItem.stackSize <= 0)
-                    break;
-
-                if (!playerInventory.CanAddItem(storageItem))
-                    break;
-
-                var itemToAdd = new Inventory_Item(item.itemData);
-                RemoveOneItem(storageItem);
-                playerInventory.AddItem(itemToAdd);
-            }
-        }
-
-        playerInventory.TriggerUpdateUI();
         TriggerUpdateUI();
     }
 
-    public int GetAvailableAmountOf(ItemDataSO requiredItem)
+
+public int GetAvailableAmountOf(ItemDataSO requiredItem)
     {
         int amount = 0;
 
@@ -157,7 +109,7 @@ public class Inventory_Storage : Inventory_Base
         return amount;
     }
 
-    public bool HasEnoughMaterials(Inventory_Item itemToCraft)
+    private bool HasEnoughMaterials(Inventory_Item itemToCraft)
     {
         foreach (var requiredMaterial in itemToCraft.itemData.craftReceipe)
         {
@@ -192,7 +144,7 @@ public class Inventory_Storage : Inventory_Base
         return consumedAmount;
     }
 
-    public void ConsumeMaterials(Inventory_Item itemToCraft)
+    private void ConsumeMaterials(Inventory_Item itemToCraft)
     {
         foreach(var requiredItem in itemToCraft.itemData.craftReceipe)
         {

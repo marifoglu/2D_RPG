@@ -17,7 +17,7 @@ public class UI_Craft : MonoBehaviour
         UpdateUI();
 
         craftPreview = GetComponentInChildren<UI_CraftPreview>();
-        craftPreview.SetupPreviewSlots(storage);
+        craftPreview.SetupCraftPreview(storage);
         SetupCraftListButtons();
     }
     private void SetupCraftListButtons()

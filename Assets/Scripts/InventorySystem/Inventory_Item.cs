@@ -28,19 +28,27 @@ public class Inventory_Item
 
     public void AddModifiers(Entity_Stats playerStats)
     {
+        if (modifiers == null || modifiers.Length == 0)
+            return;
+
         foreach (var mod in modifiers)
         {
             Stat statToModify = playerStats.GetStatByType(mod.statType);
-            statToModify.AddModifier(mod.value, itemId);
+            if (statToModify != null)
+                statToModify.AddModifier(mod.value, itemId);
         }
     }
 
     public void RemoveModifiers(Entity_Stats playerStats)
     {
+        if (modifiers == null || modifiers.Length == 0)
+            return;
+
         foreach (var mod in modifiers)
         {
             Stat statToModify = playerStats.GetStatByType(mod.statType);
-            statToModify.RemoveModifier(itemId);
+            if (statToModify != null)
+                statToModify.RemoveModifier(itemId);
         }
     }
 
@@ -50,6 +58,7 @@ public class Inventory_Item
             return equipment;
         return null;
     }
+
     public bool CanAddStack() => stackSize < itemData.maxStackSize;
     public void AddStack() => stackSize++;
     public void RemoveStack() => stackSize--;
@@ -61,7 +70,8 @@ public class Inventory_Item
     {
         StringBuilder sb = new StringBuilder();
 
-        if(itemData.itemType == ItemType.Material)
+        // Handle Material items
+        if (itemData.itemType == ItemType.Material)
         {
             sb.AppendLine("");
             sb.AppendLine("Used for crafting");
@@ -70,29 +80,45 @@ public class Inventory_Item
             return sb.ToString();
         }
 
+        // Handle Consumable items
         if (itemData.itemType == ItemType.Consumable)
         {
-            if (itemData.itemType == ItemType.Material)
+            sb.AppendLine("");
+            if (itemEffect != null && !string.IsNullOrEmpty(itemEffect.effectDescription))
             {
-                sb.AppendLine("");
                 sb.AppendLine(itemEffect.effectDescription);
-                sb.AppendLine("");
-                sb.AppendLine("");
-                return sb.ToString();
             }
+            else
+            {
+                sb.AppendLine("Consumable item");
+            }
+            sb.AppendLine("");
+            sb.AppendLine("");
+            return sb.ToString();
         }
 
+        // Handle Equipment items (Weapon, Armor, Trinket)
         sb.AppendLine("");
 
-        foreach (var mod in modifiers)
+        // Only show modifiers if this is equipment and has modifiers
+        if (modifiers != null && modifiers.Length > 0)
         {
-            string modType = GetStatNameByType(mod.statType);
-            string modValue = IsPercentageStat(mod.statType) ? mod.value.ToString() + "%" : mod.value.ToString();
+            foreach (var mod in modifiers)
+            {
+                string modType = GetStatNameByType(mod.statType);
+                string modValue = IsPercentageStat(mod.statType) ? mod.value.ToString() + "%" : mod.value.ToString();
 
-            sb.AppendLine("+ " + modValue + "  " + modType);
+                sb.AppendLine("+ " + modValue + "  " + modType);
+            }
+        }
+        else
+        {
+            // If no modifiers, show a placeholder
+            sb.AppendLine("No stat bonuses");
         }
 
-        if (itemEffect != null)
+        // Show unique effect if present
+        if (itemEffect != null && !string.IsNullOrEmpty(itemEffect.effectDescription))
         {
             sb.AppendLine("");
             sb.AppendLine("Unique Effect : ");
@@ -117,8 +143,8 @@ public class Inventory_Item
             case StatType.AttackSpeed: return "Attack Speed";
             case StatType.Damage: return "Damage";
             case StatType.CritChance: return "Critical Chance";
-            case StatType.CritPower: return "ACritical Power";
-            case StatType.ArmorReduction: return "ArmorReduction";
+            case StatType.CritPower: return "Critical Power";
+            case StatType.ArmorReduction: return "Armor Reduction";
 
             case StatType.FireDamage: return "Fire Damage";
             case StatType.IceDamage: return "Ice Damage";
@@ -126,6 +152,7 @@ public class Inventory_Item
 
             case StatType.Armor: return "Armor";
             case StatType.Evasion: return "Evasion";
+            case StatType.Vitality: return "Vitality";
 
             case StatType.FireResistance: return "Fire Resistance";
             case StatType.IceResistance: return "Ice Resistance";
