@@ -20,6 +20,12 @@ public class Object_Merchant : Object_NPC, IInteractable
     }
     public void Interact()
     {
+        if (inventory == null)
+        {
+            Debug.LogWarning("Cannot interact with merchant: Player inventory not found.");
+            return;
+        }
+
         if (ui != null && ui.merchantUI != null)
         {
             ui.merchantUI.SetupMerchantUI(merchant, inventory);

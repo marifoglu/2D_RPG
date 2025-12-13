@@ -6922,7 +6922,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: ee60024744003854f8122ddfba7d88f3, type: 2}
+  sr: {fileID: 159980258}
+  rb: {fileID: 0}
+  col: {fileID: 159980256}
 --- !u!212 &159980258
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -7565,7 +7569,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &172541144
 Transform:
   m_ObjectHideFlags: 0
@@ -7590,7 +7594,6 @@ Transform:
   - {fileID: 1261057781}
   - {fileID: 179602071}
   - {fileID: 576578545}
-  - {fileID: 1156953057}
   - {fileID: 159980255}
   - {fileID: 664927258}
   - {fileID: 1375662424}
@@ -7789,7 +7792,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: ee60024744003854f8122ddfba7d88f3, type: 2}
+  sr: {fileID: 179602074}
+  rb: {fileID: 0}
+  col: {fileID: 179602072}
 --- !u!212 &179602074
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -8226,7 +8233,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 505086dcb975b054ba23115b27a61560, type: 2}
+  sr: {fileID: 183025282}
+  rb: {fileID: 0}
+  col: {fileID: 183025280}
 --- !u!212 &183025282
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -11922,7 +11933,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 545f4441d11e50b4592a9850c9d073d3, type: 2}
+  sr: {fileID: 285132300}
+  rb: {fileID: 0}
+  col: {fileID: 285132298}
 --- !u!212 &285132300
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -14044,7 +14059,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 9fb7d1081da11e74886365f3571d4d13, type: 2}
+  sr: {fileID: 362663909}
+  rb: {fileID: 0}
+  col: {fileID: 362663907}
 --- !u!212 &362663909
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -22912,7 +22931,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 545f4441d11e50b4592a9850c9d073d3, type: 2}
+  sr: {fileID: 553499018}
+  rb: {fileID: 0}
+  col: {fileID: 553499016}
 --- !u!212 &553499018
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -23968,7 +23991,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: a4dec052ad05cba4991840c35a55649a, type: 2}
+  sr: {fileID: 573175494}
+  rb: {fileID: 0}
+  col: {fileID: 573175492}
 --- !u!212 &573175494
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -24240,7 +24267,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: ee60024744003854f8122ddfba7d88f3, type: 2}
+  sr: {fileID: 576578548}
+  rb: {fileID: 0}
+  col: {fileID: 576578546}
 --- !u!212 &576578548
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -25236,7 +25267,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 72fd4e371c7033a4e96e498d043c1d5a, type: 2}
+  sr: {fileID: 620934964}
+  rb: {fileID: 0}
+  col: {fileID: 620934962}
 --- !u!212 &620934964
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -26439,7 +26474,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: ee60024744003854f8122ddfba7d88f3, type: 2}
+  sr: {fileID: 664927261}
+  rb: {fileID: 0}
+  col: {fileID: 664927259}
 --- !u!212 &664927261
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -34504,7 +34543,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 545f4441d11e50b4592a9850c9d073d3, type: 2}
+  sr: {fileID: 765506080}
+  rb: {fileID: 0}
+  col: {fileID: 765506078}
 --- !u!212 &765506080
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -38811,7 +38854,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 15d21d1372c6c9540bef0c152d1fc21a, type: 2}
+  sr: {fileID: 864140699}
+  rb: {fileID: 0}
+  col: {fileID: 864140697}
 --- !u!212 &864140699
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -39502,7 +39549,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 52ae7c397db3d2947b557bfb7c73c8a2, type: 2}
+  sr: {fileID: 882888375}
+  rb: {fileID: 0}
+  col: {fileID: 882888373}
 --- !u!212 &882888375
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -40582,7 +40633,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 545f4441d11e50b4592a9850c9d073d3, type: 2}
+  sr: {fileID: 895177529}
+  rb: {fileID: 0}
+  col: {fileID: 895177527}
 --- !u!212 &895177529
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -41243,7 +41298,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: a4dec052ad05cba4991840c35a55649a, type: 2}
+  sr: {fileID: 912076118}
+  rb: {fileID: 0}
+  col: {fileID: 912076116}
 --- !u!212 &912076118
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -43464,7 +43523,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: a4dec052ad05cba4991840c35a55649a, type: 2}
+  sr: {fileID: 956084565}
+  rb: {fileID: 0}
+  col: {fileID: 956084563}
 --- !u!212 &956084565
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -48010,7 +48073,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 545f4441d11e50b4592a9850c9d073d3, type: 2}
+  sr: {fileID: 1073208830}
+  rb: {fileID: 0}
+  col: {fileID: 1073208828}
 --- !u!212 &1073208830
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -49226,7 +49293,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: a4dec052ad05cba4991840c35a55649a, type: 2}
+  sr: {fileID: 1093160024}
+  rb: {fileID: 0}
+  col: {fileID: 1093160022}
 --- !u!212 &1093160024
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -51184,7 +51255,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 505086dcb975b054ba23115b27a61560, type: 2}
+  sr: {fileID: 1138470304}
+  rb: {fileID: 0}
+  col: {fileID: 1138470302}
 --- !u!212 &1138470304
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -51470,7 +51545,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 505086dcb975b054ba23115b27a61560, type: 2}
+  sr: {fileID: 1141542287}
+  rb: {fileID: 0}
+  col: {fileID: 1141542285}
 --- !u!212 &1141542287
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -52132,157 +52211,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 82, y: 82}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!1 &1156953056
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1156953057}
-  - component: {fileID: 1156953060}
-  - component: {fileID: 1156953059}
-  - component: {fileID: 1156953058}
-  m_Layer: 11
-  m_Name: Object_ItemPickup_Baguette
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1156953057
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156953056}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.17, y: -0.14, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 172541144}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &1156953058
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156953056}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
---- !u!114 &1156953059
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156953056}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
-  itemData: {fileID: 11400000, guid: ee60024744003854f8122ddfba7d88f3, type: 2}
---- !u!212 &1156953060
-SpriteRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156953056}
-  m_Enabled: 1
-  m_CastShadows: 0
-  m_ReceiveShadows: 0
-  m_DynamicOccludee: 1
-  m_StaticShadowCaster: 0
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_RayTracingMode: 0
-  m_RayTraceProcedural: 0
-  m_RayTracingAccelStructBuildFlagsOverride: 0
-  m_RayTracingAccelStructBuildFlags: 1
-  m_SmallMeshCulling: 1
-  m_ForceMeshLod: -1
-  m_MeshLodSelectionBias: 0
-  m_RenderingLayerMask: 1
-  m_RendererPriority: 0
-  m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_ReceiveGI: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_StitchLightmapSeams: 1
-  m_SelectedEditorRenderState: 0
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
-  m_Sprite: {fileID: 2028149217, guid: a6fce76df2a1d3e4784e5f1873d64b42, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_FlipX: 0
-  m_FlipY: 0
-  m_DrawMode: 0
-  m_Size: {x: 1, y: 1}
-  m_AdaptiveModeThreshold: 0.5
-  m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 1
-  m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
 --- !u!1 &1162576871
 GameObject:
   m_ObjectHideFlags: 0
@@ -54192,7 +54120,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: a4dec052ad05cba4991840c35a55649a, type: 2}
+  sr: {fileID: 1261057784}
+  rb: {fileID: 0}
+  col: {fileID: 1261057782}
 --- !u!212 &1261057784
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -54894,7 +54826,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 545f4441d11e50b4592a9850c9d073d3, type: 2}
+  sr: {fileID: 1279589510}
+  rb: {fileID: 0}
+  col: {fileID: 1279589508}
 --- !u!212 &1279589510
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -56413,7 +56349,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 545f4441d11e50b4592a9850c9d073d3, type: 2}
+  sr: {fileID: 1297998081}
+  rb: {fileID: 0}
+  col: {fileID: 1297998079}
 --- !u!212 &1297998081
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -58811,7 +58751,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 937bb8104e1a3874aa8ec647ee3a8cb4, type: 2}
+  sr: {fileID: 1375662423}
+  rb: {fileID: 0}
+  col: {fileID: 1375662421}
 --- !u!212 &1375662423
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -65963,7 +65907,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: a4dec052ad05cba4991840c35a55649a, type: 2}
+  sr: {fileID: 1529827095}
+  rb: {fileID: 0}
+  col: {fileID: 1529827093}
 --- !u!212 &1529827095
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -69718,7 +69666,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 505086dcb975b054ba23115b27a61560, type: 2}
+  sr: {fileID: 1629746001}
+  rb: {fileID: 0}
+  col: {fileID: 1629745999}
 --- !u!212 &1629746001
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -72841,7 +72793,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 505086dcb975b054ba23115b27a61560, type: 2}
+  sr: {fileID: 1699056412}
+  rb: {fileID: 0}
+  col: {fileID: 1699056410}
 --- !u!212 &1699056412
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -74176,7 +74132,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: fd44864411f1e394f9c805e87a992f61, type: 2}
+  sr: {fileID: 1729692231}
+  rb: {fileID: 0}
+  col: {fileID: 1729692229}
 --- !u!212 &1729692231
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -79137,7 +79097,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: a4dec052ad05cba4991840c35a55649a, type: 2}
+  sr: {fileID: 1864811288}
+  rb: {fileID: 0}
+  col: {fileID: 1864811286}
 --- !u!212 &1864811288
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -79491,7 +79455,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: a4dec052ad05cba4991840c35a55649a, type: 2}
+  sr: {fileID: 1874491122}
+  rb: {fileID: 0}
+  col: {fileID: 1874491120}
 --- !u!212 &1874491122
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -80186,7 +80154,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: a7049a61b230edc41bbffcac6e4054e0, type: 2}
+  sr: {fileID: 1887234917}
+  rb: {fileID: 0}
+  col: {fileID: 1887234915}
 --- !u!212 &1887234917
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -80337,7 +80309,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 01f01160d0f729544a0168f9083161f6, type: 2}
+  sr: {fileID: 1887398513}
+  rb: {fileID: 0}
+  col: {fileID: 1887398511}
 --- !u!212 &1887398513
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -96116,6 +96092,63 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2008065992}
   m_CullTransparentMesh: 1
+--- !u!1001 &2011254430
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 7900600808639770961, guid: b176358e3a39edc43b6a6b281b9194a3, type: 3}
+      propertyPath: m_Name
+      value: Object_Chest
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092939044380420068, guid: b176358e3a39edc43b6a6b281b9194a3, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -8.990004
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092939044380420068, guid: b176358e3a39edc43b6a6b281b9194a3, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: -0.39986753
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092939044380420068, guid: b176358e3a39edc43b6a6b281b9194a3, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092939044380420068, guid: b176358e3a39edc43b6a6b281b9194a3, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092939044380420068, guid: b176358e3a39edc43b6a6b281b9194a3, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092939044380420068, guid: b176358e3a39edc43b6a6b281b9194a3, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092939044380420068, guid: b176358e3a39edc43b6a6b281b9194a3, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092939044380420068, guid: b176358e3a39edc43b6a6b281b9194a3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092939044380420068, guid: b176358e3a39edc43b6a6b281b9194a3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8092939044380420068, guid: b176358e3a39edc43b6a6b281b9194a3, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b176358e3a39edc43b6a6b281b9194a3, type: 3}
 --- !u!1 &2013316072
 GameObject:
   m_ObjectHideFlags: 0
@@ -100536,7 +100569,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 60d1a5c7001195f48b1dd0041f00ad99, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_ItemPickup
+  dropForce: {x: 3, y: 10}
   itemData: {fileID: 11400000, guid: 68beb85a313b03c4bb187f4f39a7d0ba, type: 2}
+  sr: {fileID: 2115706635}
+  rb: {fileID: 0}
+  col: {fileID: 2115706633}
 --- !u!212 &2115706635
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -101837,6 +101874,75 @@ MonoBehaviour:
   itemIcon: {fileID: 1737602130}
   itemStackSize: {fileID: 704429597}
   slotType: 0
+--- !u!1001 &2299710487309157650
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5545203365803719821, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -9.25
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545203365803719821, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 3.04
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545203365803719821, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545203365803719821, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545203365803719821, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545203365803719821, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545203365803719821, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545203365803719821, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545203365803719821, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5545203365803719821, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7590971036132577336, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_SortingLayer
+      value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 7590971036132577336, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7590971036132577336, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_SortingLayerID
+      value: 219818123
+      objectReference: {fileID: 0}
+    - target: {fileID: 8694595716622118398, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+      propertyPath: m_Name
+      value: Object_ItemPickup_Baguette
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -101848,6 +101954,8 @@ SceneRoots:
   - {fileID: 1662391619}
   - {fileID: 999462681}
   - {fileID: 1744447218}
+  - {fileID: 2299710487309157650}
   - {fileID: 172541144}
   - {fileID: 1764662812}
   - {fileID: 1174381946}
+  - {fileID: 2011254430}

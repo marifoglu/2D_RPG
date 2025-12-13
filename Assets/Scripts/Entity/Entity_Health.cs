@@ -8,6 +8,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
     private Entity entity;
     private Entity_Stats entityStats;
     private Entity_VFX entityVFX;
+    private Entity_DropManager dropManager;
     private Slider healthBar;
 
     public event Action OnTakingDamage;
@@ -40,6 +41,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
         entityVFX = GetComponent<Entity_VFX>();
         entity = GetComponent<Entity>();
         entityStats = GetComponent<Entity_Stats>();
+        dropManager = GetComponent<Entity_DropManager>();
         healthBar = GetComponentInChildren<Slider>();
         impulseSource = GetComponentInParent<CinemachineImpulseSource>();
 
@@ -57,7 +59,6 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
         InvokeRepeating(nameof(RegenerateHealth), 0, regenInterval);
     }
-        
     public virtual bool TakeDamage(float damage, float elementalDamage, ElementType elementType, Transform damageDealer)
     {
         if (isDead || canTakeDamage == false)
@@ -89,8 +90,6 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
         return true;
     }
-
-
     public void RegenerateHealth()
     {
         if (canRegenarteHealth == false)
@@ -121,7 +120,6 @@ public class Entity_Health : MonoBehaviour, IDamageable
             Die();
         }
     }
-
     private void UpdateHealthBar()
     {
         if (healthBar == null || entityStats == null)
@@ -129,7 +127,6 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
         healthBar.value = currentHealth / entityStats.GetMaxHealth();
     }
-
     protected virtual void Die()
     {
         isDead = true;
@@ -138,6 +135,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
         {
             entity.EntityDeath();
         }
+        dropManager?.DropItems();
     }
     public void SetCanTakeDamage(bool canTakeDamage) => this.canTakeDamage = canTakeDamage;
     private bool AttackEvaded()
@@ -163,7 +161,6 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
         entity?.ReceiveKnockback(knockback, duration);
     }
-
     private Vector2 CalculateKnockback(Transform damageDealer, float damage)
     {
         int direction = transform.position.x > damageDealer.position.x ? 1 : -1;
@@ -173,9 +170,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
         return knockback;
     }
-
     private float CalculateDuration(float damage) => IsHeavyDamage(damage) ? heavyKnockbackDuration : knockbackDuration;
-
     private bool IsHeavyDamage(float damage)
     {
         if (entityStats == null)

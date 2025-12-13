@@ -224,9 +224,9 @@ GameObject:
   - component: {fileID: 8092939044380420068}
   - component: {fileID: 636702275366098090}
   - component: {fileID: 1839990709153755423}
-  - component: {fileID: 1829812362085850980}
   - component: {fileID: 6432939910718086909}
-  - component: {fileID: 4644966443086155467}
+  - component: {fileID: 1829812362085850980}
+  - component: {fileID: 2841636937965189878}
   m_Layer: 8
   m_Name: Object_Chest
   m_TagString: Untagged
@@ -309,7 +309,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 1
+  m_Mass: 0.001
   m_LinearDamping: 0
   m_AngularDamping: 0.05
   m_GravityScale: 3.5
@@ -324,19 +324,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
---- !u!114 &1829812362085850980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7900600808639770961}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 60af560491589434bb87395f9bbd0e8a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Chest
-  knockback: {x: 0, y: 0}
 --- !u!114 &6432939910718086909
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -358,49 +345,33 @@ MonoBehaviour:
   chillVfx: {r: 0, g: 1, b: 1, a: 1}
   burnVfx: {r: 1, g: 0, b: 0, a: 1}
   electricVfx: {r: 1, g: 0.92156863, b: 0.015686275, a: 1}
---- !u!61 &4644966443086155467
-BoxCollider2D:
+--- !u!114 &1829812362085850980
+MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7900600808639770961}
   m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 60af560491589434bb87395f9bbd0e8a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Chest
+  knockback: {x: 0, y: 0}
+  canDropItem: 1
+--- !u!114 &2841636937965189878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7900600808639770961}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c14c4158dc10cea4e9ab01c13debae26, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Entity_DropManager
+  itemDropPrefab: {fileID: 8694595716622118398, guid: 572c2c9bb1ed0804287b618c4eeed5ac, type: 3}
+  dropData: {fileID: 11400000, guid: 7d4315ee9f8a1cc468a4801d60ef985e, type: 2}
+  maxRarityAmount: 1600
+  maxItemsToDrop: 3

@@ -12,11 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12a55adcef3f9e54eabb109ce2657450, type: 3}
   m_Name: Equipment data - Dragula's Fang
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentDataSO
-  itemType: 1
-  itemName: Dragula's Fang
-  itemIcon: {fileID: 8796641721362945431, guid: e31822c94ae12a844a2145f2fb7c2403, type: 3}
-  maxStackSize: 1
-  itemEffect: {fileID: 11400000, guid: 8c365ae3f6712cd48939a675c7ece614, type: 2}
+  itemPrice: 0
+  minStackSizeAtShop: 1
+  maxStackSizeAtShop: 1
+  itemRarity: 90
+  dropChance: 65
+  maxDropChance: 65
   craftReceipe:
   - itemData: {fileID: 11400000, guid: 15d21d1372c6c9540bef0c152d1fc21a, type: 2}
     stackSize: 1
@@ -24,11 +25,16 @@ MonoBehaviour:
   - itemData: {fileID: 11400000, guid: ee60024744003854f8122ddfba7d88f3, type: 2}
     stackSize: 1
     itemEffect: {fileID: 0}
+  itemType: 1
+  itemName: Dragula's Fang
+  itemIcon: {fileID: 8796641721362945431, guid: e31822c94ae12a844a2145f2fb7c2403, type: 3}
+  maxStackSize: 1
+  itemEffect: {fileID: 11400000, guid: 8c365ae3f6712cd48939a675c7ece614, type: 2}
   modifiers:
   - statType: 6
     value: 51
   - statType: 0
-    value: 0
+    value: 24
   - statType: 5
     value: 0.5
   - statType: 7

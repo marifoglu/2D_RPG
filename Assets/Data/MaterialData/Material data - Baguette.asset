@@ -15,6 +15,9 @@ MonoBehaviour:
   itemPrice: 1257
   minStackSizeAtShop: 1
   maxStackSizeAtShop: 1
+  itemRarity: 100
+  dropChance: 77.8
+  maxDropChance: 77.8
   craftReceipe: []
   itemType: 0
   itemName: Baguette
