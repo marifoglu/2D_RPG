@@ -26,7 +26,12 @@ public class UI_SkillToolTip : UI_ToolTip
     {
         base.Awake();
         ui = GetComponentInParent<UI>();
-        skillTree = GetComponentInParent<UI_SkillTree>();
+
+        if (ui == null)
+            ui = FindFirstObjectByType<UI>();
+
+        if (skillTree == null)
+            skillTree = FindFirstObjectByType<UI_SkillTree>(FindObjectsInactive.Include);
     }
 
     public override void ShowToolTip(bool show, RectTransform targetRect)
@@ -76,6 +81,10 @@ public class UI_SkillToolTip : UI_ToolTip
         StringBuilder sb = new StringBuilder();
 
         sb.AppendLine("Requirements:");
+        
+        // Lets try like that
+        if (skillTree == null)
+            return sb.ToString();
 
         string costColor = skillTree.EnoughSkillPoints(skillCost) ? metConditionHex : notMetConditionHex;
         string costText = $"- {skillCost} skill point(s)";

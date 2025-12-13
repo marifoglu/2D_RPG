@@ -59,13 +59,28 @@ public class Inventory_Item
 
     public string GetItemInfo()
     {
-        if (itemData.itemType == ItemType.Material)
-            return "Used  for crafting various items.";
+        StringBuilder sb = new StringBuilder();
+
+        if(itemData.itemType == ItemType.Material)
+        {
+            sb.AppendLine("");
+            sb.AppendLine("Used for crafting");
+            sb.AppendLine("");
+            sb.AppendLine("");
+            return sb.ToString();
+        }
 
         if (itemData.itemType == ItemType.Consumable)
-            return itemData.itemEffect.effectDescription;
-
-        StringBuilder sb = new StringBuilder();
+        {
+            if (itemData.itemType == ItemType.Material)
+            {
+                sb.AppendLine("");
+                sb.AppendLine(itemEffect.effectDescription);
+                sb.AppendLine("");
+                sb.AppendLine("");
+                return sb.ToString();
+            }
+        }
 
         sb.AppendLine("");
 
@@ -83,6 +98,9 @@ public class Inventory_Item
             sb.AppendLine("Unique Effect : ");
             sb.AppendLine(itemEffect.effectDescription);
         }
+
+        sb.AppendLine("");
+        sb.AppendLine("");
 
         return sb.ToString();
     }

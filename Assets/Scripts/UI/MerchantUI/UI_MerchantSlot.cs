@@ -12,6 +12,18 @@ public class UI_MerchantSlot : UI_ItemSlot
     }
     public MerchantSlotType slotType;
 
+    public override void OnPointerEnter(PointerEventData eventData)
+    {
+        if(itemInSlot == null)
+            return;
+
+        if(slotType == MerchantSlotType.MerchantSlot)
+            ui.itemToolTip.ShowToolTip(true, rect, itemInSlot, true, true);
+        else
+            ui.itemToolTip.ShowToolTip(true, rect, itemInSlot, false, true);
+        
+    }
+
     public override void OnPointerDown(PointerEventData eventData)
     {
         if(itemInSlot == null) 

@@ -12,7 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46304903adc1ef947a7c104402ed1c9b, type: 3}
   m_Name: Material data - Animal leather
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataSO
+  itemPrice: 569
+  minStackSizeAtShop: 1
+  maxStackSizeAtShop: 1
+  craftReceipe: []
   itemType: 0
   itemName: Animal leather
   itemIcon: {fileID: 760309485, guid: a6fce76df2a1d3e4784e5f1873d64b42, type: 3}
   maxStackSize: 2
+  itemEffect: {fileID: 0}

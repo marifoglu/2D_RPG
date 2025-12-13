@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d647b39aeaf309f45b74b48c34d58a18, type: 3}
   m_Name: List of items - Weapons to craft
   m_EditorClassIdentifier: Assembly-CSharp::ItemListDataSO
-  items:
+  itemList:
   - {fileID: 11400000, guid: 15d21d1372c6c9540bef0c152d1fc21a, type: 2}
   - {fileID: 11400000, guid: fd44864411f1e394f9c805e87a992f61, type: 2}
