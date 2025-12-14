@@ -4,19 +4,23 @@ public class UI_SkillTree : MonoBehaviour
 {
     [SerializeField] private int skillPoints;
     [SerializeField] private UI_TreeConnectHandler[] parentNodes;
+    private UI_TreeNode[] allTreeNodes;
     public Player_SkillManager skillManager { get; private set; }
-    private UI_SkillToolTip tooltip;
-
-
-    private void Awake()
-    {
-        tooltip = GetComponentInChildren<UI_SkillToolTip>();
-        skillManager = FindAnyObjectByType<Player_SkillManager>();
-    }
 
     private void Start()
     {
         UpdateAllConnections();
+    }
+
+    public void UnlockDefaultSkills()
+    {
+        allTreeNodes = GetComponentsInChildren<UI_TreeNode>(true);
+        skillManager = FindAnyObjectByType<Player_SkillManager>();
+
+        foreach (var node in allTreeNodes)
+        {
+            node.UnlockDefaultSkill();
+        }
     }
 
     [ContextMenu("Reset All Skill Points")]

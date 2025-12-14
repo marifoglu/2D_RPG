@@ -4,9 +4,8 @@ using UnityEngine;
 
 public class Player : Entity
 {
-    private UI ui;
-
     public static event Action OnPlayerDeath;
+    public UI ui { get; private set; }
     public PlayerInputSet input { get; private set; }
     public Player_SkillManager skillManager { get; private set; }
     public Player_VFX vfx { get; private set; }

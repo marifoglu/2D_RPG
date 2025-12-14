@@ -24,20 +24,28 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
     [SerializeField] private string lockedColorHex = "#9F9797";
     private Color lastColor;
 
-    private void Awake()
-    {
-        ui = GetComponentInParent<UI>();
-        rect = GetComponent<RectTransform>();
-        skillTree = GetComponentInParent<UI_SkillTree>();
-        connectionHandler = GetComponent<UI_TreeConnectHandler>();
 
-        UpdateIconColor(GetColorByHex(lockedColorHex));
-    }
 
     private void Start()
     {
+        UpdateIconColor(GetColorByHex(lockedColorHex));
+        UnlockDefaultSkill();
+    }
+
+    public void UnlockDefaultSkill()
+    {
+        GetNeededComponents();
+
         if (skillData.unlockedByDefault)
             Unlock();
+    }
+
+    private void GetNeededComponents()
+    {
+        ui = GetComponentInParent<UI>();
+        rect = GetComponent<RectTransform>();
+        skillTree = GetComponentInParent<UI_SkillTree>(true);
+        connectionHandler = GetComponent<UI_TreeConnectHandler>();
     }
 
     private void OnValidate()
@@ -71,6 +79,12 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
 
     private void Unlock()
     {
+        if (isUnlocked)
+        {
+            Debug.LogWarning("Trying to unlock an already unlocked skill: " + skillData.displayName);
+            return;
+        }
+
         isUnlocked = true;
         UpdateIconColor(Color.white);
         LockConflictNodes();
@@ -78,7 +92,7 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         skillTree.RemoveSkillPoints(skillData.cost);
         connectionHandler.UnlockConnectionImage(true);
 
-        skillTree.skillManager.GetSkillByType(skillData.skillType).SetSkillUpgrade(skillData.upgradeData);
+        skillTree.skillManager.GetSkillByType(skillData.skillType).SetSkillUpgrade(skillData);
     }
 
     private bool CanBeUnlock()
@@ -148,7 +162,7 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         if (ui == null || ui.skillToolTip == null)
             return;
 
-        ui.skillToolTip.ShowToolTip(true, rect, this);
+        ui.skillToolTip.ShowToolTip(true, rect, skillData, this);
         if (!isUnlocked && !isLocked)
             ToggleNodeHighlight(true);
     }

@@ -285,7 +285,7 @@ public class UI_SkillTreeNavigator : MonoBehaviour
             RectTransform nodeRectTransform = node.GetComponent<RectTransform>();
             if (nodeRectTransform != null)
             {
-                ui.skillToolTip.ShowToolTip(true, nodeRectTransform, node);
+                ui.skillToolTip.ShowToolTip(true, nodeRectTransform, node.skillData, node);
             }
         }
     }
@@ -365,7 +365,7 @@ public class UI_SkillTreeNavigator : MonoBehaviour
         ShowSelectionFrame(false);
 
         if (ui != null && ui.skillToolTip != null)
-            ui.skillToolTip.ShowToolTip(false, null);
+            ui.skillToolTip.ShowToolTip(false, null, null, null);
     }
 
     public void SetStartingNode(UI_TreeNode node)

@@ -50,7 +50,7 @@ public class Inventory_Base : MonoBehaviour
     {
         if (itemToAdd == null)
             return;
-        
+
 
         if (itemToAdd.itemData == null)
             return;
@@ -68,17 +68,21 @@ public class Inventory_Base : MonoBehaviour
     public void RemoveOneItem(Inventory_Item itemToRemove)
     {
         Inventory_Item itemInInventory = itemList.Find(item => item == itemToRemove);
+
+        if (itemInInventory == null)
+            return;
+
         if (itemInInventory.stackSize > 1)
             itemInInventory.RemoveStack();
         else
             itemList.Remove(itemToRemove);
 
-            OnInventoryChange?.Invoke();
+        OnInventoryChange?.Invoke();
     }
 
     public void RemoveFullStack(Inventory_Item itemToRemove)
     {
-        for(int i = 0; i < itemToRemove.stackSize; i++)
+        for (int i = 0; i < itemToRemove.stackSize; i++)
         {
             RemoveOneItem(itemToRemove);
         }

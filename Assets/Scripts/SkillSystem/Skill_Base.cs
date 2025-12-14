@@ -23,12 +23,15 @@ public class Skill_Base : MonoBehaviour
     public virtual void TryUseSkill()
     {
     }
-
-    public void SetSkillUpgrade(UpgradeData upgrade)
+    public void SetSkillUpgrade(Skill_DataSO skillData)
     {
+        UpgradeData upgrade = skillData.upgradeData;
         upgradeType = upgrade.upgradeType;
         cooldown = upgrade.cooldown;
         damageScaleData = upgrade.damageScaleData;
+
+        player.ui.inGameUI.GetSkillSlot(skillType).SetupSkillSlot(skillData);
+
         ResetCooldown();
     }
     public virtual bool CanUseSkill()
@@ -43,12 +46,17 @@ public class Skill_Base : MonoBehaviour
         }
         return true;
     }
-
-
     protected bool Unlocked(SkillUpgradeType upgradeToCheck) => upgradeType == upgradeToCheck;
     protected bool OnCoolDown() => Time.time < lastTimeUsed + cooldown;
-    public void SetSkillOnCooldown() => lastTimeUsed = Time.time;
+    public void SetSkillOnCooldown()
+    {
+        player.ui.inGameUI.GetSkillSlot(skillType).StartCooldown(cooldown); 
+        lastTimeUsed = Time.time;
+    }
     public void ResetCooldownBy(float cooldownReduction) => lastTimeUsed += cooldownReduction;
-    public void ResetCooldown() => lastTimeUsed = Time.time - cooldown;
-
+    public void ResetCooldown()
+    {
+        player.ui.inGameUI.GetSkillSlot(skillType).ResetCooldown();
+        lastTimeUsed = Time.time - cooldown;
+    }
 }
