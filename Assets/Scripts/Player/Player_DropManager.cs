@@ -18,9 +18,9 @@ public class Player_DropManager : Entity_DropManager
         List<Inventory_Item> inventoryCopy = new List<Inventory_Item>(inventory.itemList);
         List<Inventory_EquipmentSlot> equipCopy = new List<Inventory_EquipmentSlot>(inventory.equipList);
 
-        foreach(var item in inventoryCopy)
+        foreach (var item in inventoryCopy)
         {
-            if(Random.Range(0,100) < chanceToLooseItem)
+            if (Random.Range(0, 100) < chanceToLooseItem)
             {
                 CreateItemDrop(item.itemData);
                 inventory.RemoveFullStack(item);
@@ -29,14 +29,19 @@ public class Player_DropManager : Entity_DropManager
 
         foreach (var equip in equipCopy)
         {
+            if (!equip.HasItem())
+                continue;
+
             if (Random.Range(0, 100) < chanceToLooseItem)
             {
                 var item = equip.GetEquipedItem();
 
-                CreateItemDrop(item.itemData);
-                inventory.UnEquipItem(item);
-                inventory.RemoveFullStack(item);
-
+                if (item != null)
+                {
+                    CreateItemDrop(item.itemData);
+                    inventory.UnEquipItem(item);
+                    inventory.RemoveFullStack(item);
+                }
             }
         }
     }

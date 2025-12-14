@@ -12,6 +12,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
     private Slider healthBar;
 
     public event Action OnTakingDamage;
+    public event Action OnHealthUpdate;
 
     [SerializeField] protected float currentHealth;
     public bool isDead { get; private set; }
@@ -55,10 +56,13 @@ public class Entity_Health : MonoBehaviour, IDamageable
             return;
 
         currentHealth = entityStats.GetMaxHealth();
-        UpdateHealthBar();
+        OnHealthUpdate += UpdateHealthBar;
 
+        UpdateHealthBar();
         InvokeRepeating(nameof(RegenerateHealth), 0, regenInterval);
     }
+
+    public float GetCurrentHealth() => currentHealth;
     public virtual bool TakeDamage(float damage, float elementalDamage, ElementType elementType, Transform damageDealer)
     {
         if (isDead || canTakeDamage == false)
@@ -106,13 +110,15 @@ public class Entity_Health : MonoBehaviour, IDamageable
         float newHealth = currentHealth + healthAmount;
         float maxHealth = entityStats.GetMaxHealth();
         currentHealth = Mathf.Min(newHealth, maxHealth);
-        UpdateHealthBar();
+
+        OnHealthUpdate?.Invoke();
     }
     public void ReduceHealth(float takenDamage)
     {
-        entityVFX?.PlayOnDamageVfx();
         currentHealth -= takenDamage;
-        UpdateHealthBar();
+
+        entityVFX?.PlayOnDamageVfx();
+        OnHealthUpdate?.Invoke();
 
         if (currentHealth <= 0)
         {
@@ -151,7 +157,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
     public void SetHealthToPercentage(float percentage) // Use it in Skill_Shard Teleport HP Rewind upgrade
     {
         currentHealth = entityStats.GetMaxHealth() * Mathf.Clamp01(percentage);
-        UpdateHealthBar();
+        OnHealthUpdate?.Invoke();
     }
 
     private void TakeKnockback(Transform damageDealer, float finalDamage)
