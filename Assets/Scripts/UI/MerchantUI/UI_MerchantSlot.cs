@@ -16,7 +16,6 @@ public class UI_MerchantSlot : UI_ItemSlot
     {
         base.Awake();
 
-        // Extra validation for UI reference
         if (ui == null)
         {
             ui = GetComponentInParent<UI>();
@@ -30,7 +29,6 @@ public class UI_MerchantSlot : UI_ItemSlot
         if (itemInSlot == null)
             return;
 
-        // Add null checks before using tooltip
         if (ui == null || ui.itemToolTip == null)
         {
             Debug.LogWarning($"Cannot show tooltip - UI or ItemToolTip is null on {gameObject.name}");
@@ -67,9 +65,8 @@ public class UI_MerchantSlot : UI_ItemSlot
         else if (slotType == MerchantSlotType.MerchantSlot)
         {
             if (leftButton)
-                return; // left click does nothing on merchant slots
+                return;
 
-            //buy item from merchant
             bool buyFullStack = Input.GetKey(KeyCode.N);
             if (merchant != null)
                 merchant.TryBuyItem(itemInSlot, buyFullStack);

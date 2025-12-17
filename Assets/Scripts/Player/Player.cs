@@ -11,8 +11,10 @@ public class Player : Entity
     public Player_VFX vfx { get; private set; }
     public Entity_Health health { get; private set; }
     public Entity_StatusHandler statusHandler { get; private set; }
+    public Inventory_Player inventory { get; private set; }
 
     public Player_Combat combat;
+    public Player_Stats stats;
 
     #region State variables
     public Player_IdleState idleState { get; private set; }
@@ -97,6 +99,8 @@ public class Player : Entity
         statusHandler = GetComponent<Entity_StatusHandler>();
         skillManager = GetComponent<Player_SkillManager>();
         combat = GetComponent<Player_Combat>();
+        inventory = GetComponent<Inventory_Player>();
+        stats = GetComponent<Player_Stats>();
 
         idleState = new Player_IdleState(this, stateMachine, "Idle");
         moveState = new Player_MoveState(this, stateMachine, "Move");
@@ -215,6 +219,9 @@ public class Player : Entity
         input.PlayerCharacter.Spell.performed += ctx => skillManager.timeEcho.TryUseSkill();
         
         input.PlayerCharacter.Interaction.performed += ctx => TryInteract();
+
+        input.PlayerCharacter.QuickItemSlot_4.performed += ctx => inventory.TryUseQuickItemInSlot(1);
+        input.PlayerCharacter.QuickItemSlot_5.performed += ctx => inventory.TryUseQuickItemInSlot(2);
 
         input.PlayerCharacter.ToggleSkillTreeUi.performed += ctx => ui.ToggleSkillTreeUI();
         input.PlayerCharacter.ToggleInventoryUI.performed += ctx => ui.ToggleInventoryUI();

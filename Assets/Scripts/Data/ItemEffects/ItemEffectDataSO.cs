@@ -6,7 +6,7 @@ public class ItemEffectDataSO : ScriptableObject
     public string effectDescription;
     protected Player player;
 
-    public virtual bool CanBeUsed()
+    public virtual bool CanBeUsed(Player player)
     {
         return true;
     }

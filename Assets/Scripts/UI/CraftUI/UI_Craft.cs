@@ -27,11 +27,14 @@ public class UI_Craft : MonoBehaviour
 
         foreach (var slots in craftSlots)
             slots.gameObject.SetActive(false);
-        
+
         foreach (var button in craftListButton)
+        {
             button.SetCraftSlots(craftSlots);
+            button.UpdateCraftSlots(); // Initialize the slots immediately after assignment
+        }
     }
-        
+
     private void UpdateUI() => inventoryParent.UpdateSlots(inventory.itemList);
 
 }

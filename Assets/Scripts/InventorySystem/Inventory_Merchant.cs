@@ -13,33 +13,49 @@ public class Inventory_Merchant : Inventory_Base
     {
         base.Awake();
         FillShopList();
-    } 
+    }
 
     public void TryBuyItem(Inventory_Item itemToBuy, bool buyFullStack)
     {
+        if (inventory == null)
+        {
+            return;
+        }
+
         int amountToBuy = buyFullStack ? itemToBuy.stackSize : 1;
 
-        for(int i = 0; i < amountToBuy; i++)
+        for (int i = 0; i < amountToBuy; i++)
         {
-            if(inventory.gold < itemToBuy.buyPrice)
+            if (inventory.gold < itemToBuy.buyPrice)
             {
-                Debug.Log("Not enough gold to buy " + itemToBuy.itemData.itemName);
                 return;
             }
 
-            if(itemToBuy.itemData.itemType == ItemType.Material)
+            if (itemToBuy.itemData.itemType == ItemType.Material)
             {
+
+                if (inventory.storage == null)
+                {
+                    return;
+                }
+
                 inventory.storage.AddMaterialToStash(itemToBuy);
             }
             else
             {
-                if(inventory.CanAddItem(itemToBuy))
+                if (inventory.CanAddItem(itemToBuy))
                 {
-                   var itemToAdd = new Inventory_Item(itemToBuy.itemData);
-                   inventory.AddItem(itemToAdd);
+                    var itemToAdd = new Inventory_Item(itemToBuy.itemData);
+                    inventory.AddItem(itemToAdd);
+                }
+                else
+                {
+                    return;
                 }
             }
+
             inventory.gold -= itemToBuy.buyPrice;
+
             RemoveOneItem(itemToBuy);
         }
         TriggerUpdateUI();
@@ -47,9 +63,14 @@ public class Inventory_Merchant : Inventory_Base
 
     public void TrySellItem(Inventory_Item itemToSell, bool sellFullStack)
     {
+        if (inventory == null)
+        {
+            return;
+        }
+
         int amountToSell = sellFullStack ? itemToSell.stackSize : 1;
 
-        for(int i = 0; i < amountToSell; i++)
+        for (int i = 0; i < amountToSell; i++)
         {
             int sellPrice = Mathf.FloorToInt(itemToSell.sellPrice);
             inventory.gold += sellPrice;
@@ -76,12 +97,12 @@ public class Inventory_Merchant : Inventory_Base
         int randomItemAmount = Random.Range(minItemAmount, maxInventorySize + 1);
         int finalAmount = Mathf.Clamp(randomItemAmount, 1, possibleItems.Count);
 
-        for(int i = 0; i < finalAmount; i++)
+        for (int i = 0; i < finalAmount; i++)
         {
             var randomIndex = Random.Range(0, possibleItems.Count);
             var item = possibleItems[randomIndex];
 
-            if(CanAddItem(item))
+            if (CanAddItem(item))
             {
                 possibleItems.Remove(item);
                 AddItem(item);
@@ -90,5 +111,8 @@ public class Inventory_Merchant : Inventory_Base
         TriggerUpdateUI();
     }
 
-    public void SetInventory(Inventory_Player inventory) => this.inventory = inventory;
+    public void SetInventory(Inventory_Player inventory)
+    {
+        this.inventory = inventory;
+    }
 }

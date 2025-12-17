@@ -9,22 +9,24 @@ public class ItemEffect_Buff : ItemEffectDataSO
     [SerializeField] private float buffDuration;
     [SerializeField] private string buffSource = Guid.NewGuid().ToString();
 
-    private Player_Stats playerStats;
-
-    public override bool CanBeUsed()
+    public override bool CanBeUsed(Player player)
     {
-        if(playerStats == null)
-            playerStats = FindFirstObjectByType<Player_Stats>();
 
-        if (playerStats.CanApplyBuffOf(buffSource))
+        if (player.stats.CanApplyBuffOf(buffSource))
+        {
+            this.player = player;
             return true;
+        }
         else
+        {
             Debug.Log("Same buff effect can't apply twice!");
             return false;
+        }
     }
 
     public override void ExecuteEffect()
     {
-        playerStats.ApplyBuff(buffsToApply, buffDuration, buffSource);  
+        player.stats.ApplyBuff(buffsToApply, buffDuration, buffSource);
+        player = null;
     }
 }

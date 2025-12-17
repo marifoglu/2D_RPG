@@ -7,7 +7,6 @@ public class Entity : MonoBehaviour
     public event Action OnFlipped;
     public Animator anim { get; private set; }
     public Rigidbody2D rb { get; private set; }
-    public Entity_Stats stats { get; private set; }
     protected StateMachine stateMachine;
 
     private bool facingRight = true;
@@ -63,7 +62,6 @@ public class Entity : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         rb = GetComponent<Rigidbody2D>();
         stateMachine = new StateMachine();
-        stats = GetComponent<Entity_Stats>();
         cc = GetComponent<CapsuleCollider2D>();
         if (cc != null)
         {
@@ -246,6 +244,7 @@ public class Entity : MonoBehaviour
             wallDetected = Physics2D.Raycast(primaryWallCheck.position, Vector2.right * facingDir, wallCheckDistance, whatIsGround);
         }
 
+        //Ledge Detection old!
         // Ledge detection (for player only)
         if (ledgeCheck != null && !useEnemyEdgeDetection)
         {
@@ -257,6 +256,74 @@ public class Entity : MonoBehaviour
         {
             ledgeDetected = false;
         }
+
+
+
+        // Ledge detection (for player only)
+        //// Ledge detection (for player only) - PROPER ONE-WAY PLATFORM FIX
+        //if (ledgeCheck != null && !useEnemyEdgeDetection)
+        //{
+        //    RaycastHit2D bodyHit = Physics2D.Raycast(
+        //        primaryWallCheck.position,
+        //        Vector2.right * facingDir,
+        //        wallCheckDistance,
+        //        whatIsGround
+        //    );
+
+        //    RaycastHit2D headHit = Physics2D.Raycast(
+        //        ledgeCheck.position,
+        //        Vector2.right * facingDir,
+        //        wallCheckDistance,
+        //        whatIsGround
+        //    );
+
+        //    bool wallAtBody = bodyHit.collider != null;
+        //    bool wallAtHead = headHit.collider != null;
+
+        //    // Check if it's a one-way platform AND we're approaching from ABOVE (not from side)
+        //    bool shouldBlockOneWay = false;
+
+        //    if (wallAtBody && bodyHit.collider != null)
+        //    {
+        //        bool isOneWay = bodyHit.collider.GetComponent<PlatformEffector2D>() != null ||
+        //                       bodyHit.collider.GetComponent<OneWayPlatform>() != null;
+
+        //        if (isOneWay)
+        //        {
+        //            // Only block if player is ABOVE the platform (within 0.5 units of platform top)
+        //            float platformTop = bodyHit.collider.bounds.max.y;
+        //            float playerBottom = transform.position.y - (capsuleColliderSize.y * 0.5f);
+        //            shouldBlockOneWay = playerBottom >= (platformTop - 0.5f);
+        //        }
+        //    }
+
+        //    if (wallAtHead && headHit.collider != null && !shouldBlockOneWay)
+        //    {
+        //        bool isOneWay = headHit.collider.GetComponent<PlatformEffector2D>() != null ||
+        //                       headHit.collider.GetComponent<OneWayPlatform>() != null;
+
+        //        if (isOneWay)
+        //        {
+        //            float platformTop = headHit.collider.bounds.max.y;
+        //            float playerBottom = transform.position.y - (capsuleColliderSize.y * 0.5f);
+        //            shouldBlockOneWay = playerBottom >= (platformTop - 0.5f);
+        //        }
+        //    }
+
+        //    // Allow ledge detection if NOT blocked by one-way platform
+        //    ledgeDetected = wallAtBody && !wallAtHead && !shouldBlockOneWay;
+
+        //    // DEBUG
+        //    if (wallAtBody || wallAtHead)
+        //    {
+        //        Debug.Log($"Ledge Check - Body: {wallAtBody} ({bodyHit.collider?.name}), Head: {wallAtHead} ({headHit.collider?.name}), BlockOneWay: {shouldBlockOneWay}, Grounded: {groundDetected}, Result: {ledgeDetected}");
+        //    }
+        //}
+        //else
+        //{
+        //    ledgeDetected = false;
+        //}
+
 
         // Edge detection - different method based on entity type
         if (useEnemyEdgeDetection)
@@ -361,35 +428,48 @@ public class Entity : MonoBehaviour
 
     public void ApplySlopeFriction()
     {
-        if (noFriction == null || fullFriction == null) return;
+        // Early return if physics materials aren't assigned
+        if (noFriction == null || fullFriction == null)
+        {
+            Debug.LogWarning($"Physics materials not assigned on {gameObject.name}. Please assign 'No Friction' and 'Full Friction' materials in the Inspector.");
+            return;
+        }
 
         var col = GetComponent<Collider2D>();
-        if (col == null) return;
+        if (col == null)
+        {
+            Debug.LogWarning($"No Collider2D found on {gameObject.name}");
+            return;
+        }
 
         // Check if this is a Player on a ladder
-        var player = this as Player;
-        if (player != null && player.IsOnLadder())
+        // Use safer type checking to avoid casting issues
+        if (this is Player player)
         {
-            // Disable friction completely while on ladder
-            col.sharedMaterial = noFriction;
-            rb.gravityScale = 0f; // Keep gravity disabled
-            return;
-        }
+            // Check if Player has IsOnLadder method before calling
+            if (player.IsOnLadder())
+            {
+                // Disable friction completely while on ladder
+                col.sharedMaterial = noFriction;
+                rb.gravityScale = 0f; // Keep gravity disabled
+                return;
+            }
 
-        // Check if this is a Player dropping through a platform
-        if (player != null && player.isDroppingThroughPlatform)
-        {
-            // Use no friction and full gravity when dropping through platform
-            col.sharedMaterial = noFriction;
-            rb.gravityScale = defaultGravity;
-            return;
-        }
+            // Check if this is a Player dropping through a platform
+            if (player.isDroppingThroughPlatform)
+            {
+                // Use no friction and full gravity when dropping through platform
+                col.sharedMaterial = noFriction;
+                rb.gravityScale = defaultGravity;
+                return;
+            }
 
-        // Don't apply slope friction or gravity changes during Domain Expansion
-        if (player != null && stateMachine.currentState == player.domainExpansionState)
-        {
-            col.sharedMaterial = noFriction;
-            return;
+            // Don't apply slope friction or gravity changes during Domain Expansion
+            if (stateMachine?.currentState == player.domainExpansionState)
+            {
+                col.sharedMaterial = noFriction;
+                return;
+            }
         }
 
         // Both enemy and player use similar friction logic

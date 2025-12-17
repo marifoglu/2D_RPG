@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class Enemy : Entity
 {
+    public Entity_Stats stats { get; private set; }
+
     public Enemy_Health enemyHealth { get; private set; }
     public Enemy_IdleState idleState;
     public Enemy_MoveState moveState;
@@ -59,7 +61,10 @@ public class Enemy : Entity
         useEnemyEdgeDetection = true;
 
         base.Awake();
+
         enemyHealth = GetComponent<Enemy_Health>();
+        stats = GetComponent<Entity_Stats>();
+        
         // Initialize all states in Awake
         idleState = new Enemy_IdleState(this, stateMachine, "Idle");
         moveState = new Enemy_MoveState(this, stateMachine, "Move");

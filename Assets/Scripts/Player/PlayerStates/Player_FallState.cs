@@ -56,6 +56,18 @@ public class Player_FallState : Player_AiredState
             return;
         }
 
+        // ADDITIONAL: Allow ledge climb when pressing UP + RIGHT/LEFT toward the wall
+        if (player.ledgeDetected && player.moveInput.y > 0.2f && player.moveInput.x != 0 )
+        {
+            // Check if moving toward the wall (same direction as facing)
+            if (Mathf.Sign(player.moveInput.x) == player.facingDir)
+            {
+                player.SetLedgeClimbCooldown();
+                stateMachine.ChangeState(player.ledgeClimbState);
+                return;
+            }
+        }
+
         if (player.groundDetected)
         {
             stateMachine.ChangeState(player.idleState);
