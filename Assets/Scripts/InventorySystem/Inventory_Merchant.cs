@@ -9,6 +9,7 @@ public class Inventory_Merchant : Inventory_Base
     [SerializeField] private ItemListDataSO shopData;
     [SerializeField] private int minItemAmount = 4;
 
+
     protected override void Awake()
     {
         base.Awake();
