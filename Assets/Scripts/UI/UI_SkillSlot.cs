@@ -34,6 +34,38 @@ public class UI_SkillSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void SetupSkillSlot(Skill_DataSO selectedSkill)
     {
+        if (selectedSkill == null)
+        {
+            Debug.LogWarning($"SetupSkillSlot called with null skill data on {gameObject.name}");
+            return;
+        }
+
+        // Ensure components are found if not assigned
+        if (skillIcon == null)
+            skillIcon = GetComponent<Image>();
+
+        if (ui == null)
+            ui = GetComponentInParent<UI>();
+
+        // Validate required components
+        if (skillIcon == null)
+        {
+            Debug.LogError($"SetupSkillSlot: skillIcon (Image component) not found on {gameObject.name}");
+            return;
+        }
+
+        if (cooldownImage == null)
+        {
+            Debug.LogError($"SetupSkillSlot: cooldownImage not assigned in Inspector on {gameObject.name}");
+            return;
+        }
+
+        if (inputKeyText == null)
+        {
+            Debug.LogError($"SetupSkillSlot: inputKeyText not assigned in Inspector on {gameObject.name}");
+            return;
+        }
+
         this.skillData = selectedSkill;
 
         Color color = Color.black; color.a = .5f;
@@ -45,13 +77,25 @@ public class UI_SkillSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         if (conflictSlots != null)
             conflictSlots.SetActive(false);
     }
+
     public void StartCooldown(float cooldown)
     {
+        if (cooldownImage == null)
+        {
+            Debug.LogError($"StartCooldown: cooldownImage is null on {gameObject.name}");
+            return;
+        }
+
         cooldownImage.fillAmount = 1f;
         StartCoroutine(CooldownCo(cooldown));
     }
 
-    public void ResetCooldown() => cooldownImage.fillAmount = 0f;
+    public void ResetCooldown()
+    {
+        if (cooldownImage != null)
+            cooldownImage.fillAmount = 0f;
+    }
+
     private IEnumerator CooldownCo(float duration)
     {
         float timePassed = 0f;
@@ -59,15 +103,18 @@ public class UI_SkillSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
         while (timePassed < duration)
         {
             timePassed += Time.deltaTime;
-            cooldownImage.fillAmount = 1f - (timePassed / duration);
+            if (cooldownImage != null)
+                cooldownImage.fillAmount = 1f - (timePassed / duration);
             yield return null;
         }
-        cooldownImage.fillAmount = 0f;
+
+        if (cooldownImage != null)
+            cooldownImage.fillAmount = 0f;
     }
 
     public void OnPointerEnter(PointerEventData eventData)
     {
-        if (skillData == null)
+        if (skillData == null || ui == null || ui.skillToolTip == null)
             return;
 
         ui.skillToolTip.ShowToolTip(true, rect, skillData, null);
@@ -75,6 +122,9 @@ public class UI_SkillSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     public void OnPointerExit(PointerEventData eventData)
     {
+        if (ui == null || ui.skillToolTip == null)
+            return;
+
         ui.skillToolTip.ShowToolTip(false, null, null, null);
     }
 }

@@ -91,7 +91,6 @@ public class Player : Entity
     {
         base.Awake();
 
-        input = new PlayerInputSet();
 
         ui = FindAnyObjectByType<UI>();
         vfx = GetComponent<Player_VFX>();
@@ -101,6 +100,10 @@ public class Player : Entity
         combat = GetComponent<Player_Combat>();
         inventory = GetComponent<Inventory_Player>();
         stats = GetComponent<Player_Stats>();
+
+        input = new PlayerInputSet();
+        ui.SetupControlUI(input);
+        ui.SetupSkillTree(skillManager);
 
         idleState = new Player_IdleState(this, stateMachine, "Idle");
         moveState = new Player_MoveState(this, stateMachine, "Move");
@@ -222,9 +225,6 @@ public class Player : Entity
 
         input.PlayerCharacter.QuickItemSlot_4.performed += ctx => inventory.TryUseQuickItemInSlot(1);
         input.PlayerCharacter.QuickItemSlot_5.performed += ctx => inventory.TryUseQuickItemInSlot(2);
-
-        input.PlayerCharacter.ToggleSkillTreeUi.performed += ctx => ui.ToggleSkillTreeUI();
-        input.PlayerCharacter.ToggleInventoryUI.performed += ctx => ui.ToggleInventoryUI();
     }
 
     private void OnDisable()

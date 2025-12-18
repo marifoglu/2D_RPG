@@ -1,89 +1,33 @@
 using UnityEngine;
-using UnityEditor;
-using UnityEngine.SceneManagement;
 
-public class FindMissingScripts : EditorWindow
+public class FindMissingScripts : MonoBehaviour
 {
-    [MenuItem("Tools/Find Missing Scripts")]
-    static void ShowWindow()
+    [ContextMenu("Find Missing Scripts")]
+    void FindMissingScriptsInScene()
     {
-        GetWindow<FindMissingScripts>("Find Missing Scripts");
-    }
+        GameObject[] allObjects = FindObjectsByType<GameObject>(FindObjectsSortMode.None);
+        int count = 0;
 
-    void OnGUI()
-    {
-        if (GUILayout.Button("Find Missing Scripts in Scene"))
+        foreach (GameObject obj in allObjects)
         {
-            FindInScene();
-        }
-
-        if (GUILayout.Button("Find Missing Scripts in All Assets"))
-        {
-            FindInAssets();
-        }
-    }
-
-    static void FindInScene()
-    {
-        int missingCount = 0;
-        GameObject[] gameObjects = SceneManager.GetActiveScene().GetRootGameObjects();
-        
-        foreach (GameObject go in gameObjects)
-        {
-            missingCount += FindMissingScriptsRecursive(go);
-        }
-
-        Debug.Log($"Found {missingCount} missing scripts in active scene");
-    }
-
-    static void FindInAssets()
-    {
-        string[] prefabPaths = AssetDatabase.GetAllAssetPaths();
-        int missingCount = 0;
-
-        foreach (string path in prefabPaths)
-        {
-            if (path.EndsWith(".prefab"))
+            Component[] components = obj.GetComponents<Component>();
+            for (int i = 0; i < components.Length; i++)
             {
-                GameObject prefab = AssetDatabase.LoadAssetAtPath<GameObject>(path);
-                if (prefab != null)
+                if (components[i] == null)
                 {
-                    int count = FindMissingScriptsRecursive(prefab);
-                    if (count > 0)
-                    {
-                        Debug.Log($"Found {count} missing scripts in: {path}", prefab);
-                        missingCount += count;
-                    }
+                    count++;
+                    Debug.LogError($"Missing script found on: {GetGameObjectPath(obj)} (Component index: {i})", obj);
                 }
             }
         }
 
-        Debug.Log($"Total missing scripts in assets: {missingCount}");
+        if (count == 0)
+            Debug.Log("No missing scripts found!");
+        else
+            Debug.LogWarning($"Found {count} missing script(s)!");
     }
 
-    static int FindMissingScriptsRecursive(GameObject go)
-    {
-        int count = 0;
-        Component[] components = go.GetComponents<Component>();
-
-        foreach (Component component in components)
-        {
-            if (component == null)
-            {
-                count++;
-                Debug.Log($"Missing script on: {GetGameObjectPath(go)}", go);
-            }
-        }
-
-        foreach (Transform child in go.transform)
-        {
-            count += FindMissingScriptsRecursive(child.gameObject);
-        }
-
-        return count;
-    }
-
-    static string GetGameObjectPath(GameObject obj)
+    private string GetGameObjectPath(GameObject obj)
     {
         string path = obj.name;
         Transform parent = obj.transform.parent;

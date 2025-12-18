@@ -14,6 +14,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
     public event Action OnTakingDamage;
     public event Action OnHealthUpdate;
 
+    //private bool miniHealthBarActive;   
     [SerializeField] protected float currentHealth;
     public bool isDead { get; private set; }
     protected bool canTakeDamage = true;

@@ -29,7 +29,7 @@ public class Object_Merchant : Object_NPC, IInteractable
         if (ui != null && ui.merchantUI != null)
         {
             ui.merchantUI.SetupMerchantUI(merchant, inventory);
-            ui.merchantUI.gameObject.SetActive(true);
+            ui.OpenMerchantUI(true);
         }
     }
 
@@ -46,10 +46,8 @@ public class Object_Merchant : Object_NPC, IInteractable
 
         if (ui != null)
         {
-            ui.SwitchOffAllToolTips();
-
-            if (ui.merchantUI != null)
-                ui.merchantUI.gameObject.SetActive(false);
+            ui.HideAllToolTips();
+            ui.OpenMerchantUI(false);
         }
     }
 }

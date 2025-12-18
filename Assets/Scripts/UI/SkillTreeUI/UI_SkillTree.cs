@@ -12,14 +12,29 @@ public class UI_SkillTree : MonoBehaviour
         UpdateAllConnections();
     }
 
+    public void SetSkillManager(Player_SkillManager manager)
+    {
+        skillManager = manager;
+    }
+
     public void UnlockDefaultSkills()
     {
-        allTreeNodes = GetComponentsInChildren<UI_TreeNode>(true);
-        skillManager = FindAnyObjectByType<Player_SkillManager>();
+        if (allTreeNodes == null)
+            allTreeNodes = GetComponentsInChildren<UI_TreeNode>(true);
+
+        // Make sure skillManager is set before unlocking
+        if (skillManager == null)
+        {
+            Debug.LogError("SkillManager is null! Cannot unlock default skills.");
+            return;
+        }
 
         foreach (var node in allTreeNodes)
         {
-            node.UnlockDefaultSkill();
+            if (node.skillData != null && node.skillData.unlockedByDefault && !node.isUnlocked)
+            {
+                node.UnlockDefaultSkill();
+            }
         }
     }
 

@@ -2,7 +2,12 @@ using UnityEngine;
 
 public class UI : MonoBehaviour
 {
+    [SerializeField] private GameObject[] uiElements;
+
     #region UI Components
+
+    public bool alternativeInput { get; private set; }
+    public PlayerInputSet input { get; private set; }
     public UI_SkillToolTip skillToolTip { get; private set; }
     public UI_ItemToolTip itemToolTip { get; private set; }
     public UI_StatToolTip statToolTip { get; private set; }
@@ -13,10 +18,12 @@ public class UI : MonoBehaviour
     public UI_Craft craftUI { get; private set; }
     public UI_Merchant merchantUI { get; private set; }
     public UI_InGame inGameUI { get; private set; }
+    public UI_Options optionsUI { get; private set; }
     #endregion
 
     private bool skillTreeEnabled;
     private bool inventoryEnabled;
+    private bool optionsEnabled;
 
     private void Awake()
     {
@@ -40,10 +47,7 @@ public class UI : MonoBehaviour
             Debug.LogError("UI_StatToolTip not found on UI or its children!");
 
         // Find UI panels
-        skillTreeUI = GetComponent<UI_SkillTree>();
-        if (skillTreeUI == null)
-            skillTreeUI = GetComponentInChildren<UI_SkillTree>(true);
-
+        EnsureSkillTreeUI();
         inventoryUI = GetComponent<UI_Inventory>();
         if (inventoryUI == null)
             inventoryUI = GetComponentInChildren<UI_Inventory>(true);
@@ -64,30 +68,123 @@ public class UI : MonoBehaviour
         if (inGameUI == null)
             inGameUI = GetComponentInChildren<UI_InGame>(true);
 
+        optionsUI = GetComponent<UI_Options>();
+        if (optionsUI == null)
+            optionsUI = GetComponentInChildren<UI_Options>(true);
+
         // Initialize enabled states with null checks
         skillTreeEnabled = skillTreeUI != null && skillTreeUI.gameObject.activeSelf;
         inventoryEnabled = inventoryUI != null && inventoryUI.gameObject.activeSelf;
+        optionsEnabled = optionsUI != null && optionsUI.gameObject.activeSelf;
     }
 
     private void Start()
     {
-        skillTreeUI.UnlockDefaultSkills();      
+        // Ensure inGameUI is fully initialized before unlocking skills
+        if (inGameUI != null)
+            StartCoroutine(InitializeSkillsAfterFrame());
+        else
+            Debug.LogError("InGameUI is null! Cannot unlock default skills.");
     }
 
-    public void SwitchOffAllToolTips()
+    private System.Collections.IEnumerator InitializeSkillsAfterFrame()
     {
-        if (itemToolTip != null)
-            itemToolTip.ShowToolTip(false, null);
+        // Wait one frame to ensure all Start() methods have been called
+        yield return null;
 
-        if (skillToolTip != null)
-            skillToolTip.ShowToolTip(false, null);
+        if (skillTreeUI != null)
+            skillTreeUI.UnlockDefaultSkills();
+    }
 
-        if (statToolTip != null)
-            statToolTip.ShowToolTip(false, null);
+    public void SetupControlUI(PlayerInputSet inputSet)
+    {
+        input = inputSet;
+
+        input.UI.SkillTreeUi.performed += ctx => ToggleSkillTreeUI();
+        input.UI.InventoryUI.performed += ctx => ToggleInventoryUI();
+
+        input.UI.AlternativeInput.performed += ctx => alternativeInput = true;
+        input.UI.AlternativeInput.canceled += ctx => alternativeInput = false;
+
+        //input.UI.OptionsUI.performed += ctx => ToggleOptionsUI();
+        input.UI.OptionsUI.performed += ctx =>
+        {
+            foreach (var element in uiElements)
+            {
+                if (element.activeSelf)
+                {
+                    Time.timeScale = 1;
+                    SwitchToInGameUI();
+                    return;
+                }
+            }
+            Time.timeScale = 0;
+            OpenOptionsUI();
+        };
+    }
+
+    public void SetupSkillTree(Player_SkillManager skillManager)
+    {
+        EnsureSkillTreeUI();
+
+        if (skillTreeUI != null)
+            skillTreeUI.SetSkillManager(skillManager);
+        else
+            Debug.LogError("SkillTreeUI is null! Cannot set skill manager.");
+    }
+
+
+    public void OpenOptionsUI()
+    {
+        foreach(var element in uiElements)
+        {
+            element.gameObject.SetActive(false);
+        }
+        HideAllToolTips();
+        StopPlayerControl(true);
+        optionsUI.gameObject.SetActive(true);
+    }
+
+    public void SwitchToInGameUI()
+    {
+        foreach (var element in uiElements)
+        {
+            element.gameObject.SetActive(false);
+        }
+        HideAllToolTips();
+        StopPlayerControl(false);
+        optionsUI.gameObject.SetActive(true);
+        
+        skillTreeEnabled = false;
+        inventoryEnabled = false;
+
+    }
+    private void StopPlayerControl(bool stopControls)
+    {
+        if (stopControls)
+            input.PlayerCharacter.Disable();
+        else
+            input.PlayerCharacter.Enable();
+    }
+
+    private void StopPlayerControlsIfNeeded()
+    {
+        foreach( var element in uiElements)
+        {
+            if (element.activeSelf)
+            {
+                StopPlayerControl(true);
+                return;
+            }
+        }
+        StopPlayerControl(false);
     }
 
     public void ToggleSkillTreeUI()
     {
+        skillTreeUI.transform.SetAsLastSibling();
+        SetToolTipsAsLastSibling();
+
         if (skillTreeUI == null)
         {
             Debug.LogWarning("SkillTreeUI is not assigned or found!");
@@ -97,12 +194,18 @@ public class UI : MonoBehaviour
         skillTreeEnabled = !skillTreeEnabled;
         skillTreeUI.gameObject.SetActive(skillTreeEnabled);
 
-        if (skillToolTip != null)
-            skillToolTip.ShowToolTip(false, null);
+        HideAllToolTips() ;
+
+
+        StopPlayerControlsIfNeeded();
     }
 
     public void ToggleInventoryUI()
     {
+        inventoryUI.transform.SetAsLastSibling();
+        SetToolTipsAsLastSibling();
+
+
         if (inventoryUI == null)
         {
             Debug.LogWarning("InventoryUI is not assigned or found!");
@@ -112,10 +215,71 @@ public class UI : MonoBehaviour
         inventoryEnabled = !inventoryEnabled;
         inventoryUI.gameObject.SetActive(inventoryEnabled);
 
-        if (statToolTip != null)
-            statToolTip.ShowToolTip(false, null);
+        HideAllToolTips();
 
+        StopPlayerControlsIfNeeded();
+    }
+
+    public void ToggleOptionsUI()
+    {
+        if (optionsUI == null)
+        {
+            Debug.LogWarning("OptionsUI is not assigned or found!");
+            return;
+        }
+
+        optionsEnabled = !optionsEnabled;
+        optionsUI.gameObject.SetActive(optionsEnabled);
+
+        StopPlayerControl(optionsEnabled);
+    }
+
+    public void OpenStorageUI(bool openStorageUI)
+    {
+        storageUI.gameObject.SetActive(openStorageUI);
+        StopPlayerControl(openStorageUI);
+
+        if (openStorageUI == false)
+        {
+            craftUI.gameObject.SetActive(false);
+            HideAllToolTips();
+        }
+    }
+
+    public void OpenMerchantUI(bool openMerchantUI)
+    {
+        merchantUI.gameObject.SetActive(openMerchantUI);
+        StopPlayerControl(openMerchantUI);
+
+        if (openMerchantUI == false)
+            HideAllToolTips();
+    }
+
+    private void EnsureSkillTreeUI()
+    {
+        if (skillTreeUI != null)
+            return;
+
+        skillTreeUI = GetComponent<UI_SkillTree>();
+        if (skillTreeUI == null)
+            skillTreeUI = GetComponentInChildren<UI_SkillTree>(true);
+    }
+    public void HideAllToolTips()
+    {
         if (itemToolTip != null)
             itemToolTip.ShowToolTip(false, null);
+
+        if (skillToolTip != null)
+            skillToolTip.ShowToolTip(false, null);
+
+        if (statToolTip != null)
+            statToolTip.ShowToolTip(false, null);
+    }
+
+    private void SetToolTipsAsLastSibling()
+    {
+        itemToolTip.transform.SetAsLastSibling();
+        skillToolTip.transform.SetAsLastSibling();
+        statToolTip.transform.SetAsLastSibling();
     }
 }
