@@ -17,6 +17,9 @@ public class Player_SkillManager : MonoBehaviour
         swordThrow = GetComponentInChildren<Skill_SwordThrow>();
         timeEcho = GetComponentInChildren<Skill_TimeEcho>();
         domainExpansion = GetComponentInChildren<Skill_DomainExpansion>();
+
+        allSkills = new Skill_Base[] { dash, shard, swordThrow, timeEcho, domainExpansion };
+
     }
 
     public Skill_Base GetSkillByType(SkillType type)
