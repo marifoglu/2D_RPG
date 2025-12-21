@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a84efe835b1704bacf1e98b30cf5fb, type: 3}
   m_Name: Consumable data - Scroll of Vengence
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItemDataSO
-  itemPrice: 0
+  itemPrice: 180
   minStackSizeAtShop: 1
-  maxStackSizeAtShop: 1
+  maxStackSizeAtShop: 5
   itemRarity: 985
   dropChance: 1.6
   maxDropChance: 65

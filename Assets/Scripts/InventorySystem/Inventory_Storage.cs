@@ -152,4 +152,86 @@ public int GetAvailableAmountOf(ItemDataSO requiredItem)
             
         }
     }
+
+    public override void SaveData(ref GameData gameData)
+    {
+        base.SaveData(ref gameData);
+
+        gameData.storageItems.Clear();
+
+        foreach (var item in itemList)
+        {
+            if (item != null && item.itemData != null)
+            {
+                string saveID = item.itemData.saveID;
+
+                if (gameData.storageItems.ContainsKey(saveID) == false)
+                    gameData.storageItems[saveID] = 0;
+
+                gameData.storageItems[saveID] += item.stackSize;
+
+            }
+        }
+        gameData.storageMaterials.Clear();
+
+        foreach (var item in materialStash)
+        {
+            if (item != null && item.itemData != null)
+            {
+                string saveID = item.itemData.saveID;
+
+                if (gameData.storageMaterials.ContainsKey(saveID) == false)
+                    gameData.storageMaterials[saveID] = 0;
+
+                gameData.storageMaterials[saveID] += item.stackSize;
+
+            }
+        }
+    }
+
+    public override void LoadData(GameData gameData)
+    {
+        itemList.Clear();
+        materialStash.Clear();
+
+        foreach (var item in gameData.storageItems)
+        {
+            string saveId = item.Key;
+            int stackSize = item.Value;
+
+            ItemDataSO itemData = itemDataBase.GetItemData(saveId);
+
+            if (itemData == null)
+            {
+                Debug.LogWarning("Item data with saveID " + saveId + " not found in item database.");
+                continue;
+            }
+
+            for (int i = 0; i < stackSize; i++)
+            {
+                Inventory_Item itemToLoad = new Inventory_Item(itemData);
+                AddItem(itemToLoad);
+            }
+        }
+
+        foreach (var item in gameData.storageMaterials)
+        {
+            string saveId = item.Key;
+            int stackSize = item.Value;
+
+            ItemDataSO itemData = itemDataBase.GetItemData(saveId);
+
+            if (itemData == null)
+            {
+                Debug.LogWarning("Item data with saveID " + saveId + " not found in item database.");
+                continue;
+            }
+
+            for (int i = 0; i < stackSize; i++)
+            {
+                Inventory_Item itemToLoad = new Inventory_Item(itemData);
+                AddMaterialToStash(itemToLoad);
+            }
+        }
+    }
 }

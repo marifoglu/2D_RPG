@@ -7,6 +7,7 @@ public class Player_SkillManager : MonoBehaviour
     public Skill_SwordThrow swordThrow { get; private set; }
     public Skill_TimeEcho timeEcho { get; private set; }
     public Skill_DomainExpansion domainExpansion { get; private set; }  
+    public Skill_Base[] allSkills { get; private set; }
 
 
     private void Awake()

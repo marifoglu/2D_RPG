@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46304903adc1ef947a7c104402ed1c9b, type: 3}
   m_Name: Material data - Baguette
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataSO
-  itemPrice: 1257
-  minStackSizeAtShop: 1
-  maxStackSizeAtShop: 1
+  itemPrice: 42
+  minStackSizeAtShop: 99
+  maxStackSizeAtShop: 99
   itemRarity: 100
   dropChance: 77.8
   maxDropChance: 77.8
@@ -22,5 +22,5 @@ MonoBehaviour:
   itemType: 0
   itemName: Baguette
   itemIcon: {fileID: 2028149217, guid: a6fce76df2a1d3e4784e5f1873d64b42, type: 3}
-  maxStackSize: 3
+  maxStackSize: 5
   itemEffect: {fileID: 0}

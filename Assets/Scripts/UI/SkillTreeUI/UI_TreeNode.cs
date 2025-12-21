@@ -97,6 +97,15 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         skillTree.skillManager.GetSkillByType(skillData.skillType).SetSkillUpgrade(skillData);
     }
 
+    public void UnlockWithSaveData()
+    {
+        isUnlocked = true;
+        UpdateIconColor(Color.white);
+        LockConflictNodes();
+
+        connectionHandler.UnlockConnectionImage(true);
+    }
+
     private bool CanBeUnlock()
     {
         if (isLocked || isUnlocked)
@@ -120,25 +129,32 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         return true;
     }
 
+    //public void LockChildNodes()
+    //{
+    //    LockChildNodes(new HashSet<UI_TreeNode>());
+    //}
+
+    //private void LockChildNodes(HashSet<UI_TreeNode> visitedNodes)
+    //{
+    //    // Prevent infinite recursion by checking if this node was already visited
+    //    if (visitedNodes.Contains(this))
+    //        return;
+
+    //    visitedNodes.Add(this);
+    //    isLocked = true;
+
+    //    foreach (var child in connectionHandler.GetChildNodes())
+    //    {
+    //        if (child != null)
+    //            child.LockChildNodes(visitedNodes);
+    //    }
+    //}
     public void LockChildNodes()
     {
-        LockChildNodes(new HashSet<UI_TreeNode>());
-    }
-
-    private void LockChildNodes(HashSet<UI_TreeNode> visitedNodes)
-    {
-        // Prevent infinite recursion by checking if this node was already visited
-        if (visitedNodes.Contains(this))
-            return;
-
-        visitedNodes.Add(this);
         isLocked = true;
 
-        foreach (var child in connectionHandler.GetChildNodes())
-        {
-            if (child != null)
-                child.LockChildNodes(visitedNodes);
-        }
+        foreach (var node in connectionHandler.GetChildNodes())
+            node.LockChildNodes();
     }
 
     private void LockConflictNodes()

@@ -12,6 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12a55adcef3f9e54eabb109ce2657450, type: 3}
   m_Name: Equipment data - Winters Armor
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentDataSO
+  itemPrice: 114
+  minStackSizeAtShop: 1
+  maxStackSizeAtShop: 1
+  itemRarity: 100
+  dropChance: 65
+  maxDropChance: 65
+  craftReceipe: []
   itemType: 2
   itemName: Winters Armor
   itemIcon: {fileID: 625480778395568090, guid: e31822c94ae12a844a2145f2fb7c2403, type: 3}

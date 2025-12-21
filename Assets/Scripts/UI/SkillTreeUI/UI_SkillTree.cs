@@ -1,7 +1,9 @@
+using System.Linq;
 using TMPro;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
-public class UI_SkillTree : MonoBehaviour
+public class UI_SkillTree : MonoBehaviour, ISaveable
 {
     [SerializeField] private int skillPoints;
     [SerializeField] private TextMeshProUGUI skillPointsText;
@@ -89,5 +91,50 @@ public class UI_SkillTree : MonoBehaviour
         }
 
         GetComponentInChildren<UI_SkillToolTip>()?.transform.SetAsLastSibling();
+    }
+
+    public void SaveData(ref GameData gameData)
+    {
+        gameData.skillPoints = skillPoints;
+        gameData.skillTreeUI.Clear();
+        gameData.skillUpgrades.Clear();
+
+        foreach (var node in allTreeNodes)
+        {
+            string skillName = node.skillData.displayName;
+            gameData.skillTreeUI[skillName] = node.isUnlocked;
+        }
+
+        foreach(var skill in skillManager.allSkills)
+        {
+            gameData.skillUpgrades[skill.GetSkillType()] = skill.GetUpgradeType();
+        }
+    }
+
+    public void LoadData(GameData gameData)
+    {
+        skillPoints = gameData.skillPoints;
+
+        foreach (var node in allTreeNodes)
+        {
+            string skillName = node.skillData.displayName;
+            if (gameData.skillTreeUI.TryGetValue(skillName, out bool isUnlocked) && isUnlocked)
+            {
+                node.UnlockWithSaveData();
+            }
+        }
+
+        foreach (var skill in skillManager.allSkills)
+        {
+            if (gameData.skillUpgrades.TryGetValue(skill.GetSkillType(), out SkillUpgradeType upgradeType))
+            {
+                var upgradeNodes = allTreeNodes.FirstOrDefault(node => node.skillData.upgradeData.upgradeType == upgradeType);
+                if(upgradeNodes != null)
+                {
+                    skill.SetSkillUpgrade(upgradeNodes.skillData);
+                }   
+            }
+        }
+
     }
 }

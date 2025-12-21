@@ -12,10 +12,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12a55adcef3f9e54eabb109ce2657450, type: 3}
   m_Name: Equipment data - Ring of luck
   m_EditorClassIdentifier: Assembly-CSharp::EquipmentDataSO
+  itemPrice: 51
+  minStackSizeAtShop: 1
+  maxStackSizeAtShop: 1
+  itemRarity: 100
+  dropChance: 65
+  maxDropChance: 65
+  craftReceipe: []
   itemType: 3
   itemName: Ring of luck
   itemIcon: {fileID: -5893210615866333270, guid: e31822c94ae12a844a2145f2fb7c2403, type: 3}
   maxStackSize: 1
+  itemEffect: {fileID: 0}
   modifiers:
   - statType: 7
     value: 15

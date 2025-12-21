@@ -12,9 +12,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46304903adc1ef947a7c104402ed1c9b, type: 3}
   m_Name: Material data - Wooden log
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataSO
-  itemPrice: 4461
-  minStackSizeAtShop: 1
-  maxStackSizeAtShop: 1
+  itemPrice: 55
+  minStackSizeAtShop: 99
+  maxStackSizeAtShop: 99
+  itemRarity: 100
+  dropChance: 65
+  maxDropChance: 65
   craftReceipe: []
   itemType: 0
   itemName: Wooden log
