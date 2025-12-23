@@ -19,6 +19,7 @@ public class GameData
     public SerializableDictionary<string, bool> skillTreeUI; // skillID -> isUnlocked status
     public SerializableDictionary<SkillType, SkillUpgradeType> skillUpgrades; // SkillType -> SkillUpgradeType
 
+    public Vector3 savedCheckpoint;
 
     public GameData()
     {

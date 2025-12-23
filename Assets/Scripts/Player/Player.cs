@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class Player : Entity
 {
+    public static Player instance;
     public static event Action OnPlayerDeath;
     public UI ui { get; private set; }
     public PlayerInputSet input { get; private set; }
@@ -91,6 +92,7 @@ public class Player : Entity
     {
         base.Awake();
 
+        instance = this;
 
         ui = FindAnyObjectByType<UI>();
         vfx = GetComponent<Player_VFX>();
