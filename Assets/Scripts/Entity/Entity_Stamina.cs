@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public class Entity_Stamina : MonoBehaviour
 {
     private Entity_Stats entityStats;
-    private Slider staminaBar;
+    private Slider staminaBar; // Local mini-bar (optional)
 
     [Header("Stamina Settings")]
     [SerializeField] protected float currentStamina;
-    [SerializeField] private float regenInterval = 0.1f; // Regen every 0.1 seconds
-    [SerializeField] private float regenDelay = 1f; // Wait 1 second after using stamina before regen starts
+    [SerializeField] private float regenInterval = 0.1f;
+    [SerializeField] private float regenDelay = 1f;
     private float lastStaminaUseTime;
 
     [Header("Stamina Costs")]
@@ -20,28 +20,20 @@ public class Entity_Stamina : MonoBehaviour
     [SerializeField] private float dashCost = 20f;
     [SerializeField] private float jumpAttackCost = 15f;
 
-    // Events for UI updates
     public event Action OnStaminaChanged;
 
     private void Awake()
     {
         entityStats = GetComponent<Entity_Stats>();
 
-        // FIXED: Safe slider retrieval with bounds checking
-        Slider[] sliders = GetComponentsInChildren<Slider>(true); // Include inactive
+        // Optional: Try to find local slider (for mini-bars on entities)
+        Slider[] sliders = GetComponentsInChildren<Slider>(true);
         if (sliders.Length > 1)
         {
-            staminaBar = sliders[1]; // Get second slider (first is health)
+            staminaBar = sliders[1];
         }
-        else if (sliders.Length == 1)
-        {
-            Debug.LogWarning($"{gameObject.name}: Only one slider found. Stamina bar may not be set up correctly.");
-            staminaBar = sliders[0]; // Fallback to first slider
-        }
-        else
-        {
-            Debug.LogError($"{gameObject.name}: No sliders found in children! Please add stamina slider to the prefab.");
-        }
+        // If only 1 slider found, it's the health bar - no stamina bar on this entity
+        // This is NORMAL for the player since stamina is shown in UI_StaminaBar instead
 
         SetupStamina();
     }
@@ -75,14 +67,13 @@ public class Entity_Stamina : MonoBehaviour
         lastStaminaUseTime = Time.time;
 
         UpdateStaminaBar();
-        OnStaminaChanged?.Invoke();
+        OnStaminaChanged?.Invoke(); // This triggers UI_StaminaBar to update
 
         return true;
     }
 
     public void RegenerateStamina()
     {
-        // Wait for delay after using stamina
         if (Time.time < lastStaminaUseTime + regenDelay)
             return;
 
@@ -99,15 +90,17 @@ public class Entity_Stamina : MonoBehaviour
         currentStamina = Mathf.Min(currentStamina + amount, maxStamina);
 
         UpdateStaminaBar();
-        OnStaminaChanged?.Invoke();
+        OnStaminaChanged?.Invoke(); // This triggers UI_StaminaBar to update
     }
 
     private void UpdateStaminaBar()
     {
-        if (staminaBar == null || entityStats == null)
-            return;
-
-        staminaBar.value = currentStamina / entityStats.GetMaxStamina();
+        // Update local mini-bar if it exists (optional for enemies)
+        if (staminaBar != null && entityStats != null)
+        {
+            staminaBar.value = currentStamina / entityStats.GetMaxStamina();
+        }
+        // For player, the main UI is handled by UI_StaminaBar component
     }
 
     public float GetStaminaPercentage()
@@ -115,13 +108,11 @@ public class Entity_Stamina : MonoBehaviour
         return currentStamina / entityStats.GetMaxStamina();
     }
 
-    // Stamina cost getters
     public float GetBasicAttackCost() => basicAttackCost;
     public float GetHeavyAttackCost() => heavyAttackCost;
     public float GetDashCost() => dashCost;
     public float GetJumpAttackCost() => jumpAttackCost;
 
-    // For debugging
     private void OnValidate()
     {
         if (Application.isPlaying && entityStats != null)

@@ -16,6 +16,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
     //private bool miniHealthBarActive;   
     [SerializeField] protected float currentHealth;
+    public float CurrentHealth => currentHealth;
     public bool isDead { get; private set; }
     protected bool canTakeDamage = true;
 
@@ -45,8 +46,11 @@ public class Entity_Health : MonoBehaviour, IDamageable
         entityStats = GetComponent<Entity_Stats>();
         dropManager = GetComponent<Entity_DropManager>();
         healthBar = GetComponentInChildren<Slider>();
-        impulseSource = GetComponentInParent<CinemachineImpulseSource>();
-
+        impulseSource = GetComponent<CinemachineImpulseSource>();
+        if (impulseSource == null)
+        {
+            impulseSource = GetComponentInParent<CinemachineImpulseSource>();
+        }
         // Check if entityStats exists before using it
         SetupHealth();
     }
@@ -188,15 +192,33 @@ public class Entity_Health : MonoBehaviour, IDamageable
     private void TriggerCameraShake()
     {
         if (CameraShakeManager.Instance == null)
+        {
+            Debug.LogWarning("CameraShakeManager.Instance is null!");
             return;
-        
+        }
+
         if (screenShakeProfile == null)
+        {
+            Debug.LogWarning($"ScreenShakeProfile is not assigned on {gameObject.name}!");
             return;
-        
-        if (impulseSource == null)
+        }
+
+        // Always get the impulse source from the player, not from this entity
+        Player player = FindAnyObjectByType<Player>();
+        if (player == null)
+        {
+            Debug.LogWarning("Player not found in scene!");
             return;
-        
-        CameraShakeManager.Instance.ScreenShakeFromProfile(screenShakeProfile, impulseSource);
+        }
+
+        CinemachineImpulseSource playerImpulseSource = player.GetComponent<CinemachineImpulseSource>();
+        if (playerImpulseSource == null)
+        {
+            Debug.LogWarning("CinemachineImpulseSource is missing on Player!");
+            return;
+        }
+
+        CameraShakeManager.Instance.ScreenShakeFromProfile(screenShakeProfile, playerImpulseSource);
     }
 
 }
