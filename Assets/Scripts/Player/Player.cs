@@ -11,6 +11,7 @@ public class Player : Entity
     public Player_SkillManager skillManager { get; private set; }
     public Player_VFX vfx { get; private set; }
     public Entity_Health health { get; private set; }
+    public Entity_Stamina stamina { get; private set; } // Stamina component
     public Entity_StatusHandler statusHandler { get; private set; }
     public Inventory_Player inventory { get; private set; }
 
@@ -97,6 +98,7 @@ public class Player : Entity
         ui = FindAnyObjectByType<UI>();
         vfx = GetComponent<Player_VFX>();
         health = GetComponent<Entity_Health>();
+        stamina = GetComponent<Entity_Stamina>();
         statusHandler = GetComponent<Entity_StatusHandler>();
         skillManager = GetComponent<Player_SkillManager>();
         combat = GetComponent<Player_Combat>();

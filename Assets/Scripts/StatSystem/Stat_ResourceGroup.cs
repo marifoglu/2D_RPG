@@ -5,5 +5,8 @@ using System;
 public class Stat_ResourceGroup {
     public Stat maxHealth;
     public Stat healthRegen;
+
     // Stamina
+    public Stat maxStamina;
+    public Stat staminaRegen;
 }

@@ -14,6 +14,17 @@ public class Player_HeavyAttackState : PlayerState
     {
         base.Enter();
 
+        // Stamina check
+        if (!player.stamina.HasEnoughStamina(player.stamina.GetHeavyAttackCost()))
+        {
+            stateMachine.ChangeState(player.idleState);
+            return;
+        }
+
+        // Consume stamina
+        player.stamina.TryUseStamina(player.stamina.GetHeavyAttackCost());
+
+
         // Set state timer to animation duration as fallback
         stateTimer = animationDuration;
 

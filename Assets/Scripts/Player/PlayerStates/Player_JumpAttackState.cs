@@ -11,6 +11,18 @@ public class Player_JumpAttackState : PlayerState
     public override void Enter()
     {
         base.Enter();
+
+        // Stamina check
+        if (!player.stamina.HasEnoughStamina(player.stamina.GetJumpAttackCost()))
+        {
+            stateMachine.ChangeState(player.fallState);
+            return;
+        }
+
+        // Consume stamina
+        player.stamina.TryUseStamina(player.stamina.GetJumpAttackCost());
+
+
         touchedGround = false;
 
         player.SetVelocity(player.jumpAttackVelocity.x * player.facingDir, player.jumpAttackVelocity.y);

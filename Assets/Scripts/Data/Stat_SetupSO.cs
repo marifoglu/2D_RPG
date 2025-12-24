@@ -6,6 +6,8 @@ public class Stat_SetupSO : ScriptableObject
     [Header("Resources")]
     public float maxHealth=100f;
     public float healthRegen;
+    public float maxStamina = 100f;
+    public float staminaRegen = 10f; // Stamina per second
 
     [Header("Offense - Physical Damage")]
     public float damage = 10f;

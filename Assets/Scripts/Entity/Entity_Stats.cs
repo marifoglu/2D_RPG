@@ -181,7 +181,14 @@ public class Entity_Stats : MonoBehaviour
 
         return finalCounterDamage;
     }
+    public float GetMaxStamina()
+    {
+        float baseMaxStamina = resources.maxStamina.GetValue();
+        // Optional: Bonus from stats (like Vitality)
+        // float bonusStamina = major.vitality.GetValue() * 2f;
 
+        return baseMaxStamina; // + bonusStamina, i will decide later if i want bonus from stats
+    }
     public Stat GetStatByType(StatType statType)
     {
         switch (statType)
@@ -252,6 +259,8 @@ public class Entity_Stats : MonoBehaviour
 
         resources.maxHealth.SetBaseValue(defaultStatSetup.maxHealth);
         resources.healthRegen.SetBaseValue(defaultStatSetup.healthRegen);
+        resources.maxStamina.SetBaseValue(defaultStatSetup.maxStamina); // Stamina
+        resources.staminaRegen.SetBaseValue(defaultStatSetup.staminaRegen);
 
         major.strength.SetBaseValue(defaultStatSetup.strength);
         major.agility.SetBaseValue(defaultStatSetup.agility);

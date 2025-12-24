@@ -13,6 +13,16 @@ public class Player_DashState : PlayerState
     {
         base.Enter();
 
+        // Stamina check
+        if (!player.stamina.HasEnoughStamina(player.stamina.GetDashCost()))
+        {
+            stateMachine.ChangeState(player.idleState);
+            return;
+        }
+
+        // Consume stamina
+        player.stamina.TryUseStamina(player.stamina.GetDashCost());
+
         skillManager.dash.OnStartEffect();
         player.vfx.DoImageEchoEffect(player.dashDuration);
 

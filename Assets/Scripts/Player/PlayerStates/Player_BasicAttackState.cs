@@ -24,6 +24,16 @@ public class Player_BasicAttackState : PlayerState
     public override void Enter()
     {
         base.Enter();
+
+        // Stamina check
+        if (!player.stamina.HasEnoughStamina(player.stamina.GetBasicAttackCost()))
+        {
+            stateMachine.ChangeState(player.idleState);
+            return;
+        }
+        // Consume stamina
+        player.stamina.TryUseStamina(player.stamina.GetBasicAttackCost());
+
         comboAttackQueued = false;
         ResetComboIndexIfNeeded();
         SyncAttackSpeed();
