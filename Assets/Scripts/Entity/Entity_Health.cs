@@ -68,6 +68,38 @@ public class Entity_Health : MonoBehaviour, IDamageable
     }
 
     public float GetCurrentHealth() => currentHealth;
+    //public virtual bool TakeDamage(float damage, float elementalDamage, ElementType elementType, Transform damageDealer)
+    //{
+    //    if (isDead || canTakeDamage == false)
+    //        return false;
+
+    //    if (AttackEvaded())
+    //        return false;
+
+    //    // Calculate armor mitigation
+    //    Entity_Stats attackerStats = damageDealer.GetComponent<Entity_Stats>();
+    //    float armorReduction = attackerStats != null ? attackerStats.GetArmorReduction() : 0f;
+
+    //    float mitigation = entityStats != null ? entityStats.GetArmorMitigation(armorReduction) : 0;
+    //    float elementalResistance = entityStats != null ? entityStats.GetElementalResistance(elementType) : 0;
+
+    //    // Calculate elemental resistance
+    //    float elementalDamageTaken = elementalDamage * (1 - elementalResistance);
+    //    float physicalDamageTaken = damage * (1 - mitigation);
+
+    //    // Knockback
+    //    TakeKnockback(damageDealer, physicalDamageTaken);
+    //    ReduceHealth(physicalDamageTaken + elementalDamageTaken);
+
+
+    //    // Trigger camera shake when this entity takes damage
+    //    TriggerCameraShake();
+
+    //    OnTakingDamage?.Invoke();
+
+    //    return true;
+    //}
+
     public virtual bool TakeDamage(float damage, float elementalDamage, ElementType elementType, Transform damageDealer)
     {
         if (isDead || canTakeDamage == false)
@@ -75,6 +107,14 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
         if (AttackEvaded())
             return false;
+
+        // Check if this entity is the player and is blocking
+        Player player = GetComponent<Player>();
+        bool isPlayerBlocking = player != null && player.IsBlocking;
+        bool isInParryWindow = player != null && player.IsInParryWindow;
+
+        // OPTIONAL: Check if player is staggered for increased damage
+        bool isStaggered = player != null && player.IsInState(player.staggerState);
 
         // Calculate armor mitigation
         Entity_Stats attackerStats = damageDealer.GetComponent<Entity_Stats>();
@@ -87,10 +127,75 @@ public class Entity_Health : MonoBehaviour, IDamageable
         float elementalDamageTaken = elementalDamage * (1 - elementalResistance);
         float physicalDamageTaken = damage * (1 - mitigation);
 
-        // Knockback
+        // OPTIONAL: Increase damage if staggered
+        if (isStaggered)
+        {
+            float staggerDamageMultiplier = 1.5f; // 50% more damage when staggered
+            physicalDamageTaken *= staggerDamageMultiplier;
+            elementalDamageTaken *= staggerDamageMultiplier;
+            Debug.Log("Hit while staggered! Taking extra damage!");
+        }
+
+        // If blocking, handle differently based on parry window
+        if (isPlayerBlocking)
+        {
+            Debug.Log("Player is blocking! Parry window active: " + isInParryWindow);
+
+            // Check if in parry window (perfect timing for counter)
+            if (isInParryWindow)
+            {
+                Debug.Log("HIT DURING PARRY WINDOW - Triggering perfect parry!");
+
+                // PERFECT PARRY! Trigger counter attack
+                player.TriggerPerfectParry();
+
+                // No damage taken on perfect parry
+                OnTakingDamage?.Invoke();
+                return true;
+            }
+            else
+            {
+                Debug.Log("Hit during regular block (not parry window)");
+
+                // REGULAR BLOCK - NO HEALTH DAMAGE, only stamina drain
+                float totalDamageBlocked = physicalDamageTaken + elementalDamageTaken;
+
+                // Convert damage to stamina cost (you can adjust the multiplier)
+                float staminaCostMultiplier = 3f; // Each point of damage = 3 stamina
+                float staminaCost = totalDamageBlocked * staminaCostMultiplier;
+
+                Debug.Log($"Blocking {totalDamageBlocked} damage - Stamina cost: {staminaCost}");
+
+                // Try to drain stamina
+                if (!player.stamina.TryUseStamina(staminaCost))
+                {
+                    // Not enough stamina - BREAK THE BLOCK!
+                    Debug.Log("NOT ENOUGH STAMINA - Block broken! Taking full damage!");
+
+                    // Enter longer stagger since stamina broke
+                    player.EnterStaggerState(true); // true = stamina depleted stagger
+
+                    // Take the full damage since block was broken
+                    ReduceHealth(physicalDamageTaken + elementalDamageTaken);
+                    TakeKnockback(damageDealer, physicalDamageTaken);
+                    TriggerCameraShake();
+                    OnTakingDamage?.Invoke();
+                    return true;
+                }
+
+                // Successfully blocked - no health damage, only stamina drained
+                entityVFX?.PlayOnDamageVfx(); // Flash to show block
+                OnTakingDamage?.Invoke();
+
+                Debug.Log($"Successfully blocked! Stamina remaining: {player.stamina.GetStaminaPercentage() * 100}%");
+
+                return true;
+            }
+        }
+
+        // Normal damage (not blocking)
         TakeKnockback(damageDealer, physicalDamageTaken);
         ReduceHealth(physicalDamageTaken + elementalDamageTaken);
-
 
         // Trigger camera shake when this entity takes damage
         TriggerCameraShake();

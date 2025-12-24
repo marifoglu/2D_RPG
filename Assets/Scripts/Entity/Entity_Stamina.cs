@@ -57,21 +57,40 @@ public class Entity_Stamina : MonoBehaviour
         return currentStamina >= cost;
     }
 
+    //public bool TryUseStamina(float cost)
+    //{
+    //    if (!HasEnoughStamina(cost))
+    //        return false;
+
+    //    currentStamina -= cost;
+    //    currentStamina = Mathf.Max(0, currentStamina);
+    //    lastStaminaUseTime = Time.time;
+
+    //    UpdateStaminaBar();
+    //    OnStaminaChanged?.Invoke(); // This triggers UI_StaminaBar to update
+
+    //    return true;
+    //}
     public bool TryUseStamina(float cost)
     {
         if (!HasEnoughStamina(cost))
+        {
+            // Stamina depleted - let the calling code handle stagger
+            currentStamina = 0;
+            UpdateStaminaBar();
+            OnStaminaChanged?.Invoke();
             return false;
+        }
 
         currentStamina -= cost;
         currentStamina = Mathf.Max(0, currentStamina);
         lastStaminaUseTime = Time.time;
 
         UpdateStaminaBar();
-        OnStaminaChanged?.Invoke(); // This triggers UI_StaminaBar to update
+        OnStaminaChanged?.Invoke();
 
         return true;
     }
-
     public void RegenerateStamina()
     {
         if (Time.time < lastStaminaUseTime + regenDelay)

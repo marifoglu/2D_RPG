@@ -6,6 +6,8 @@ public class Player : Entity
 {
     public static Player instance;
     public static event Action OnPlayerDeath;
+    public StateMachine StateMachine => stateMachine;
+
     public UI ui { get; private set; }
     public PlayerInputSet input { get; private set; }
     public Player_SkillManager skillManager { get; private set; }
@@ -36,6 +38,8 @@ public class Player : Entity
     public Player_LadderClimbState ladderClimbState { get; private set; }
     public Player_HeavyAttackState heavyAttackState { get; private set; }
     public Player_DodgeBackState dodgeBackState { get; private set; }
+    public Player_StaggerState staggerState { get; private set; }
+
     #endregion
 
     [Header("Attack Details")]
@@ -63,7 +67,12 @@ public class Player : Entity
     [Space]
     public float dodgeBackDistance = 5f;
     public float dodgeBackSpeed = 5f;
+    [Space]
+    private bool isBlocking = false;
+    private bool isInParryWindow = false;
 
+    public bool IsBlocking => isBlocking;
+    public bool IsInParryWindow => isInParryWindow;
     public Vector2 moveInput { get; private set; }
     public Vector2 mousePosition { get; private set; }
 
@@ -126,13 +135,15 @@ public class Player : Entity
         ladderClimbState = new Player_LadderClimbState(this, stateMachine, "LadderClimb");
         heavyAttackState = new Player_HeavyAttackState(this, stateMachine, "HeavyAttack");
         dodgeBackState = new Player_DodgeBackState(this, stateMachine, "BackwardDodge");
+        staggerState = new Player_StaggerState(this, stateMachine, "Stagger");
+
     }
 
     public void ForceFallState()
     {
         stateMachine.ChangeState(fallState);
     }
-
+    
     public void StartDropThrough()
     {
         isDroppingThroughPlatform = true;
@@ -211,7 +222,41 @@ public class Player : Entity
 
         stateMachine.ChangeState(deadState);
     }
+    // Add/update these methods:
+    public void SetBlocking(bool blocking)
+    {
+        isBlocking = blocking;
+    }
 
+    public void SetInParryWindow(bool inWindow)
+    {
+        isInParryWindow = inWindow;
+    }
+
+    public bool IsInState(PlayerState state)
+    {
+        return stateMachine.currentState == state;
+    }
+
+    public void EnterStaggerState()
+    {
+        EnterStaggerState(false);
+    }
+
+    public void EnterStaggerState(bool staminaDepleted)
+    {
+        staggerState.SetStaminaDepleted(staminaDepleted);
+        stateMachine.ChangeState(staggerState);
+    }
+
+    public void TriggerPerfectParry()
+    {
+        if (stateMachine.currentState == counterAttackState)
+        {
+            Player_CounterAttackState counterState = counterAttackState as Player_CounterAttackState;
+            counterState?.TriggerCounterAttack();
+        }
+    }
     private void OnEnable()
     {
         if (input == null)
