@@ -117,7 +117,7 @@ public class Inventory_Player : Inventory_Base
     public override void SaveData(ref GameData gameData)
     {
         gameData.gold = gold;
-        gameData.itemDictionary.Clear();
+        gameData.inventory.Clear();
         gameData.equipedItems.Clear();
 
         foreach (var item in itemList)
@@ -126,10 +126,10 @@ public class Inventory_Player : Inventory_Base
             {
                 string saveID = item.itemData.saveID;
 
-                if (gameData.itemDictionary.ContainsKey(saveID) == false)
-                    gameData.itemDictionary[saveID] = 0;
+                if (gameData.inventory.ContainsKey(saveID) == false)
+                    gameData.inventory[saveID] = 0;
 
-                gameData.itemDictionary[saveID] += item.stackSize;
+                gameData.inventory[saveID] += item.stackSize;
             }
         }
 
@@ -146,7 +146,7 @@ public class Inventory_Player : Inventory_Base
     {
         gold = gameData.gold;
 
-        foreach (var entry in gameData.itemDictionary)
+        foreach (var entry in gameData.inventory)
         {
             string saveId = entry.Key;
             int stackSize = entry.Value;

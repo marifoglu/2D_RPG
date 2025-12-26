@@ -56,14 +56,36 @@ public class FileDataHandler
                         dataToLoad = reader.ReadToEnd();
                     }
                 }
+
                 if (encryptData)
                     dataToLoad = EncryptDecrypt(dataToLoad);
+
+                // Validate JSON before parsing
+                if (string.IsNullOrWhiteSpace(dataToLoad))
+                {
+                    Debug.LogWarning("Save file is empty. Creating new save data.");
+                    return null;
+                }
 
                 loadData = JsonUtility.FromJson<GameData>(dataToLoad);
             }
             catch (Exception e)
             {
                 Debug.LogError("Error loading data from file: " + fullPath + " \n " + e);
+                Debug.LogWarning("Save file is corrupted. Creating backup and starting fresh.");
+
+                // Create backup of corrupted file
+                try
+                {
+                    string backupPath = fullPath + ".corrupted." + DateTime.Now.ToString("yyyyMMddHHmmss");
+                    File.Copy(fullPath, backupPath);
+                    Debug.Log($"Corrupted save backed up to: {backupPath}");
+                    File.Delete(fullPath);
+                }
+                catch (Exception backupException)
+                {
+                    Debug.LogError("Failed to backup corrupted file: " + backupException);
+                }
             }
         }
         return loadData;
