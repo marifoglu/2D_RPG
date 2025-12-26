@@ -1,149 +1,3 @@
-//using System.Linq;
-//using TMPro;
-//using UnityEditor.Experimental.GraphView;
-//using UnityEngine;
-
-//public class UI_SkillTree : MonoBehaviour, ISaveable
-//{
-//    [SerializeField] private int skillPoints;
-//    [SerializeField] private TextMeshProUGUI skillPointsText;
-//    [SerializeField] private UI_TreeConnectHandler[] parentNodes;
-//    private UI_TreeNode[] allTreeNodes;
-//    public Player_SkillManager skillManager { get; private set; }
-
-//    private void Start()
-//    {
-//        UpdateAllConnections();
-//        UpdateSkillPointsUI();
-//    }
-
-//    private void UpdateSkillPointsUI()
-//    {
-//        skillPointsText.text = skillPoints.ToString();
-//    }
-
-//    public void SetSkillManager(Player_SkillManager manager)
-//    {
-//        skillManager = manager;
-//    }
-
-//    public void UnlockDefaultSkills()
-//    {
-
-
-//        if (allTreeNodes == null)
-//            allTreeNodes = GetComponentsInChildren<UI_TreeNode>(true);
-
-//        // Make sure skillManager is set before unlocking
-//        if (skillManager == null)
-//        {
-//            Debug.LogError("SkillManager is null! Cannot unlock default skills.");
-//            return;
-//        }
-
-//        foreach (var node in allTreeNodes)
-//        {
-//            if (node.skillData != null && node.skillData.unlockedByDefault && !node.isUnlocked)
-//            {
-//                node.UnlockDefaultSkill();
-//            }
-//        }
-//    }
-
-//    [ContextMenu("Reset All Skill Points")]
-//    public void ResetAllSkillPoints()
-//    {
-//        UI_TreeNode[] skillNodes = GetComponentsInChildren<UI_TreeNode>();
-
-//        foreach (var node in skillNodes)
-//        {
-//            node.Refund();
-//        }
-//    }
-
-//    public void RefundAllSkills()
-//    {
-//        UI_TreeNode[] skillNodes = GetComponentsInChildren<UI_TreeNode>();
-
-//        foreach (var node in skillNodes)
-//            node.Refund();
-//    }
-
-//    public bool EnoughSkillPoints(int cost) => skillPoints >= cost;
-//    public void RemoveSkillPoints(int cost)
-//    {
-//        skillPoints -= cost;
-//        UpdateSkillPointsUI();
-//    }
-//    public void AddSkillPoints(int points)
-//    {
-//        skillPoints += points;
-//        UpdateSkillPointsUI();
-//    }
-
-
-//    [ContextMenu("Update All Connections")]
-//    public void UpdateAllConnections()
-//    {
-//        foreach (var node in parentNodes)
-//        {
-//            node.UpdateAllConnections();
-//        }
-
-//        GetComponentInChildren<UI_SkillToolTip>()?.transform.SetAsLastSibling();
-//    }
-
-//    public void SaveData(ref GameData gameData)
-//    {
-//        gameData.skillPoints = skillPoints;
-//        gameData.skillTreeUI.Clear();
-//        gameData.skillUpgrades.Clear();
-
-//        foreach (var node in allTreeNodes)
-//        {
-//            string skillName = node.skillData.displayName;
-//            gameData.skillTreeUI[skillName] = node.isUnlocked;
-//        }
-
-//        foreach(var skill in skillManager.allSkills)
-//        {
-//            gameData.skillUpgrades[skill.GetSkillType()] = skill.GetUpgradeType();
-//        }
-//    }
-
-//    public void LoadData(GameData gameData)
-//    {
-//        skillPoints = gameData.skillPoints;
-
-//        foreach (var node in allTreeNodes)
-//        {
-//            string skillName = node.skillData.displayName;
-//            if (gameData.skillTreeUI.TryGetValue(skillName, out bool isUnlocked) && isUnlocked)
-//            {
-//                node.UnlockWithSaveData();
-//            }
-//        }
-
-//        foreach (var skill in skillManager.allSkills)
-//        {
-//            if (gameData.skillUpgrades.TryGetValue(skill.GetSkillType(), out SkillUpgradeType upgradeType))
-//            {
-//                var upgradeNodes = allTreeNodes.FirstOrDefault(node => node.skillData.upgradeData.upgradeType == upgradeType);
-//                if(upgradeNodes != null)
-//                {
-//                    skill.SetSkillUpgrade(upgradeNodes.skillData);
-//                }   
-//            }
-//        }
-
-//    }
-//}
-
-
-
-
-
-
 using System.Linq;
 using TMPro;
 using UnityEngine;
@@ -168,90 +22,136 @@ public class UI_SkillTree : MonoBehaviour, ISaveable
             skillPointsText.text = skillPoints.ToString();
     }
 
-    public void SetSkillManager(Player_SkillManager manager)
-    {
-        skillManager = manager;
-    }
-
     public void UnlockDefaultSkills()
     {
-        if (allTreeNodes == null || allTreeNodes.Length == 0)
-            allTreeNodes = GetComponentsInChildren<UI_TreeNode>(true);
+        allTreeNodes = GetComponentsInChildren<UI_TreeNode>(true);
+        skillManager = FindAnyObjectByType<Player_SkillManager>();
 
-        // Make sure skillManager is set before unlocking
-        if (skillManager == null)
-        {
-            Debug.LogError("SkillManager is null! Cannot unlock default skills.");
-            return;
-        }
 
         foreach (var node in allTreeNodes)
-        {
-            if (node == null || node.skillData == null)
-                continue;
-
-            if (node.skillData.unlockedByDefault && !node.isUnlocked)
-            {
-                node.UnlockDefaultSkill();
-            }
-        }
+            node.UnlockDefaultSkill();
     }
 
-    [ContextMenu("Reset All Skill Points")]
-    public void ResetAllSkillPoints()
-    {
-        UI_TreeNode[] skillNodes = GetComponentsInChildren<UI_TreeNode>();
-
-        foreach (var node in skillNodes)
-        {
-            if (node != null)
-                node.Refund();
-        }
-    }
-
+    [ContextMenu("Reset Skill Tree")]
     public void RefundAllSkills()
     {
         UI_TreeNode[] skillNodes = GetComponentsInChildren<UI_TreeNode>();
 
         foreach (var node in skillNodes)
-        {
-            if (node != null)
-                node.Refund();
-        }
+            node.Refund();
     }
 
     public bool EnoughSkillPoints(int cost) => skillPoints >= cost;
-
     public void RemoveSkillPoints(int cost)
     {
-        skillPoints -= cost;
+        skillPoints = skillPoints - cost;
+        UpdateSkillPointsUI();
+    }
+    public void AddSkillPoints(int points)
+    {
+        skillPoints = skillPoints + points;
         UpdateSkillPointsUI();
     }
 
-    public void AddSkillPoints(int points)
+    public void SetSkillManager(Player_SkillManager manager)
     {
-        skillPoints += points;
-        UpdateSkillPointsUI();
+        skillManager = manager;
+
+        if (skillManager == null)
+        {
+            Debug.LogError("SetSkillManager called with null manager!");
+        }
     }
 
     [ContextMenu("Update All Connections")]
     public void UpdateAllConnections()
     {
-        if (parentNodes == null)
-            return;
-
         foreach (var node in parentNodes)
         {
-            if (node != null)
-                node.UpdateAllConnections();
+            node.UpdateAllConnections();
         }
-
-        var skillToolTip = GetComponentInChildren<UI_SkillToolTip>();
-        if (skillToolTip != null)
-            skillToolTip.transform.SetAsLastSibling();
     }
 
-    public void SaveData(ref GameData gameData)
+    public void LoadData(GameData gameData)
+    {
+        if (gameData.skillPoints > 0)
+            skillPoints = gameData.skillPoints;
+
+        UpdateSkillPointsUI();
+
+        // Initialize allTreeNodes if null
+        if (allTreeNodes == null || allTreeNodes.Length == 0)
+            allTreeNodes = GetComponentsInChildren<UI_TreeNode>(true);
+
+        // Verify skillManager exists before loading
+        if (skillManager == null)
+        {
+            Debug.LogWarning("SkillManager is null during LoadData");
+            var player = FindAnyObjectByType<Player>();
+            if (player != null && player.skillManager != null)
+            {
+                SetSkillManager(player.skillManager);
+            }
+            else
+            {
+                Debug.LogError("Cannot find SkillManager");
+                return;
+            }
+        }
+
+        // Load skill tree unlock states
+        if (gameData.skillTreeUI != null)
+        {
+            foreach (var node in allTreeNodes)
+            {
+                if (node == null || node.skillData == null)
+                    continue;
+
+                string skillName = node.skillData.displayName;
+
+                if (string.IsNullOrEmpty(skillName))
+                    continue;
+
+                if (gameData.skillTreeUI.TryGetValue(skillName, out bool isUnlocked) && isUnlocked)
+                {
+                    node.UnlockWithSaveData();
+                }
+            }
+        }
+
+        // Load skill upgrades
+        if (skillManager.allSkills == null || skillManager.allSkills.Length == 0)
+        {
+            Debug.LogWarning("SkillManager.allSkills is null during LoadData");
+            return;
+        }
+
+        if (gameData.skillUpgrades != null)
+        {
+            foreach (var skill in skillManager.allSkills)
+            {
+                if (skill == null)
+                    continue;
+
+                if (gameData.skillUpgrades.TryGetValue(skill.GetSkillType(), out SkillUpgradeType upgradeType))
+                {
+                    // Find the node with matching upgrade type
+                    var upgradeNode = allTreeNodes.FirstOrDefault(node =>
+                        node != null &&
+                        node.skillData != null &&
+                        node.skillData.upgradeData != null &&
+                        node.skillData.upgradeData.upgradeType == upgradeType);
+
+                    if (upgradeNode != null)
+                    {
+                        skill.SetSkillUpgrade(upgradeNode.skillData);
+                    }
+                }
+            }
+        }
+    }
+
+public void SaveData(ref GameData gameData)
     {
         gameData.skillPoints = skillPoints;
 
@@ -288,13 +188,22 @@ public class UI_SkillTree : MonoBehaviour, ISaveable
         // Save skill upgrades
         if (skillManager == null)
         {
-            Debug.LogWarning("SkillManager is null during SaveData - cannot save skill upgrades");
-            return;
+            Debug.LogWarning("SkillManager is null during SaveData");
+            var player = FindAnyObjectByType<Player>();
+            if (player != null && player.skillManager != null)
+            {
+                SetSkillManager(player.skillManager);
+            }
+            else
+            {
+                Debug.LogError("Cannot find SkillManager");
+                return;
+            }
         }
 
         if (skillManager.allSkills == null || skillManager.allSkills.Length == 0)
         {
-            Debug.LogWarning("SkillManager.allSkills is null or empty during SaveData");
+            Debug.LogWarning("SkillManager.allSkills is null during SaveData");
             return;
         }
 
@@ -304,75 +213,6 @@ public class UI_SkillTree : MonoBehaviour, ISaveable
                 continue;
 
             gameData.skillUpgrades[skill.GetSkillType()] = skill.GetUpgradeType();
-        }
-    }
-
-    public void LoadData(GameData gameData)
-    {
-        if (gameData.skillPoints > 0)
-            skillPoints = gameData.skillPoints;
-
-        UpdateSkillPointsUI();
-
-        // Initialize allTreeNodes if null
-        if (allTreeNodes == null || allTreeNodes.Length == 0)
-            allTreeNodes = GetComponentsInChildren<UI_TreeNode>(true);
-
-        // Load skill tree unlock states
-        if (gameData.skillTreeUI != null)
-        {
-            foreach (var node in allTreeNodes)
-            {
-                if (node == null || node.skillData == null)
-                    continue;
-
-                string skillName = node.skillData.displayName;
-
-                if (string.IsNullOrEmpty(skillName))
-                    continue;
-
-                if (gameData.skillTreeUI.TryGetValue(skillName, out bool isUnlocked) && isUnlocked)
-                {
-                    node.UnlockWithSaveData();
-                }
-            }
-        }
-
-        // Load skill upgrades
-        if (skillManager == null)
-        {
-            Debug.LogWarning("SkillManager is null during LoadData - cannot load skill upgrades");
-            return;
-        }
-
-        if (skillManager.allSkills == null || skillManager.allSkills.Length == 0)
-        {
-            Debug.LogWarning("SkillManager.allSkills is null or empty during LoadData");
-            return;
-        }
-
-        if (gameData.skillUpgrades != null)
-        {
-            foreach (var skill in skillManager.allSkills)
-            {
-                if (skill == null)
-                    continue;
-
-                if (gameData.skillUpgrades.TryGetValue(skill.GetSkillType(), out SkillUpgradeType upgradeType))
-                {
-                    // Find the node with matching upgrade type
-                    var upgradeNode = allTreeNodes.FirstOrDefault(node =>
-                        node != null &&
-                        node.skillData != null &&
-                        node.skillData.upgradeData != null &&
-                        node.skillData.upgradeData.upgradeType == upgradeType);
-
-                    if (upgradeNode != null)
-                    {
-                        skill.SetSkillUpgrade(upgradeNode.skillData);
-                    }
-                }
-            }
         }
     }
 }

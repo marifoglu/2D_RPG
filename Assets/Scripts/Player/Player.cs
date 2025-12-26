@@ -115,8 +115,7 @@ public class Player : Entity
         stats = GetComponent<Player_Stats>();
 
         input = new PlayerInputSet();
-        ui.SetupControlUI(input);
-        ui.SetupSkillTree(skillManager);
+        ui.SetupControlsUI(input);
 
         idleState = new Player_IdleState(this, stateMachine, "Idle");
         moveState = new Player_MoveState(this, stateMachine, "Move");

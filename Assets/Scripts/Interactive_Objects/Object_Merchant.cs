@@ -121,7 +121,7 @@ public class Object_Merchant : Object_NPC, IInteractable
         {
             if (ui != null)
             {
-                ui.HideAllToolTips();
+                ui.HideAllTooltips();
                 ui.OpenMerchantUI(false);
             }
 

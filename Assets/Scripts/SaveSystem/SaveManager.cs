@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -26,7 +25,7 @@ public class SaveManager : MonoBehaviour
         dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, encryptData);
         allSaveables = FindISaveable();
 
-        yield return new WaitForSeconds(0.01f);
+        yield return null;
         LoadGame();
     }
 
@@ -52,8 +51,8 @@ public class SaveManager : MonoBehaviour
         {
             Debug.LogWarning("Cannot save game: gameData is null");
             return;
-        }
 
+        }
         foreach (var saveable in allSaveables)
         {
             saveable.SaveData(ref gameData);
@@ -73,6 +72,8 @@ public class SaveManager : MonoBehaviour
     {
         dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, encryptData);
         dataHandler.DeleteData();
+
+        LoadGame();
     }
     private List<ISaveable> FindISaveable()
     {

@@ -38,8 +38,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
     private CinemachineImpulseSource impulseSource;
     [SerializeField] private ScreenShakeProfile screenShakeProfile;
 
-
-    private void Awake()
+    protected virtual void Awake()
     {
         entityVFX = GetComponent<Entity_VFX>();
         entity = GetComponent<Entity>();
@@ -51,7 +50,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
         {
             impulseSource = GetComponentInParent<CinemachineImpulseSource>();
         }
-        // Check if entityStats exists before using it
+
         SetupHealth();
     }
 
@@ -68,37 +67,6 @@ public class Entity_Health : MonoBehaviour, IDamageable
     }
 
     public float GetCurrentHealth() => currentHealth;
-    //public virtual bool TakeDamage(float damage, float elementalDamage, ElementType elementType, Transform damageDealer)
-    //{
-    //    if (isDead || canTakeDamage == false)
-    //        return false;
-
-    //    if (AttackEvaded())
-    //        return false;
-
-    //    // Calculate armor mitigation
-    //    Entity_Stats attackerStats = damageDealer.GetComponent<Entity_Stats>();
-    //    float armorReduction = attackerStats != null ? attackerStats.GetArmorReduction() : 0f;
-
-    //    float mitigation = entityStats != null ? entityStats.GetArmorMitigation(armorReduction) : 0;
-    //    float elementalResistance = entityStats != null ? entityStats.GetElementalResistance(elementType) : 0;
-
-    //    // Calculate elemental resistance
-    //    float elementalDamageTaken = elementalDamage * (1 - elementalResistance);
-    //    float physicalDamageTaken = damage * (1 - mitigation);
-
-    //    // Knockback
-    //    TakeKnockback(damageDealer, physicalDamageTaken);
-    //    ReduceHealth(physicalDamageTaken + elementalDamageTaken);
-
-
-    //    // Trigger camera shake when this entity takes damage
-    //    TriggerCameraShake();
-
-    //    OnTakingDamage?.Invoke();
-
-    //    return true;
-    //}
 
     public virtual bool TakeDamage(float damage, float elementalDamage, ElementType elementType, Transform damageDealer)
     {
@@ -113,7 +81,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
         bool isPlayerBlocking = player != null && player.IsBlocking;
         bool isInParryWindow = player != null && player.IsInParryWindow;
 
-        // OPTIONAL: Check if player is staggered for increased damage
+        // Check if player is staggered for increased damage
         bool isStaggered = player != null && player.IsInState(player.staggerState);
 
         // Calculate armor mitigation
@@ -127,7 +95,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
         float elementalDamageTaken = elementalDamage * (1 - elementalResistance);
         float physicalDamageTaken = damage * (1 - mitigation);
 
-        // OPTIONAL: Increase damage if staggered
+        // Increase damage if staggered
         if (isStaggered)
         {
             float staggerDamageMultiplier = 1.5f; // 50% more damage when staggered
@@ -157,7 +125,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
             {
                 Debug.Log("Hit during regular block (not parry window)");
 
-                // REGULAR BLOCK - NO HEALTH DAMAGE, only stamina drain
+                // only stamina drain
                 float totalDamageBlocked = physicalDamageTaken + elementalDamageTaken;
 
                 // Convert damage to stamina cost (you can adjust the multiplier)
@@ -169,7 +137,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
                 // Try to drain stamina
                 if (!player.stamina.TryUseStamina(staminaCost))
                 {
-                    // Not enough stamina - BREAK THE BLOCK!
+                    // Not enough stamina
                     Debug.Log("NOT ENOUGH STAMINA - Block broken! Taking full damage!");
 
                     // Enter longer stagger since stamina broke

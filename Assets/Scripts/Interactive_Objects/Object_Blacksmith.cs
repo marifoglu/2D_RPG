@@ -104,7 +104,7 @@ public class Object_Blacksmith : Object_NPC, IInteractable
         {
             if (ui != null)
             {
-                ui.HideAllToolTips();
+                ui.HideAllTooltips();
                 ui.OpenStorageUI(false);
             }
 
