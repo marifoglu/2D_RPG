@@ -23,7 +23,9 @@ public class AudioRangeController : MonoBehaviour
             return;
         float distance = Vector2.Distance(player.position, transform.position);
         float t = Mathf.Clamp01(1 - (distance / minDistanceToHearSound));
-        audioSource.volume = Mathf.Lerp(0, maxVolume, t * t);
+
+        float targetVolume = Mathf.Lerp(0, maxVolume, t * t);
+        audioSource.volume = Mathf.Lerp(audioSource.volume, targetVolume, Time.deltaTime * 3);
     }
     private void OnDrawGizmos()
     {

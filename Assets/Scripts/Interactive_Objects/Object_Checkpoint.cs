@@ -1,3 +1,4 @@
+using Mono.Cecil;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -20,9 +21,10 @@ public class Object_Checkpoint : MonoBehaviour, ISaveable
         isActive = active;
         anim.SetBool("isActive", active);
 
-        if(isActive)
+        if(isActive && audioSource.isPlaying == false)
             audioSource.Play();
-        else
+        
+        if(isActive == false)
             audioSource.Stop();
     }
 

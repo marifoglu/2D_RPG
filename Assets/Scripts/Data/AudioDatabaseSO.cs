@@ -9,13 +9,18 @@ public class AudioDatabaseSO : ScriptableObject
 
     private Dictionary<string, AudioClipData> clipCollection;
 
-    
+    [Header("Music List")]
+    public List<AudioClipData> mainMenuMusic;
+    public List<AudioClipData> levelMusic;
+
     private void OnEnable()
     {
         clipCollection = new Dictionary<string, AudioClipData>();
 
         AddToCollection(player);
         AddToCollection(uiAudio);
+        AddToCollection(mainMenuMusic);
+        AddToCollection(levelMusic);
     }
 
     public AudioClipData Get(string groupName)

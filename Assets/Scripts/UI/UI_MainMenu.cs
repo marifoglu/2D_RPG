@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class UI_MainMenu : MonoBehaviour
 {
+
     [Header("Menu Panels")]
     [SerializeField] private GameObject mainMenuPanel;
     [SerializeField] private GameObject optionsPanel;
@@ -9,9 +10,14 @@ public class UI_MainMenu : MonoBehaviour
     private void Start()
     {
         transform.root.GetComponentInChildren<UI_FadeScreen>().DoFadeIn();
+
+        transform.root.GetComponentInChildren<UI_Options>(true).LoadUpVolumes();
+        AudioManager.instance.StartBackgroundMusic("MainMenuMusics");
     }
+
     public void PlayButton()
     {
+        AudioManager.instance.PlayGlobalSFX("ButtonClick");
         GameManager.instance.ContinuePlay();
     }
 

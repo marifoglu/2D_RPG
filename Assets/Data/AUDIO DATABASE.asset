@@ -18,15 +18,33 @@ MonoBehaviour:
     - {fileID: 8300000, guid: 66e0c04f294c7b8469183220febb256b, type: 3}
     - {fileID: 8300000, guid: a3d9cb3a275611246ab76c35f8a761e5, type: 3}
     - {fileID: 8300000, guid: 6bd05ee004f6b6843b71eba4d02f3758, type: 3}
-    volume: 1
+    maxVolume: 1
   - audioName: player_attackMiss
     clips:
     - {fileID: 8300000, guid: 9e55de05818ceb843af397feb4a7a72c, type: 3}
     - {fileID: 8300000, guid: ae81a0ac2e99bba44b6995320b066ae5, type: 3}
     - {fileID: 8300000, guid: 8ed4deff76ed61c4489d64631c34c27c, type: 3}
-    volume: 1
+    maxVolume: 1
   uiAudio:
   - audioName: ButtonClick
     clips:
     - {fileID: 8300000, guid: 65d57214b57b95d47bac439a61e11f48, type: 3}
-    volume: 1
+    maxVolume: 1
+  mainMenuMusic:
+  - audioName: MainMenuMusics
+    clips:
+    - {fileID: 8300000, guid: 6178ef919f6e5d146bdec49c570ead77, type: 3}
+    maxVolume: 1
+  levelMusic:
+  - audioName: demo_level_0_music
+    clips:
+    - {fileID: 8300000, guid: a708e53aa54bd0749a714562a4302e28, type: 3}
+    maxVolume: 1
+  - audioName: demo_level_1_music
+    clips:
+    - {fileID: 8300000, guid: 544364c43dd100049a77ba0d0cf2b4a1, type: 3}
+    maxVolume: 1
+  - audioName: demo_level_2_music
+    clips:
+    - {fileID: 8300000, guid: ba8eca7486bcc0f4da5dace7681f62cf, type: 3}
+    maxVolume: 1
