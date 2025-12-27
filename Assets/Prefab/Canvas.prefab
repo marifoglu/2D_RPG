@@ -65029,6 +65029,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ad47af06a525574684ad02559e66300, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_FadeScreen
+  deathText: {fileID: 5693132179886112420}
+  delayBeforeText: 1
+  deathTextDisplayDuration: 3
+  textFadeInDuration: 1
+  textFadeOutDuration: 1
+  textStartColor: {r: 1, g: 1, b: 1, a: 1}
+  textEndColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!1 &6451625888512696235
 GameObject:
   m_ObjectHideFlags: 0
@@ -84069,7 +84076,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9008b7543cf2b5b40a3c820752ee57e7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_DeathScreen
-  deathText: {fileID: 5693132179886112420}
 --- !u!222 &1541718173757654468
 CanvasRenderer:
   m_ObjectHideFlags: 0

@@ -4,44 +4,40 @@ using TMPro;
 
 public class UI_DeathScreen : MonoBehaviour
 {
-    [SerializeField] private TextMeshProUGUI deathText;
-
     private void OnEnable()
     {
+        Debug.Log("UI_DeathScreen ENABLED - Starting death sequence");
         StartCoroutine(DeathSequence());
     }
 
     private IEnumerator DeathSequence()
     {
-        // Hide text initially
-        if (deathText != null)
-            deathText.gameObject.SetActive(false);
-
-        // Fade to black
         UI_FadeScreen fadeScreen = UI.instance.fadeScreenUI;
-        fadeScreen.gameObject.SetActive(true);
-        fadeScreen.transform.SetAsLastSibling();
-        fadeScreen.DoFadeOut(1f);
 
-        yield return fadeScreen.fadeEffectCo;
-
-        // Show text on black screen
-        if (deathText != null)
+        if (fadeScreen == null)
         {
-            deathText.gameObject.SetActive(true);
-            deathText.transform.SetAsLastSibling();
+            Debug.LogError("UI_DeathScreen: fadeScreenUI is null!");
+            yield break;
         }
 
-        // Wait 3 seconds
-        yield return new WaitForSeconds(3f);
+        Debug.Log("UI_DeathScreen: Calling DoDeathFade...");
 
-        // Hide text and death screen BEFORE restart
-        if (deathText != null)
-            deathText.gameObject.SetActive(false);
+        bool fadeComplete = false;
+        fadeScreen.DoDeathFade(1f, () =>
+        {
+            Debug.Log("UI_DeathScreen: Fade callback received!");
+            fadeComplete = true;
+        });
+
+        // Wait for death fade to complete
+        Debug.Log("UI_DeathScreen: Waiting for fade to complete...");
+        while (!fadeComplete)
+            yield return null;
+
+        Debug.Log("UI_DeathScreen: Fade complete! Disabling self and restarting scene...");
 
         gameObject.SetActive(false);
 
-        // Go to checkpoint - screen stays black, no second fade
         GameManager.instance.RestartScene();
     }
 }

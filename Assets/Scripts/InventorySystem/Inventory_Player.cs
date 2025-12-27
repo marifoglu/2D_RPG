@@ -159,9 +159,9 @@ public class Inventory_Player : Inventory_Base
                 continue;
             }
 
-            for(int i = 0; i < stackSize; i++)
+            Inventory_Item itemToLoad = new Inventory_Item(itemData); // maybe i should set stack size in constructor
+            for (int i = 0; i < stackSize; i++)
             {
-                Inventory_Item itemToLoad = new Inventory_Item(itemData);
                 AddItem(itemToLoad);
             }
         }

@@ -2629,6 +2629,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3ad47af06a525574684ad02559e66300, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::UI_FadeScreen
+  deathText: {fileID: 0}
+  delayBeforeText: 2
+  deathTextDisplayDuration: 3
+  textFadeInDuration: 1.5
+  textFadeOutDuration: 1
+  textStartColor: {r: 1, g: 1, b: 1, a: 1}
+  textEndColor: {r: 1, g: 0, b: 0, a: 1}
 --- !u!114 &1986289310
 MonoBehaviour:
   m_ObjectHideFlags: 0

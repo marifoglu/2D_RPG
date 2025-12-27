@@ -4,6 +4,7 @@ using UnityEngine;
 public class Entity_Combat : MonoBehaviour
 {
     private Entity_VFX entityVfx;
+    private Entity_SFX entitySfx;
     protected Entity_Stats entityStats; // Changed from private to protected
     public DamageScaleData basicAttackScale;
 
@@ -18,11 +19,14 @@ public class Entity_Combat : MonoBehaviour
     private void Awake()
     {
         entityVfx = GetComponent<Entity_VFX>();
+        entitySfx = GetComponent<Entity_SFX>();
         entityStats = GetComponent<Entity_Stats>();
     }
 
     public void PerformAttack()
     {
+        bool targetGotHit = false;
+
         // Null check for required components
         if (entityStats == null)
         {
@@ -71,17 +75,22 @@ public class Entity_Combat : MonoBehaviour
             float elementalDamage = attackData.elementaldamage;
             ElementType elementType = attackData.elementType;
 
-            bool targetGotHit = damageable.TakeDamage(physicalDamage, elementalDamage, elementType, transform);
+            targetGotHit = damageable.TakeDamage(physicalDamage, elementalDamage, elementType, transform);
 
             if (elementType != ElementType.None)
                 statusHandler?.ApplyStatusEffect(elementType, attackData.elementalEffectData);
 
             if (targetGotHit)
             {
-                onDoingPhysicalDamage?.Invoke(physicalDamage);
+                onDoingPhysicalDamage?.Invoke(physicalDamage);  
                 entityVfx?.CreateOnHitVFX(target.transform, attackData.isCrit, elementType);
+                entitySfx?.PlayAttackHitSFX();
             }
-
+        }
+            
+        if (targetGotHit == false)
+        {
+            entitySfx?.PlayAttackMissSFX();
         }
     }
 

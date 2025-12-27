@@ -6,17 +6,24 @@ public class Object_Checkpoint : MonoBehaviour, ISaveable
     private Animator anim;
     [SerializeField] private string checkpointID;
     [SerializeField] private Transform respawnPoint;
-    public bool IsActive { get; private set; }
+    public bool isActive { get; private set; }
+    private AudioSource audioSource;
 
     private void Awake()
     {
         anim = GetComponentInChildren<Animator>(true);
+        audioSource = GetComponent<AudioSource>();
     }
 
     public void ActivateCheckpoint(bool active)
     {
-        IsActive = active;
+        isActive = active;
         anim.SetBool("isActive", active);
+
+        if(isActive)
+            audioSource.Play();
+        else
+            audioSource.Stop();
     }
 
     public string GetCheckpointID() => checkpointID;
@@ -37,7 +44,7 @@ public class Object_Checkpoint : MonoBehaviour, ISaveable
 
     public void SaveData(ref GameData gameData)
     {
-        if (IsActive == false)
+        if (isActive == false)
             return;
 
         if (gameData.unlockedCheckpoints.ContainsKey(checkpointID) == false)
