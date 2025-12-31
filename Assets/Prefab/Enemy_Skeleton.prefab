@@ -1190,6 +1190,7 @@ MonoBehaviour:
   noFriction: {fileID: 6200000, guid: a4bdca4b67f40e44b92cd2769f40204e, type: 2}
   fullFriction: {fileID: 6200000, guid: fafd4a3d7955c2f4f913bd7db1e32678, type: 2}
   ledgeClimbOffset: {x: 0, y: 0}
+  questTargetID: quest_enemy_skeleton
   battleMoveSpeed: 3
   attackDistance: 2
   battleTimeDuration: 5
@@ -1439,6 +1440,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Entity_SFX
   attackHit: player_attackHit
   attackMiss: player_attackMiss
+  soundDistance: 8.6
+  showGizmos: 0
 --- !u!114 &6547730118826007068
 MonoBehaviour:
   m_ObjectHideFlags: 0

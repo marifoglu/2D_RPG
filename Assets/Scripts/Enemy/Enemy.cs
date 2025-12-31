@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class Enemy : Entity
 {
+
+    [Header("Quest Info")]
+    public string questTargetID;
     public Entity_Stats stats { get; private set; }
 
     public Enemy_Health enemyHealth { get; private set; }

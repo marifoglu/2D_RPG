@@ -14,7 +14,7 @@ public class UI_ItemToolTip : UI_ToolTip
     [SerializeField] private Transform merchantInfo;
     [SerializeField] private Transform inventoryInfo;
 
-    public void ShowToolTip(bool show, RectTransform targetTransform, Inventory_Item itemToShow, bool buyPrice = false, bool showMerchantInfo = false)
+    public void ShowToolTip(bool show, RectTransform targetTransform, Inventory_Item itemToShow, bool buyPrice = false, bool showMerchantInfo = false, bool showControls=true)
     {
         base.ShowToolTip(show, targetTransform);
 
@@ -22,10 +22,18 @@ public class UI_ItemToolTip : UI_ToolTip
         if (!show || itemToShow == null || itemToShow.itemData == null)
             return;
 
-        merchantInfo.gameObject.SetActive(showMerchantInfo);
-        inventoryInfo.gameObject.SetActive(!showMerchantInfo);
+        if (showControls)
+        {
+            merchantInfo.gameObject.SetActive(showMerchantInfo);
+            inventoryInfo.gameObject.SetActive(!showMerchantInfo);
+        }
+        else
+        {
+            merchantInfo.gameObject.SetActive(false);
+            inventoryInfo.gameObject.SetActive(false);
+        }
 
-        int price = buyPrice ? itemToShow.buyPrice : Mathf.FloorToInt(itemToShow.sellPrice);
+            int price = buyPrice ? itemToShow.buyPrice : Mathf.FloorToInt(itemToShow.sellPrice);
         int totalPrice = price * itemToShow.stackSize;
 
         string fullStackPrice = ($"Price: {price}x{itemToShow.stackSize} - {totalPrice}g.");

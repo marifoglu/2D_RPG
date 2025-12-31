@@ -13,5 +13,17 @@ MonoBehaviour:
   m_Name: List of items - Weapons to craft
   m_EditorClassIdentifier: Assembly-CSharp::ItemListDataSO
   itemList:
-  - {fileID: 11400000, guid: 15d21d1372c6c9540bef0c152d1fc21a, type: 2}
+  - {fileID: 11400000, guid: 72fd4e371c7033a4e96e498d043c1d5a, type: 2}
+  - {fileID: 11400000, guid: 01f01160d0f729544a0168f9083161f6, type: 2}
+  - {fileID: 11400000, guid: 141f2de12839b574d9d720a56c1dce86, type: 2}
+  - {fileID: 11400000, guid: 52ae7c397db3d2947b557bfb7c73c8a2, type: 2}
+  - {fileID: 11400000, guid: 505086dcb975b054ba23115b27a61560, type: 2}
+  - {fileID: 11400000, guid: a4dec052ad05cba4991840c35a55649a, type: 2}
+  - {fileID: 11400000, guid: ee60024744003854f8122ddfba7d88f3, type: 2}
+  - {fileID: 11400000, guid: 545f4441d11e50b4592a9850c9d073d3, type: 2}
+  - {fileID: 11400000, guid: 9fb7d1081da11e74886365f3571d4d13, type: 2}
+  - {fileID: 11400000, guid: 937bb8104e1a3874aa8ec647ee3a8cb4, type: 2}
   - {fileID: 11400000, guid: fd44864411f1e394f9c805e87a992f61, type: 2}
+  - {fileID: 11400000, guid: a7049a61b230edc41bbffcac6e4054e0, type: 2}
+  - {fileID: 11400000, guid: 68beb85a313b03c4bb187f4f39a7d0ba, type: 2}
+  - {fileID: 11400000, guid: 15d21d1372c6c9540bef0c152d1fc21a, type: 2}

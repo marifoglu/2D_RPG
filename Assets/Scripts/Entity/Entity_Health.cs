@@ -51,9 +51,23 @@ public class Entity_Health : MonoBehaviour, IDamageable
             impulseSource = GetComponentInParent<CinemachineImpulseSource>();
         }
 
+        if (dropManager == null)
+        {
+            Debug.LogError($"[{gameObject.name}] Entity_DropManager is MISSING!");
+        }
+        else
+        {
+            Debug.Log($"[{gameObject.name}] Entity_DropManager found!");
+        }
+
         SetupHealth();
     }
 
+
+    protected virtual void Start()
+    {
+
+    }
     private void SetupHealth()
     {
         if (entityStats == null)
@@ -211,6 +225,8 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
         healthBar.value = currentHealth / entityStats.GetMaxHealth();
     }
+
+
     protected virtual void Die()
     {
         isDead = true;
@@ -221,6 +237,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
         }
         dropManager?.DropItems();
     }
+
     public void SetCanTakeDamage(bool canTakeDamage) => this.canTakeDamage = canTakeDamage;
     private bool AttackEvaded()
     {

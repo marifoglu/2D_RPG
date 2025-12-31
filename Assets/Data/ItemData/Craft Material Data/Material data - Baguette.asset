@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46304903adc1ef947a7c104402ed1c9b, type: 3}
   m_Name: Material data - Baguette
   m_EditorClassIdentifier: Assembly-CSharp::ItemDataSO
+  saveID: ee60024744003854f8122ddfba7d88f3
   itemPrice: 42
   minStackSizeAtShop: 99
   maxStackSizeAtShop: 99
-  itemRarity: 100
-  dropChance: 77.8
-  maxDropChance: 77.8
+  itemRarity: 786
+  dropChance: 21.5
+  maxDropChance: 23.2
   craftReceipe: []
   itemType: 0
   itemName: Baguette

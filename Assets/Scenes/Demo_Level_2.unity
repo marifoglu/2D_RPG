@@ -12113,6 +12113,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f383eee91aba99642827cdb69e301cf7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_Blacksmith
+  npcTargetQuestID: 
   npc: {fileID: 148206081}
   interactToolTip: {fileID: 497481600}
   floatSpeed: 8
@@ -13024,7 +13025,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76510d29df9b6624a938ceac7a6e2146, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveManager
-  fileName: miretalGameData.json
+  fileName: mirethalGameData.json
   encryptData: 0
 --- !u!4 &1429094659
 Transform:
@@ -14010,10 +14011,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 126c956826ea35942baeda941b1ed182, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Object_Merchant
+  npcTargetQuestID: 
   npc: {fileID: 556486829}
   interactToolTip: {fileID: 1906142293}
   floatSpeed: 8
   floatRange: 0.1
+  quest: []
 --- !u!114 &1764662815
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -12,7 +12,6 @@ public class UI : MonoBehaviour
     public UI_SkillToolTip skillToolTip { get; private set; }
     public UI_ItemToolTip itemToolTip { get; private set; }
     public UI_StatToolTip statToolTip { get; private set; }
-
     public UI_SkillTree skillTreeUI { get; private set; }
     public UI_Inventory inventoryUI { get; private set; }
     public UI_Storage storageUI { get; private set; }
@@ -22,6 +21,7 @@ public class UI : MonoBehaviour
     public UI_Options optionsUI { get; private set; }
     public UI_DeathScreen deathScreenUI { get; private set; }
     public UI_FadeScreen fadeScreenUI { get; private set; }
+    public UI_Quest questUI { get; private set; }
 
     #endregion
 
@@ -45,6 +45,7 @@ public class UI : MonoBehaviour
         optionsUI = GetComponentInChildren<UI_Options>(true);
         deathScreenUI = GetComponentInChildren<UI_DeathScreen>(true);
         fadeScreenUI = GetComponentInChildren<UI_FadeScreen>(true);
+        questUI = GetComponentInChildren<UI_Quest>(true);       
 
 
         if (skillTreeUI != null)
@@ -180,6 +181,15 @@ public class UI : MonoBehaviour
         HideAllTooltips();
 
         StopPlayerControlsIfNeeded();
+    }
+
+    public void OpenQuestUI(QuestDataSO[] questToShow)
+    {
+        StopPlayerControls(true);
+        HideAllTooltips();
+
+        questUI.gameObject.SetActive(true);
+        questUI.SetupQuestUI(questToShow);
     }
 
     public void OpenStorageUI(bool openStorageUI)

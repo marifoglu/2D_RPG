@@ -20,12 +20,14 @@ public class Object_ItemPickup : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         rb = GetComponent<Rigidbody2D>();
         col = GetComponent<Collider2D>();
+
         SetupVisuals();
     }
 
     public void SetupItem(ItemDataSO itemData)
     {
         this.itemData = itemData;
+        SetupVisuals();
 
         if (rb == null)
             rb = GetComponent<Rigidbody2D>();

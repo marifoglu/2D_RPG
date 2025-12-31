@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a84efe835b1704bacf1e98b30cf5fb, type: 3}
   m_Name: Consumable data - Portal Scroll
   m_EditorClassIdentifier: Assembly-CSharp::ConsumableItemDataSO
+  saveID: 141f2de12839b574d9d720a56c1dce86
   itemPrice: 90
   minStackSizeAtShop: 1
   maxStackSizeAtShop: 1
   itemRarity: 100
-  dropChance: 65
-  maxDropChance: 65
+  dropChance: 81.9
+  maxDropChance: 81.9
   craftReceipe: []
   itemType: 4
   itemName: Portal Scroll

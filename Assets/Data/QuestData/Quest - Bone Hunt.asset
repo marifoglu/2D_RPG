@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 723d64e03e171e44e89d87fa24006937, type: 3}
+  m_Name: Quest - Bone Hunt
+  m_EditorClassIdentifier: Assembly-CSharp::QuestDataSO
+  questSaveID: d39867df1bcae0b4bac5d288904de00c
+  questName: Bone Hunt
+  questDescription: Used to be a quite place, just pickaxe and ale. Now it is bone
+    and brother. Will ya take ma quest?
+  questGoal: Eliminate x2 skeletons
+  questTargetID: quest_enemy_skeleton
+  requiredAmount: 2
+  rewardType: 0
+  rewardItems:
+  - itemData: {fileID: 11400000, guid: 72fd4e371c7033a4e96e498d043c1d5a, type: 2}
+    stackSize: 1
+    itemEffect: {fileID: 11400000, guid: 9d800d9dc8fc1ab40a4c50a64075d2c2, type: 2}
+  - itemData: {fileID: 11400000, guid: ee60024744003854f8122ddfba7d88f3, type: 2}
+    stackSize: 5
+    itemEffect: {fileID: 0}

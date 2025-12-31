@@ -2521,7 +2521,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 76510d29df9b6624a938ceac7a6e2146, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SaveManager
-  fileName: miretalGameData.json
+  fileName: mirethalGameData.json
   encryptData: 0
 --- !u!1 &1452004010
 GameObject:
