@@ -3,6 +3,7 @@ using UnityEngine;
 public class Object_Merchant : Object_NPC, IInteractable
 {
     [Header("Quest & Dialog")]
+    [SerializeField] private DialogueLineSO firstDialogueLine;
     [SerializeField] private QuestDataSO[] quest;
 
     private Inventory_Player inventory;
@@ -17,7 +18,13 @@ public class Object_Merchant : Object_NPC, IInteractable
     public override void Interact()
     {
         base.Interact();
-        ui.OpenQuestUI(quest);
+
+        ui.merchantUI.SetupMerchantUI(merchant, inventory);
+        ui.OpenDialogueUI(firstDialogueLine, new DialogueNPCData(rewardNpc, quest));
+
+        //ui.OpenQuestUI(quest);
+        //ui.OpenMerchantUI(true);
+
     }
 
     protected override void OnTriggerEnter2D(Collider2D collision)

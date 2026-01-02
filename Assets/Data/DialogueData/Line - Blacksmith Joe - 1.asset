@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ae4fb564e3806345ab6fcaf340eeee7, type: 3}
+  m_Name: Line - Blacksmith Joe - 1
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueLineSO
+  dialogueGroupName: Blacksmith Joe
+  speaker: {fileID: 11400000, guid: e2012dfc439dd5348a65d679d36cad98, type: 2}
+  textLine:
+  - What you wanna say?
+  - Do you want to craft something?
+  - i have to go
+  playerChoiceAnswer: 
+  choiceLines:
+  - {fileID: 11400000, guid: efd99613dac2491488eda992b2c05441, type: 2}
+  - {fileID: 11400000, guid: 974652ac588699145b4eddda6a62094f, type: 2}
+  - {fileID: 11400000, guid: 24f9b2941131c024eae817458fb52037, type: 2}
+  actionLine: 
+  actionType: 5

@@ -17,8 +17,8 @@ MonoBehaviour:
   questName: Potion Delivery
   questDescription: 'Describe the quest : like bla bla bal delivery 2 potions to
     blacksmith and earn winters armor'
-  questGoal: Delivery 3 potions to blacksmith
-  questTargetID: 
+  questGoal: Delivery 2 potions to blacksmith
+  questTargetID: quest_blacksmith_joe
   requiredAmount: 2
   itemToDelivery: {fileID: 11400000, guid: 505086dcb975b054ba23115b27a61560, type: 2}
   rewardType: 0

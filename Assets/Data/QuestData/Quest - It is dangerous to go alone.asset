@@ -13,12 +13,14 @@ MonoBehaviour:
   m_Name: Quest - It is dangerous to go alone
   m_EditorClassIdentifier: Assembly-CSharp::QuestDataSO
   questSaveID: 8f8c143fbb88fe643942d974c7570b51
+  questType: 3
   questName: It is dangerous to go alone
   questDescription: Old weird place, left to ghosts now it is bone and brother. Will
     ya take ma quest?
   questGoal: Talk to Blacksmith Joe
   questTargetID: quest_blacksmith_joe
-  requiredAmount: 1
+  requiredAmount: 3
+  itemToDelivery: {fileID: 11400000, guid: 505086dcb975b054ba23115b27a61560, type: 2}
   rewardType: 0
   rewardItems:
   - itemData: {fileID: 11400000, guid: 68beb85a313b03c4bb187f4f39a7d0ba, type: 2}
