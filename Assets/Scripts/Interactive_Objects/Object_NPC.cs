@@ -1,54 +1,161 @@
+//using UnityEngine;
+
+//public class Object_NPC : MonoBehaviour,IInteractable
+//{
+//    protected Transform player;
+//    protected UI ui;
+//    protected Player_QuestManager questManager;
+
+//    [Header("NPC Quest Settings")]
+//    [SerializeField] private string npcTargetQuestID;
+//    [SerializeField] protected RewardType rewardNpc;
+//    [Space]
+//    [SerializeField] private Transform npc;
+//    [SerializeField] private GameObject interactToolTip;
+//    private bool facingRight = true;
+
+//    [Header("Floating Settings")]
+//    [SerializeField] private float floatSpeed = 8f;
+//    [SerializeField] private float floatRange = 0.1f;
+//    private Vector3 startPosition;
+
+//    protected virtual void Awake()
+//    {
+//        ui = FindFirstObjectByType<UI>();
+//        startPosition = interactToolTip.transform.position;
+//        interactToolTip.SetActive(false);
+//    }
+
+//    protected virtual void Start()
+//    {
+//        questManager = Player.instance.questManager;
+//    }
+
+//    protected virtual void Update()
+//    {
+//        HandleNpcFlip();
+//        HandleToolTipFloat();   
+//    }
+//    private void HandleToolTipFloat()
+//    {
+//        if (interactToolTip.activeSelf)
+//        {
+//            float yOffset = Mathf.Sin(Time.time * floatSpeed) * floatRange;
+//            interactToolTip.transform.position = startPosition + new Vector3(0, yOffset);
+//        } 
+//            return;
+//    }
+
+//    private void HandleNpcFlip()
+//    {
+//        if(player == null || npc == null) 
+//            return;
+
+//        if (player.position.x > npc.position.x && facingRight)
+//        {
+//            npc.transform.Rotate(0f, 180f, 0f);
+//            facingRight = false;
+//        }
+//        else if (player.position.x < npc.position.x && !facingRight)
+//        {
+//            npc.transform.Rotate(0f, 180f, 0f);
+//            facingRight = true;
+//        }
+//    }
+
+//    protected virtual void OnTriggerEnter2D(Collider2D collision)
+//    {
+//       player = collision.transform;
+//        interactToolTip.SetActive(true);
+//    }
+
+//    protected virtual void OnTriggerExit2D(Collider2D collision)
+//    {
+//        player = null;
+//        interactToolTip.SetActive(false);
+//    }
+
+//    public virtual void Interact()
+//    {
+//        questManager.AddProgress(npcTargetQuestID);
+//        //questManager.TryGetRewardFrom(rewardNpc);
+//    }
+//}
+
+
 using UnityEngine;
 
-public class Object_NPC : MonoBehaviour,IInteractable
+public class Object_NPC : MonoBehaviour, IInteractable
 {
     protected Transform player;
     protected UI ui;
     protected Player_QuestManager questManager;
 
+    [Header("NPC Identity")]
+    [SerializeField] protected string npcID;
+    [SerializeField] protected string npcName;
+
     [Header("NPC Quest Settings")]
-    [SerializeField] private string npcTargetQuestID;
+    [SerializeField] protected string npcTargetQuestID; // For tracking "talk to this NPC" objectives
     [SerializeField] protected RewardType rewardNpc;
-    [Space]
-    [SerializeField] private Transform npc;
-    [SerializeField] private GameObject interactToolTip;
-    private bool facingRight = true;
+
+    [Header("Visual Settings")]
+    [SerializeField] protected Transform npc;
+    [SerializeField] protected GameObject interactToolTip;
+    [SerializeField] protected GameObject questAvailableIndicator; // "!" icon
+    [SerializeField] protected GameObject questTurnInIndicator;    // "?" icon
+    protected bool facingRight = true;
 
     [Header("Floating Settings")]
-    [SerializeField] private float floatSpeed = 8f;
-    [SerializeField] private float floatRange = 0.1f;
-    private Vector3 startPosition;
+    [SerializeField] protected float floatSpeed = 8f;
+    [SerializeField] protected float floatRange = 0.1f;
+    protected Vector3 startPosition;
 
     protected virtual void Awake()
     {
         ui = FindFirstObjectByType<UI>();
-        startPosition = interactToolTip.transform.position;
-        interactToolTip.SetActive(false);
+
+        if (interactToolTip != null)
+        {
+            startPosition = interactToolTip.transform.position;
+            interactToolTip.SetActive(false);
+        }
+
+        // Auto-generate NPC ID if not set
+        if (string.IsNullOrEmpty(npcID))
+        {
+            npcID = gameObject.name;
+        }
     }
 
     protected virtual void Start()
     {
-        questManager = Player.instance.questManager;
+        if (Player.instance != null)
+        {
+            questManager = Player.instance.questManager;
+        }
+
+        UpdateQuestIndicators();
     }
 
     protected virtual void Update()
     {
         HandleNpcFlip();
-        HandleToolTipFloat();   
+        HandleToolTipFloat();
     }
-    private void HandleToolTipFloat()
+
+    protected void HandleToolTipFloat()
     {
-        if (interactToolTip.activeSelf)
+        if (interactToolTip != null && interactToolTip.activeSelf)
         {
             float yOffset = Mathf.Sin(Time.time * floatSpeed) * floatRange;
             interactToolTip.transform.position = startPosition + new Vector3(0, yOffset);
-        } 
-            return;
+        }
     }
 
-    private void HandleNpcFlip()
+    protected void HandleNpcFlip()
     {
-        if(player == null || npc == null) 
+        if (player == null || npc == null)
             return;
 
         if (player.position.x > npc.position.x && facingRight)
@@ -63,21 +170,117 @@ public class Object_NPC : MonoBehaviour,IInteractable
         }
     }
 
+    /// <summary>
+    /// Update quest indicator icons (! for available, ? for turn-in)
+    /// </summary>
+    protected virtual void UpdateQuestIndicators()
+    {
+        if (questManager == null) return;
+
+        // Show "!" if quests available
+        if (questAvailableIndicator != null)
+        {
+            questAvailableIndicator.SetActive(HasAvailableQuests());
+        }
+
+        // Show "?" if can turn in quests
+        if (questTurnInIndicator != null)
+        {
+            questTurnInIndicator.SetActive(CanTurnInQuests());
+        }
+    }
+
+    /// <summary>
+    /// Override in derived classes to check for available quests
+    /// </summary>
+    protected virtual bool HasAvailableQuests()
+    {
+        return false;
+    }
+
+    /// <summary>
+    /// Override in derived classes to check if player can turn in quests
+    /// </summary>
+    protected virtual bool CanTurnInQuests()
+    {
+        if (questManager == null) return false;
+
+        // Check by NPC ID
+        if (!string.IsNullOrEmpty(npcID) && questManager.HasCompletedQuestForNpc(npcID))
+            return true;
+
+        // Check by reward type
+        if (questManager.HasCompletedQuestFor(rewardNpc))
+            return true;
+
+        return false;
+    }
+
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
-       player = collision.transform;
-        interactToolTip.SetActive(true);
+        if (!collision.CompareTag("Player")) return;
+
+        player = collision.transform;
+
+        if (interactToolTip != null)
+            interactToolTip.SetActive(true);
+
+        UpdateQuestIndicators();
     }
 
     protected virtual void OnTriggerExit2D(Collider2D collision)
     {
+        if (!collision.CompareTag("Player")) return;
+
         player = null;
-        interactToolTip.SetActive(false);
+
+        if (interactToolTip != null)
+            interactToolTip.SetActive(false);
     }
 
     public virtual void Interact()
     {
-        questManager.AddProgress(npcTargetQuestID);
-        //questManager.TryGetRewardFrom(rewardNpc);
+        // Add progress for "talk to NPC" quests
+        if (!string.IsNullOrEmpty(npcTargetQuestID))
+        {
+            questManager?.AddProgress(npcTargetQuestID);
+        }
+
+        // Also check by NPC ID for complex quests
+        if (!string.IsNullOrEmpty(npcID))
+        {
+            questManager?.AddProgress(QuestObjectiveType.Talk, npcID);
+        }
+
+        UpdateQuestIndicators();
     }
+
+    /// <summary>
+    /// Get NPC data for dialogue system
+    /// </summary>
+    public virtual DialogueNPCData GetDialogueData()
+    {
+        return new DialogueNPCData(npcID, npcName, rewardNpc, null, true);
+    }
+
+    /// <summary>
+    /// Get NPC ID
+    /// </summary>
+    public string GetNpcID() => npcID;
+
+    /// <summary>
+    /// Get NPC Name
+    /// </summary>
+    public string GetNpcName() => npcName;
+
+#if UNITY_EDITOR
+    protected virtual void OnValidate()
+    {
+        // Auto-generate NPC ID from game object name if empty
+        if (string.IsNullOrEmpty(npcID))
+        {
+            npcID = gameObject.name.Replace("(Clone)", "").Trim();
+        }
+    }
+#endif
 }

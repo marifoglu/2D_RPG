@@ -13,13 +13,19 @@ MonoBehaviour:
   m_Name: Quest - Bone Hunt
   m_EditorClassIdentifier: Assembly-CSharp::QuestDataSO
   questSaveID: d39867df1bcae0b4bac5d288904de00c
+  questType: 0
   questName: Bone Hunt
   questDescription: Used to be a quite place, just pickaxe and ale. Now it is bone
     and brother. Will ya take ma quest?
   questGoal: Eliminate x2 skeletons
+  isComplexQuest: 0
+  completionMode: 0
+  objectives: []
   questTargetID: quest_enemy_skeleton
   requiredAmount: 2
+  itemToDelivery: {fileID: 0}
   rewardType: 0
+  rewardGiverNpcIDs: []
   rewardItems:
   - itemData: {fileID: 11400000, guid: 72fd4e371c7033a4e96e498d043c1d5a, type: 2}
     stackSize: 1
@@ -27,3 +33,7 @@ MonoBehaviour:
   - itemData: {fileID: 11400000, guid: ee60024744003854f8122ddfba7d88f3, type: 2}
     stackSize: 5
     itemEffect: {fileID: 0}
+  prerequisiteQuest: {fileID: 0}
+  nextQuestInChain: {fileID: 0}
+  questIcon: {fileID: 0}
+  showInTracker: 1

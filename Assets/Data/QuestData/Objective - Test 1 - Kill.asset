@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87594ce2b75c909459cb28279c60c600, type: 3}
+  m_Name: Objective - Test 1 - Kill
+  m_EditorClassIdentifier: Assembly-CSharp::QuestObjectiveSO
+  objectiveID: f17d555e-7586-40e8-beaa-3b2a047551a4
+  objectiveDescription: 
+  objectiveType: 0
+  targetID: quest_enemy_skeleton
+  requiredAmount: 2
+  requiredItem: {fileID: 11400000, guid: 505086dcb975b054ba23115b27a61560, type: 2}
+  isSequential: 0
+  turnInNpcID: 
+  objectiveIcon: {fileID: -5239188096445404863, guid: e31822c94ae12a844a2145f2fb7c2403, type: 3}
+  trackerText: 'Kill '
