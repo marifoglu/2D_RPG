@@ -1,432 +1,5 @@
-//using System.Collections;
-//using TMPro;
-//using UnityEngine;
-//using UnityEngine.UI;
-
-//public class UI_Dialogue : MonoBehaviour
-//{
-//    private UI ui;
-//    private DialogueNPCData npcData;
-//    private Player_QuestManager questManager;
-
-//    [SerializeField] private Image speakerPortrait;
-//    [SerializeField] private TextMeshProUGUI speakerName;
-//    [SerializeField] private TextMeshProUGUI dialogueText;
-//    [SerializeField] private TextMeshProUGUI[] dialogueChoiceText;
-
-//    [Space]
-//    [SerializeField] private float textSpeed = 0.1f;
-//    private string fullTextToShow;
-//    private Coroutine typeTextCo;
-
-//    private DialogueLineSO currentLine;
-//    private DialogueLineSO[] currentChoices;
-//    private DialogueLineSO selectedChoice;
-//    private int selectedChoiceIndex;
-
-//    private bool waitingToConfirm;
-//    private bool canInteract;
-
-//    private void Awake()
-//    {
-//        ui = GetComponentInParent<UI>();
-//        questManager = Player.instance.questManager;
-//    }
-
-//    public void SetupNpcData(DialogueNPCData npcData) => this.npcData = npcData;
-
-//    public void PlayDialogueLine(DialogueLineSO line)
-//    {
-//        currentLine = line;
-//        currentChoices = line.choiceLines;
-//        canInteract = false;
-//        selectedChoice = null;
-//        selectedChoiceIndex = 0;
-
-//        HideAllChoices();
-
-//        speakerPortrait.sprite = line.speaker.speakerPortrait;
-//        speakerName.text = line.speaker.speakerName;
-
-//        fullTextToShow = line.actionType == DialogueActionType.None || line.actionType == DialogueActionType.PlayerMakeChoice ?
-//            line.GetRandomLine() : line.actionLine;
-
-//        typeTextCo = StartCoroutine(TypeTextCo(fullTextToShow));
-//        StartCoroutine(EnableInteractionCo());
-//    }
-
-//    private void HandleNextAction()
-//    {
-//        switch (currentLine.actionType)
-//        {
-//            case DialogueActionType.OpenShop:
-//                ui.SwitchToInGameUI();
-//                ui.OpenMerchantUI(true);
-//                break;
-//            case DialogueActionType.PlayerMakeChoice:
-//                if (selectedChoice == null)
-//                {
-//                    ShowChoices();
-//                }
-//                else
-//                {
-//                    DialogueLineSO selectedChoice = currentChoices[selectedChoiceIndex];
-//                    PlayDialogueLine(selectedChoice);
-//                }
-//                break;
-//            case DialogueActionType.OpenQuest:
-//                ui.SwitchToInGameUI();
-//                ui.OpenQuestUI(npcData.quests);
-//                break;
-//            case DialogueActionType.GetQuestReward:
-//                ui.SwitchToInGameUI();
-//                questManager.TryGetRewardFrom(npcData.npcRewardType);
-//                break;
-//            case DialogueActionType.OpenCraft:
-//                ui.SwitchToInGameUI();
-//                ui.OpenCraftUI(true);
-//                break;
-//            case DialogueActionType.CloseDialogue:
-//                ui.SwitchToInGameUI();
-//                break;
-//        }
-//    }
-
-//    public void DialogueInteraction()
-//    {
-//        if (canInteract == false)
-//            return;
-
-//        if (typeTextCo != null)
-//        {
-//            CompleteTyping();
-
-//            if (currentLine.actionType != DialogueActionType.PlayerMakeChoice)
-//                waitingToConfirm = true;
-//            else
-//                HandleNextAction();
-
-//            return;
-//        }
-
-//        if (waitingToConfirm || selectedChoice != null)
-//        {
-//            waitingToConfirm = false;
-//            HandleNextAction();
-//        }
-//    }
-
-//    private void CompleteTyping()
-//    {
-//        if (typeTextCo != null)
-//        {
-//            StopCoroutine(typeTextCo);
-//            dialogueText.text = fullTextToShow;
-//            typeTextCo = null;
-//        }
-//    }
-
-//    private void ShowChoices()
-//    {
-//        //HideAllChoices();
-
-//        for (int i = 0; i < dialogueChoiceText.Length; i++)
-//        {
-//            if(i < currentChoices.Length)
-//            {
-//                DialogueLineSO choice = currentChoices[i];
-//                string choiceText = choice.playerChoiceAnswer;
-
-//                dialogueChoiceText[i].gameObject.SetActive(true);
-//                dialogueChoiceText[i].text = selectedChoiceIndex == i ? 
-//                    $"<color=yellow> {i + 1}) {choiceText}" : 
-//                    $"{i + 1}) {choiceText}";
-
-//                if(choice.actionType == DialogueActionType.GetQuestReward && questManager.HasComplatedQuest () == false)
-//                {
-//                    dialogueChoiceText[i].gameObject.SetActive(false);
-//                }
-//            }
-//            else
-//            {
-//                dialogueChoiceText[i].gameObject.SetActive(false);
-//            }
-//        }
-//        selectedChoice = currentChoices[selectedChoiceIndex];
-//    }
-
-//    private void HideAllChoices()
-//    {
-//        foreach (var obj in dialogueChoiceText)
-//            obj.gameObject.SetActive(false);
-//    }
-
-//    public void NavigateChoice(int direction)
-//    {
-//        if(currentChoices == null || currentChoices.Length <= 1)
-//            return;
-
-//        selectedChoiceIndex += direction;
-//        selectedChoiceIndex = Mathf.Clamp(selectedChoiceIndex, 0, currentChoices.Length -1);
-
-//        ShowChoices();
-//    }
-
-//    private IEnumerator TypeTextCo(string text)
-//    {
-//        dialogueText.text = "";
-
-//        foreach (char letter in text)
-//        {
-//            dialogueText.text += letter;
-//            yield return new WaitForSeconds(textSpeed);
-//        }
-//        if(currentLine.actionType != DialogueActionType.PlayerMakeChoice)
-//        {
-//            waitingToConfirm = true;
-//        }
-//        else
-//        {
-//            yield return new WaitForSeconds(0.2f);
-//            selectedChoice = null;
-//            HandleNextAction();
-//        }
-//        typeTextCo = null;
-//    }
-
-//    private IEnumerator EnableInteractionCo()
-//    {
-//        yield return null;
-//        canInteract = true;
-//    }
-//}
-
-
-
-
-
-
-
-
-//using System.Collections;
-//using TMPro;
-//using UnityEngine;
-//using UnityEngine.UI;
-
-//public class UI_Dialogue : MonoBehaviour
-//{
-//    private UI ui;
-//    private DialogueNPCData npcData;
-//    private Player_QuestManager questManager;
-
-//    [SerializeField] private Image speakerPortrait;
-//    [SerializeField] private TextMeshProUGUI speakerName;
-//    [SerializeField] private TextMeshProUGUI dialogueText;
-//    [SerializeField] private TextMeshProUGUI[] dialogueChoiceText;
-
-//    [Space]
-//    [SerializeField] private float textSpeed = 0.1f;
-//    private string fullTextToShow;
-//    private Coroutine typeTextCo;
-
-//    private DialogueLineSO currentLine;
-//    private DialogueLineSO[] currentChoices;
-//    private DialogueLineSO selectedChoice;
-//    private int selectedChoiceIndex;
-
-//    private bool waitingToConfirm;
-//    private bool canInteract;
-
-//    private void Awake()
-//    {
-//        ui = GetComponentInParent<UI>();
-//        questManager = Player.instance.questManager;
-//    }
-
-//    public void SetupNpcData(DialogueNPCData npcData) => this.npcData = npcData;
-
-//    public void PlayDialogueLine(DialogueLineSO line)
-//    {
-//        if (line == null)
-//        {
-//            Debug.LogError("Cannot play dialogue line: line is null!");
-//            return;
-//        }
-
-//        if (line.speaker == null)
-//        {
-//            Debug.LogError($"Cannot play dialogue line: speaker is null in line '{line.name}'!");
-//            return;
-//        }
-
-//        currentLine = line;
-//        currentChoices = line.choiceLines;
-//        canInteract = false;
-//        selectedChoice = null;
-//        selectedChoiceIndex = 0;
-
-//        HideAllChoices();
-
-//        speakerPortrait.sprite = line.speaker.speakerPortrait;
-//        speakerName.text = line.speaker.speakerName;
-
-//        fullTextToShow = line.actionType == DialogueActionType.None || line.actionType == DialogueActionType.PlayerMakeChoice ?
-//            line.GetRandomLine() : line.actionLine;
-
-//        typeTextCo = StartCoroutine(TypeTextCo(fullTextToShow));
-//        StartCoroutine(EnableInteractionCo());
-//    }
-
-//    private void HandleNextAction()
-//    {
-//        switch (currentLine.actionType)
-//        {
-//            case DialogueActionType.OpenShop:
-//                ui.SwitchToInGameUI();
-//                ui.OpenMerchantUI(true);
-//                break;
-//            case DialogueActionType.PlayerMakeChoice:
-//                if (selectedChoice == null)
-//                {
-//                    ShowChoices();
-//                }
-//                else
-//                {
-//                    DialogueLineSO selectedChoice = currentChoices[selectedChoiceIndex];
-//                    PlayDialogueLine(selectedChoice);
-//                }
-//                break;
-//            case DialogueActionType.OpenQuest:
-//                ui.SwitchToInGameUI();
-//                ui.OpenQuestUI(npcData.quests);
-//                break;
-//            case DialogueActionType.GetQuestReward:
-//                ui.SwitchToInGameUI();
-//                questManager.TryGetRewardFrom(npcData.npcRewardType);
-//                break;
-//            case DialogueActionType.OpenCraft:
-//                ui.SwitchToInGameUI();
-//                ui.OpenCraftUI(true);
-//                break;
-//            case DialogueActionType.CloseDialogue:
-//                ui.SwitchToInGameUI();
-//                break;
-//        }
-//    }
-
-//    public void DialogueInteraction()
-//    {
-//        if (canInteract == false)
-//            return;
-
-//        if (typeTextCo != null)
-//        {
-//            CompleteTyping();
-
-//            if (currentLine.actionType != DialogueActionType.PlayerMakeChoice)
-//                waitingToConfirm = true;
-//            else
-//                HandleNextAction();
-
-//            return;
-//        }
-
-//        if (waitingToConfirm || selectedChoice != null)
-//        {
-//            waitingToConfirm = false;
-//            HandleNextAction();
-//        }
-//    }
-
-//    private void CompleteTyping()
-//    {
-//        if (typeTextCo != null)
-//        {
-//            StopCoroutine(typeTextCo);
-//            dialogueText.text = fullTextToShow;
-//            typeTextCo = null;
-//        }
-//    }
-
-//    private void ShowChoices()
-//    {
-//        //HideAllChoices();
-
-//        for (int i = 0; i < dialogueChoiceText.Length; i++)
-//        {
-//            if (i < currentChoices.Length)
-//            {
-//                DialogueLineSO choice = currentChoices[i];
-//                string choiceText = choice.playerChoiceAnswer;
-
-//                dialogueChoiceText[i].gameObject.SetActive(true);
-//                dialogueChoiceText[i].text = selectedChoiceIndex == i ?
-//                    $"<color=yellow> {i + 1}) {choiceText}" :
-//                    $"{i + 1}) {choiceText}";
-
-//                if (choice.actionType == DialogueActionType.GetQuestReward && questManager.HasComplatedQuest() == false)
-//                {
-//                    dialogueChoiceText[i].gameObject.SetActive(false);
-//                }
-//            }
-//            else
-//            {
-//                dialogueChoiceText[i].gameObject.SetActive(false);
-//            }
-//        }
-//        selectedChoice = currentChoices[selectedChoiceIndex];
-//    }
-
-//    private void HideAllChoices()
-//    {
-//        foreach (var obj in dialogueChoiceText)
-//            obj.gameObject.SetActive(false);
-//    }
-
-//    public void NavigateChoice(int direction)
-//    {
-//        if (currentChoices == null || currentChoices.Length <= 1)
-//            return;
-
-//        selectedChoiceIndex += direction;
-//        selectedChoiceIndex = Mathf.Clamp(selectedChoiceIndex, 0, currentChoices.Length - 1);
-
-//        ShowChoices();
-//    }
-
-//    private IEnumerator TypeTextCo(string text)
-//    {
-//        dialogueText.text = "";
-
-//        foreach (char letter in text)
-//        {
-//            dialogueText.text += letter;
-//            yield return new WaitForSeconds(textSpeed);
-//        }
-//        if (currentLine.actionType != DialogueActionType.PlayerMakeChoice)
-//        {
-//            waitingToConfirm = true;
-//        }
-//        else
-//        {
-//            yield return new WaitForSeconds(0.2f);
-//            selectedChoice = null;
-//            HandleNextAction();
-//        }
-//        typeTextCo = null;
-//    }
-
-//    private IEnumerator EnableInteractionCo()
-//    {
-//        yield return null;
-//        canInteract = true;
-//    }
-//}
-
-
-
-
 using System.Collections;
+using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -441,25 +14,53 @@ public class UI_Dialogue : MonoBehaviour
     [SerializeField] private Image speakerPortrait;
     [SerializeField] private TextMeshProUGUI speakerName;
     [SerializeField] private TextMeshProUGUI dialogueText;
-    [SerializeField] private TextMeshProUGUI[] dialogueChoiceText;
+    [SerializeField] private TextMeshProUGUI[] dialogueChoiceText; // 4 choices available
 
     [Header("Typing Settings")]
     [SerializeField] private float textSpeed = 0.05f;
     [SerializeField] private bool skipTypingOnClick = true;
 
     [Header("Visual Indicators")]
-    [SerializeField] private GameObject continueIndicator; // Arrow or "click to continue" indicator
+    [SerializeField] private GameObject continueIndicator;
+
+    [Header("Dynamic Choice Settings")]
+    [SerializeField] private string completeQuestText = "Complete Quest";
+    [SerializeField] private string viewQuestsText = "View Quests";
+    [SerializeField] private string leaveText = "Leave";
+    [SerializeField] private Color highlightColor = Color.yellow;
+    [SerializeField] private Color completeQuestColor = Color.green;
 
     private string fullTextToShow;
     private Coroutine typeTextCo;
 
     private DialogueLineSO currentLine;
     private DialogueLineSO[] currentChoices;
-    private DialogueLineSO selectedChoice;
     private int selectedChoiceIndex;
 
     private bool waitingToConfirm;
     private bool canInteract;
+
+    // Dynamic choices system
+    private List<DynamicChoice> dynamicChoices = new List<DynamicChoice>();
+    private bool usingDynamicChoices = false;
+
+    private class DynamicChoice
+    {
+        public string text;
+        public DialogueActionType action;
+        public DialogueLineSO dialogueLine;
+        public bool isHighlighted;
+        public Color textColor;
+
+        public DynamicChoice(string text, DialogueActionType action, DialogueLineSO line = null)
+        {
+            this.text = text;
+            this.action = action;
+            this.dialogueLine = line;
+            this.isHighlighted = false;
+            this.textColor = Color.white;
+        }
+    }
 
     private void Awake()
     {
@@ -478,7 +79,6 @@ public class UI_Dialogue : MonoBehaviour
     {
         this.npcData = npcData;
 
-        // Ensure quest manager is available
         if (questManager == null && Player.instance != null)
         {
             questManager = Player.instance.questManager;
@@ -504,20 +104,17 @@ public class UI_Dialogue : MonoBehaviour
         currentLine = line;
         currentChoices = line.choiceLines;
         canInteract = false;
-        selectedChoice = null;
         selectedChoiceIndex = 0;
+        usingDynamicChoices = false;
 
         HideAllChoices();
         HideContinueIndicator();
 
-        // Update speaker info
         speakerPortrait.sprite = line.speaker.speakerPortrait;
         speakerName.text = line.speaker.speakerName;
 
-        // Determine text to show
         fullTextToShow = DetermineDialogueText(line);
 
-        // Start typing
         if (typeTextCo != null)
         {
             StopCoroutine(typeTextCo);
@@ -529,7 +126,6 @@ public class UI_Dialogue : MonoBehaviour
 
     private string DetermineDialogueText(DialogueLineSO line)
     {
-        // Use action line for specific actions, otherwise use random line
         if (line.actionType != DialogueActionType.None &&
             line.actionType != DialogueActionType.PlayerMakeChoice)
         {
@@ -541,10 +137,18 @@ public class UI_Dialogue : MonoBehaviour
 
     private void HandleNextAction()
     {
+        // Handle dynamic choice action
+        if (usingDynamicChoices && selectedChoiceIndex < dynamicChoices.Count)
+        {
+            DynamicChoice selected = dynamicChoices[selectedChoiceIndex];
+            ExecuteAction(selected.action, selected.dialogueLine);
+            return;
+        }
+
+        // Handle regular dialogue action
         switch (currentLine.actionType)
         {
             case DialogueActionType.None:
-                // If there are no choices, just close
                 CloseDialogue();
                 break;
 
@@ -554,51 +158,22 @@ public class UI_Dialogue : MonoBehaviour
                 break;
 
             case DialogueActionType.PlayerMakeChoice:
-                if (selectedChoice == null)
+                if (!usingDynamicChoices)
                 {
-                    ShowChoices();
+                    ShowDynamicChoices();
                 }
                 else
                 {
-                    DialogueLineSO nextLine = currentChoices[selectedChoiceIndex];
-                    PlayDialogueLine(nextLine);
+                    // Selection already made, handled above
                 }
                 break;
 
             case DialogueActionType.OpenQuest:
-                if (npcData != null && npcData.availableQuests != null)
-                {
-                    // Filter to only show available quests
-                    var availableQuests = npcData.GetAcceptableQuests(questManager);
-                    if (availableQuests.Length > 0)
-                    {
-                        ui.SwitchToInGameUI();
-                        ui.OpenQuestUI(availableQuests);
-                    }
-                    else
-                    {
-                        // No quests available, close dialogue
-                        CloseDialogue();
-                    }
-                }
-                else
-                {
-                    CloseDialogue();
-                }
+                OpenQuestUI();
                 break;
 
             case DialogueActionType.GetQuestReward:
-                ui.SwitchToInGameUI();
-
-                // Try to turn in quests by NPC ID first
-                if (npcData != null && !string.IsNullOrEmpty(npcData.npcID))
-                {
-                    questManager?.TryGetRewardFromNpc(npcData.npcID);
-                }
-                else if (npcData != null)
-                {
-                    questManager?.TryGetRewardFrom(npcData.npcRewardType);
-                }
+                CompleteQuests();
                 break;
 
             case DialogueActionType.OpenCraft:
@@ -612,11 +187,91 @@ public class UI_Dialogue : MonoBehaviour
         }
     }
 
+    private void ExecuteAction(DialogueActionType action, DialogueLineSO nextLine = null)
+    {
+        switch (action)
+        {
+            case DialogueActionType.GetQuestReward:
+                CompleteQuests();
+                break;
+
+            case DialogueActionType.OpenQuest:
+                OpenQuestUI();
+                break;
+
+            case DialogueActionType.OpenShop:
+                ui.SwitchToInGameUI();
+                ui.OpenMerchantUI(true);
+                break;
+
+            case DialogueActionType.OpenCraft:
+                ui.SwitchToInGameUI();
+                ui.OpenCraftUI(true);
+                break;
+
+            case DialogueActionType.CloseDialogue:
+                CloseDialogue();
+                break;
+
+            case DialogueActionType.PlayerMakeChoice:
+                if (nextLine != null)
+                {
+                    PlayDialogueLine(nextLine);
+                }
+                break;
+
+            default:
+                if (nextLine != null)
+                {
+                    PlayDialogueLine(nextLine);
+                }
+                else
+                {
+                    CloseDialogue();
+                }
+                break;
+        }
+    }
+
+    private void CompleteQuests()
+    {
+        ui.SwitchToInGameUI();
+
+        if (npcData != null && !string.IsNullOrEmpty(npcData.npcID))
+        {
+            questManager?.TryGetRewardFromNpc(npcData.npcID);
+        }
+        else if (npcData != null)
+        {
+            questManager?.TryGetRewardFrom(npcData.npcRewardType);
+        }
+    }
+
+    private void OpenQuestUI()
+    {
+        if (npcData != null && npcData.availableQuests != null)
+        {
+            var availableQuests = npcData.GetAcceptableQuests(questManager);
+            if (availableQuests.Length > 0)
+            {
+                ui.SwitchToInGameUI();
+                ui.OpenQuestUI(availableQuests);
+            }
+            else
+            {
+                CloseDialogue();
+            }
+        }
+        else
+        {
+            CloseDialogue();
+        }
+    }
+
     public void DialogueInteraction()
     {
         if (!canInteract) return;
 
-        // If still typing, complete it first
         if (typeTextCo != null)
         {
             if (skipTypingOnClick)
@@ -636,8 +291,7 @@ public class UI_Dialogue : MonoBehaviour
             return;
         }
 
-        // Handle next action when confirmed
-        if (waitingToConfirm || selectedChoice != null)
+        if (waitingToConfirm || usingDynamicChoices)
         {
             waitingToConfirm = false;
             HideContinueIndicator();
@@ -655,7 +309,147 @@ public class UI_Dialogue : MonoBehaviour
         }
     }
 
-    private void ShowChoices()
+    private void ShowDynamicChoices()
+    {
+        dynamicChoices.Clear();
+        usingDynamicChoices = true;
+        selectedChoiceIndex = 0;
+
+        // 1. Check for completable quests - "Complete Quest" option (GREEN)
+        bool hasCompletableQuests = HasCompletableQuestsForNpc();
+        if (hasCompletableQuests)
+        {
+            var choice = new DynamicChoice(GetCompleteQuestDisplayText(), DialogueActionType.GetQuestReward);
+            choice.textColor = completeQuestColor;
+            dynamicChoices.Add(choice);
+        }
+
+        // 2. Add choices from dialogue line (if any)
+        if (currentChoices != null)
+        {
+            foreach (var choiceLine in currentChoices)
+            {
+                if (choiceLine == null) continue;
+
+                // Skip GetQuestReward if we already added it dynamically
+                if (choiceLine.actionType == DialogueActionType.GetQuestReward && hasCompletableQuests)
+                    continue;
+
+                // Check if choice should be shown
+                if (!ShouldShowChoice(choiceLine))
+                    continue;
+
+                var choice = new DynamicChoice(choiceLine.playerChoiceAnswer, choiceLine.actionType, choiceLine);
+                dynamicChoices.Add(choice);
+            }
+        }
+
+        // 3. Check for available quests - "View Quests" option
+        bool hasAvailableQuests = HasAvailableQuestsForNpc();
+        bool questChoiceExists = dynamicChoices.Exists(c => c.action == DialogueActionType.OpenQuest);
+
+        if (hasAvailableQuests && !questChoiceExists)
+        {
+            dynamicChoices.Add(new DynamicChoice(viewQuestsText, DialogueActionType.OpenQuest));
+        }
+
+        // 4. Always add "Leave" as last option
+        bool leaveExists = dynamicChoices.Exists(c => c.action == DialogueActionType.CloseDialogue);
+        if (!leaveExists)
+        {
+            dynamicChoices.Add(new DynamicChoice(leaveText, DialogueActionType.CloseDialogue));
+        }
+
+        // Display the choices
+        DisplayDynamicChoices();
+    }
+
+    private string GetCompleteQuestDisplayText()
+    {
+        if (questManager == null || npcData == null) return completeQuestText;
+
+        var completable = questManager.GetCompletableQuestsForNpc(npcData.npcID, npcData.npcRewardType);
+
+        if (completable.Count == 0)
+            return completeQuestText;
+
+        if (completable.Count == 1)
+            return $"{completeQuestText}: {completable[0].questDataSo.questName}";
+
+        return $"{completeQuestText} ({completable.Count} quests)";
+    }
+
+
+    private bool HasCompletableQuestsForNpc()
+    {
+        if (questManager == null) return false;
+
+        if (npcData != null)
+        {
+            if (!string.IsNullOrEmpty(npcData.npcID))
+            {
+                return questManager.HasCompletedQuestForNpc(npcData.npcID);
+            }
+            return questManager.HasCompletedQuestFor(npcData.npcRewardType);
+        }
+
+        return questManager.HasCompletedQuest();
+    }
+
+    private bool HasAvailableQuestsForNpc()
+    {
+        if (npcData == null || npcData.availableQuests == null || questManager == null)
+            return false;
+
+        return npcData.GetAcceptableQuests(questManager).Length > 0;
+    }
+
+    private void DisplayDynamicChoices()
+    {
+        HideAllChoices();
+
+        for (int i = 0; i < dialogueChoiceText.Length && i < dynamicChoices.Count; i++)
+        {
+            DynamicChoice choice = dynamicChoices[i];
+            TextMeshProUGUI choiceUI = dialogueChoiceText[i];
+
+            choiceUI.gameObject.SetActive(true);
+
+            string displayText = choice.text;
+            bool isSelected = (i == selectedChoiceIndex);
+
+            // Format based on selection and special colors
+            if (isSelected)
+            {
+                if (choice.textColor == completeQuestColor)
+                {
+                    // Green highlight for complete quest
+                    choiceUI.text = $"<color=#{ColorUtility.ToHtmlStringRGB(completeQuestColor)}>> {displayText}</color>";
+                }
+                else
+                {
+                    // Yellow highlight for normal selection
+                    choiceUI.text = $"<color=#{ColorUtility.ToHtmlStringRGB(highlightColor)}>> {displayText}</color>";
+                }
+            }
+            else
+            {
+                if (choice.textColor == completeQuestColor)
+                {
+                    // Green for complete quest (not selected)
+                    choiceUI.text = $"<color=#{ColorUtility.ToHtmlStringRGB(completeQuestColor)}>  {displayText}</color>";
+                }
+                else
+                {
+                    // Normal white
+                    choiceUI.text = $"  {displayText}";
+                }
+            }
+        }
+    }
+
+
+    private void ShowChoicesLegacy()
     {
         if (currentChoices == null || currentChoices.Length == 0)
         {
@@ -677,16 +471,13 @@ public class UI_Dialogue : MonoBehaviour
                     continue;
                 }
 
-                // Check if this choice should be shown
                 bool shouldShow = ShouldShowChoice(choice);
-
                 dialogueChoiceText[i].gameObject.SetActive(shouldShow);
 
                 if (shouldShow)
                 {
                     string choiceText = choice.playerChoiceAnswer;
 
-                    // Highlight selected choice
                     dialogueChoiceText[i].text = selectedChoiceIndex == i ?
                         $"<color=yellow>> {choiceText}</color>" :
                         $"  {choiceText}";
@@ -700,7 +491,6 @@ public class UI_Dialogue : MonoBehaviour
             }
         }
 
-        // If selected index is hidden, find first visible
         if (visibleChoices > 0 && !dialogueChoiceText[selectedChoiceIndex].gameObject.activeSelf)
         {
             for (int i = 0; i < dialogueChoiceText.Length; i++)
@@ -708,47 +498,23 @@ public class UI_Dialogue : MonoBehaviour
                 if (dialogueChoiceText[i].gameObject.activeSelf)
                 {
                     selectedChoiceIndex = i;
-                    ShowChoices(); // Refresh to update highlight
+                    ShowChoicesLegacy();
                     break;
                 }
             }
         }
-
-        if (currentChoices.Length > selectedChoiceIndex)
-        {
-            selectedChoice = currentChoices[selectedChoiceIndex];
-        }
     }
 
-    /// <summary>
-    /// Determine if a choice should be shown based on conditions
-    /// </summary>
     private bool ShouldShowChoice(DialogueLineSO choice)
     {
-        // Hide "Get Reward" option if no completable quests
         if (choice.actionType == DialogueActionType.GetQuestReward)
         {
-            if (questManager == null) return false;
-
-            // Check if player has any completable quests for this NPC
-            if (npcData != null)
-            {
-                if (!string.IsNullOrEmpty(npcData.npcID))
-                {
-                    return questManager.HasCompletedQuestForNpc(npcData.npcID);
-                }
-                return questManager.HasCompletedQuestFor(npcData.npcRewardType);
-            }
-
-            return questManager.HasCompletedQuest();
+            return HasCompletableQuestsForNpc();
         }
 
-        // Hide "View Quests" if no quests available
         if (choice.actionType == DialogueActionType.OpenQuest)
         {
-            if (npcData == null || npcData.availableQuests == null) return false;
-
-            return npcData.GetAcceptableQuests(questManager).Length > 0;
+            return HasAvailableQuestsForNpc();
         }
 
         return true;
@@ -764,31 +530,30 @@ public class UI_Dialogue : MonoBehaviour
 
     public void NavigateChoice(int direction)
     {
-        if (currentChoices == null || currentChoices.Length <= 1)
-            return;
-
-        int attempts = 0;
-        int maxAttempts = currentChoices.Length;
-
-        do
+        if (!usingDynamicChoices)
         {
+            // Legacy navigation
+            if (currentChoices == null || currentChoices.Length <= 1)
+                return;
+
             selectedChoiceIndex += direction;
+            selectedChoiceIndex = Mathf.Clamp(selectedChoiceIndex, 0, currentChoices.Length - 1);
+            ShowChoicesLegacy();
+            return;
+        }
 
-            // Wrap around
-            if (selectedChoiceIndex < 0) selectedChoiceIndex = currentChoices.Length - 1;
-            if (selectedChoiceIndex >= currentChoices.Length) selectedChoiceIndex = 0;
+        // Dynamic choice navigation
+        if (dynamicChoices.Count <= 1) return;
 
-            attempts++;
+        selectedChoiceIndex += direction;
 
-            // Check if this choice is visible
-            if (selectedChoiceIndex < dialogueChoiceText.Length &&
-                dialogueChoiceText[selectedChoiceIndex].gameObject.activeSelf)
-            {
-                break;
-            }
-        } while (attempts < maxAttempts);
+        // Wrap around
+        if (selectedChoiceIndex < 0)
+            selectedChoiceIndex = dynamicChoices.Count - 1;
+        if (selectedChoiceIndex >= dynamicChoices.Count)
+            selectedChoiceIndex = 0;
 
-        ShowChoices();
+        DisplayDynamicChoices();
     }
 
     private IEnumerator TypeTextCo(string text)
@@ -811,7 +576,6 @@ public class UI_Dialogue : MonoBehaviour
         else
         {
             yield return new WaitForSeconds(0.15f);
-            selectedChoice = null;
             HandleNextAction();
         }
     }
@@ -840,6 +604,11 @@ public class UI_Dialogue : MonoBehaviour
 
     private void CloseDialogue()
     {
+        var enemyDialogue = FindFirstObjectByType<Enemy_Dialogue>();
+
+        usingDynamicChoices = false;
+        dynamicChoices.Clear();
+
         if (ui != null)
         {
             ui.SwitchToInGameUI();
@@ -848,11 +617,13 @@ public class UI_Dialogue : MonoBehaviour
         {
             gameObject.SetActive(false);
         }
+
+        if (enemyDialogue != null && enemyDialogue.IsInDialogue)
+        {
+            enemyDialogue.EndDialogue();
+        }
     }
 
-    /// <summary>
-    /// Skip all dialogue and close (for debug/testing)
-    /// </summary>
     public void ForceClose()
     {
         if (typeTextCo != null)

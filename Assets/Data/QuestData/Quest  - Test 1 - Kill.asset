@@ -21,7 +21,7 @@ MonoBehaviour:
   completionMode: 0
   objectives: []
   simpleObjectiveType: 0
-  killTargetEnemyID: enemy_skeleton
+  killTargetEnemyID: quest_enemy_skeleton
   killAmount: 2
   talkTargetNpcID: quest_blacksmith_joe
   collectItem: {fileID: 0}
@@ -31,7 +31,7 @@ MonoBehaviour:
   deliverTargetNpcID: quest_blacksmith_joe
   visitLocationID: 
   questType: 2
-  questTargetID: enemy_skeleton
+  questTargetID: quest_enemy_skeleton
   requiredAmount: 2
   itemToDelivery: {fileID: 11400000, guid: fd44864411f1e394f9c805e87a992f61, type: 2}
   rewardType: 1
@@ -39,7 +39,7 @@ MonoBehaviour:
   additionalRewardGiverNpcIDs: []
   rewardItems:
   - itemData: {fileID: 11400000, guid: fd44864411f1e394f9c805e87a992f61, type: 2}
-    stackSize: 0
+    stackSize: 1
     itemEffect: {fileID: 0}
   prerequisiteQuest: {fileID: 0}
   nextQuestInChain: {fileID: 0}

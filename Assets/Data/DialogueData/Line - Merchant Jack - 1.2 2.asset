@@ -18,5 +18,5 @@ MonoBehaviour:
   - 
   playerChoiceAnswer: Job's done! I want my reward!
   choiceLines: []
-  actionLine: 'You deserved! There it is! '
-  actionType: 4
+  actionLine: You deserved! There it is! collect from there!
+  actionType: 0

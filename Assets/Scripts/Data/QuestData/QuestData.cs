@@ -38,7 +38,7 @@ public class QuestData
 {
     public QuestDataSO questDataSo;
 
-    // Simple quest tracking (backward compatible)
+    // Simple quest tracking
     public int currentAmount;
     public bool canGetReward;
 
@@ -75,9 +75,6 @@ public class QuestData
 
     #region Simple Quest Methods (Backward Compatible)
 
-    /// <summary>
-    /// Add progress for simple single-objective quests
-    /// </summary>
     public void AddQuestProgress(int amount = 1)
     {
         // For complex quests, use AddObjectiveProgress instead
@@ -96,9 +93,6 @@ public class QuestData
         }
     }
 
-    /// <summary>
-    /// Check if simple quest can get reward (backward compatible)
-    /// </summary>
     public bool CanGetReward()
     {
         if (questDataSo.HasMultipleObjectives())
@@ -108,18 +102,11 @@ public class QuestData
 
         return currentAmount >= questDataSo.GetSimpleQuestRequiredAmount();
     }
-
-    /// <summary>
-    /// Get target ID for simple quest
-    /// </summary>
     public string GetTargetID()
     {
         return questDataSo.GetSimpleQuestTargetID();
     }
 
-    /// <summary>
-    /// Get required amount for simple quest
-    /// </summary>
     public int GetRequiredAmount()
     {
         return questDataSo.GetSimpleQuestRequiredAmount();
@@ -129,9 +116,6 @@ public class QuestData
 
     #region Complex Quest Methods
 
-    /// <summary>
-    /// Add progress to a specific objective by target ID
-    /// </summary>
     public bool AddObjectiveProgress(string targetID, int amount = 1)
     {
         if (!questDataSo.HasMultipleObjectives())
@@ -159,9 +143,6 @@ public class QuestData
         return true;
     }
 
-    /// <summary>
-    /// Add progress to a specific objective by type and target
-    /// </summary>
     public bool AddObjectiveProgress(QuestObjectiveType type, string targetID, int amount = 1)
     {
         if (!questDataSo.HasMultipleObjectives())
@@ -192,17 +173,10 @@ public class QuestData
         return false;
     }
 
-    /// <summary>
-    /// Complete an objective (for Talk/Visit types that are binary)
-    /// </summary>
     public bool CompleteObjective(string targetID)
     {
         return AddObjectiveProgress(targetID, 999); // Large number to ensure completion
     }
-
-    /// <summary>
-    /// Find objective data by target ID
-    /// </summary>
     public QuestObjectiveData FindObjectiveData(string targetID)
     {
         foreach (var objData in objectiveProgress)
@@ -213,9 +187,6 @@ public class QuestData
         return null;
     }
 
-    /// <summary>
-    /// Find objective data by objective ID
-    /// </summary>
     public QuestObjectiveData FindObjectiveDataByID(string objectiveID)
     {
         foreach (var objData in objectiveProgress)
@@ -225,10 +196,6 @@ public class QuestData
         }
         return null;
     }
-
-    /// <summary>
-    /// Check if a sequential objective can be progressed
-    /// </summary>
     private bool CanProgressSequentialObjective(QuestObjectiveData targetObjective)
     {
         int targetIndex = objectiveProgress.IndexOf(targetObjective);
@@ -243,9 +210,6 @@ public class QuestData
         return true;
     }
 
-    /// <summary>
-    /// Check if all objectives are complete
-    /// </summary>
     public bool AreAllObjectivesComplete()
     {
         if (!questDataSo.HasMultipleObjectives())
@@ -261,9 +225,6 @@ public class QuestData
         return true;
     }
 
-    /// <summary>
-    /// Check if any objective is complete (for AnyObjective completion mode)
-    /// </summary>
     public bool IsAnyObjectiveComplete()
     {
         if (!questDataSo.HasMultipleObjectives())
@@ -279,9 +240,6 @@ public class QuestData
         return false;
     }
 
-    /// <summary>
-    /// Update canGetReward based on completion mode
-    /// </summary>
     private void UpdateCanGetReward()
     {
         switch (questDataSo.completionMode)
@@ -298,9 +256,6 @@ public class QuestData
         }
     }
 
-    /// <summary>
-    /// Get current active objective (for sequential quests)
-    /// </summary>
     public QuestObjectiveData GetCurrentActiveObjective()
     {
         if (!questDataSo.HasMultipleObjectives())
@@ -314,9 +269,6 @@ public class QuestData
         return null;
     }
 
-    /// <summary>
-    /// Get all incomplete objectives
-    /// </summary>
     public List<QuestObjectiveData> GetIncompleteObjectives()
     {
         var incomplete = new List<QuestObjectiveData>();
@@ -330,9 +282,6 @@ public class QuestData
         return incomplete;
     }
 
-    /// <summary>
-    /// Get completion percentage of the entire quest
-    /// </summary>
     public float GetOverallProgress()
     {
         if (!questDataSo.HasMultipleObjectives())
@@ -356,9 +305,7 @@ public class QuestData
 
     #region Turn-In Methods
 
-    /// <summary>
-    /// Check if quest can be turned in to specific NPC
-    /// </summary>
+
     public bool CanTurnInTo(string npcID)
     {
         if (!canGetReward) return false;
@@ -388,9 +335,6 @@ public class QuestData
         return false;
     }
 
-    /// <summary>
-    /// Mark objective as turned in
-    /// </summary>
     public void MarkObjectiveTurnedIn(string targetID)
     {
         var objData = FindObjectiveData(targetID);
@@ -404,9 +348,6 @@ public class QuestData
 
     #region Serialization Support
 
-    /// <summary>
-    /// Get serializable progress data
-    /// </summary>
     public Dictionary<string, int> GetSerializableProgress()
     {
         var data = new Dictionary<string, int>();
@@ -426,9 +367,6 @@ public class QuestData
         return data;
     }
 
-    /// <summary>
-    /// Load progress from serialized data
-    /// </summary>
     public void LoadSerializableProgress(Dictionary<string, int> data)
     {
         if (data == null) return;

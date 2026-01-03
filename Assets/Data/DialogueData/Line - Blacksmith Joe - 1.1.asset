@@ -17,8 +17,6 @@ MonoBehaviour:
   textLine:
   - hello pal!
   playerChoiceAnswer: What you wanna say?
-  choiceLines:
-  - {fileID: 11400000, guid: 843c97e51bc77564dae22c84db938e66, type: 2}
-  - {fileID: 11400000, guid: 05f16b6666d084f4297b7ff5485d968f, type: 2}
-  actionLine: 
-  actionType: 5
+  choiceLines: []
+  actionLine: nothing i just trying some shit
+  actionType: 0

@@ -16,7 +16,7 @@ MonoBehaviour:
   speaker: {fileID: 11400000, guid: e2012dfc439dd5348a65d679d36cad98, type: 2}
   textLine:
   - 
-  playerChoiceAnswer: i have to go
+  playerChoiceAnswer: I have to go
   choiceLines: []
   actionLine: Nevermind!
   actionType: 6

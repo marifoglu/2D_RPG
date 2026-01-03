@@ -1,9 +1,6 @@
 using UnityEngine;
 
-/// <summary>
-/// Generic NPC with dialogue support. Can be used for any NPC type.
-/// For specialized NPCs (Merchant, Blacksmith), use their specific classes instead.
-/// </summary>
+
 public class Object_DialogueNPC : Object_NPC
 {
     [Header("Dialogue Settings")]
@@ -63,9 +60,6 @@ public class Object_DialogueNPC : Object_NPC
         ui.OpenDialogueUI(dialogueToPlay, cachedDialogueData);
     }
 
-    /// <summary>
-    /// Determine which dialogue to show based on quest state
-    /// </summary>
     private DialogueLineSO DetermineDialogue()
     {
         // Priority 1: Player can turn in quests
@@ -130,9 +124,6 @@ public class Object_DialogueNPC : Object_NPC
         return cachedDialogueData;
     }
 
-    /// <summary>
-    /// Get quests available from this NPC
-    /// </summary>
     public QuestDataSO[] GetAvailableQuests()
     {
         if (!canGiveQuests || availableQuests == null || questManager == null)

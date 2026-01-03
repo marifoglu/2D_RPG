@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::QuestDataSO
   questSaveID: ef70d41319d3c3145a60014867ee1d82
   questCategory: 1
-  questName: 'Kill 2 skeleton '
-  questDescription: earn a dragulas fang
-  questGoal: kill 2 skeletons
+  questName: Deliver Pots
+  questDescription: Deliver Pots
+  questGoal: Deliver 2 health pots and earn a rig of luck
   isComplexQuest: 0
   completionMode: 0
   objectives: []
@@ -38,8 +38,8 @@ MonoBehaviour:
   rewardGiverNpcID: quest_merchant_jack
   additionalRewardGiverNpcIDs: []
   rewardItems:
-  - itemData: {fileID: 11400000, guid: a4dec052ad05cba4991840c35a55649a, type: 2}
-    stackSize: 0
+  - itemData: {fileID: 11400000, guid: a7049a61b230edc41bbffcac6e4054e0, type: 2}
+    stackSize: 2
     itemEffect: {fileID: 0}
   prerequisiteQuest: {fileID: 0}
   nextQuestInChain: {fileID: 0}

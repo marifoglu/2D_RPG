@@ -1,38 +1,3 @@
-//using UnityEditor;
-//using UnityEngine;
-
-//public enum RewardType { Merchant, Blacksmith, None };
-//public enum QuestType { Main, Side, Kill, Talk, Delivery };
-
-//[CreateAssetMenu(menuName = "RPG Setup/Quest Data/New Quest", fileName = "Quest - ")]
-//public class QuestDataSO : ScriptableObject
-//{
-//    public string questSaveID;
-//    [Space]
-//    public QuestType questType;
-//    public string questName;
-//    [TextArea] public string questDescription;
-//    [TextArea] public string questGoal;
-
-//    public string questTargetID; // Enemy name, NPC name or Itemname etc..
-//    public int requiredAmount;
-//    public ItemDataSO itemToDelivery; // only for delivery quests
-
-//    [Header("Reward")]
-//    public RewardType rewardType;
-//    public Inventory_Item[] rewardItems;
-
-//    private void OnValidate()
-//    {
-//#if UNITY_EDITOR
-//        string path = AssetDatabase.GetAssetPath(this);
-//        questSaveID = AssetDatabase.AssetPathToGUID(path);
-//#endif
-
-//    }
-//}
-
-
 using UnityEditor;
 using UnityEngine;
 
@@ -40,7 +5,6 @@ public enum RewardType { Merchant, Blacksmith, None }
 public enum QuestCategory { Main, Side }
 public enum QuestCompletionMode { AllObjectives, AnyObjective, Sequential }
 
-// Keep old enum for backward compatibility but mark as obsolete
 public enum QuestType { Main, Side, Kill, Talk, Delivery }
 
 [CreateAssetMenu(menuName = "RPG Setup/Quest Data/New Quest", fileName = "Quest - ")]
@@ -130,9 +94,6 @@ public class QuestDataSO : ScriptableObject
 #endif
     }
 
-    /// <summary>
-    /// Sync new fields to old fields for backward compatibility
-    /// </summary>
     private void SyncBackwardCompatibleFields()
     {
         if (isComplexQuest) return;
@@ -166,9 +127,6 @@ public class QuestDataSO : ScriptableObject
         }
     }
 
-    /// <summary>
-    /// Get the target ID for simple quests based on objective type
-    /// </summary>
     public string GetSimpleQuestTargetID()
     {
         if (isComplexQuest) return null;
@@ -184,9 +142,6 @@ public class QuestDataSO : ScriptableObject
         };
     }
 
-    /// <summary>
-    /// Get the required amount for simple quests
-    /// </summary>
     public int GetSimpleQuestRequiredAmount()
     {
         if (isComplexQuest) return 0;
@@ -202,9 +157,6 @@ public class QuestDataSO : ScriptableObject
         };
     }
 
-    /// <summary>
-    /// Get delivery item for simple quests
-    /// </summary>
     public ItemDataSO GetDeliveryItem()
     {
         if (simpleObjectiveType == QuestObjectiveType.Deliver)
@@ -212,9 +164,6 @@ public class QuestDataSO : ScriptableObject
         return itemToDelivery; // Fallback
     }
 
-    /// <summary>
-    /// Check if this is a delivery type quest
-    /// </summary>
     public bool IsDeliveryQuest()
     {
         if (isComplexQuest)
@@ -229,18 +178,10 @@ public class QuestDataSO : ScriptableObject
 
         return simpleObjectiveType == QuestObjectiveType.Deliver || questType == QuestType.Delivery;
     }
-
-    /// <summary>
-    /// Check if this quest uses the complex multi-objective system
-    /// </summary>
     public bool HasMultipleObjectives()
     {
         return isComplexQuest && objectives != null && objectives.Length > 0;
     }
-
-    /// <summary>
-    /// Get the total number of objectives (1 for simple quests)
-    /// </summary>
     public int GetObjectiveCount()
     {
         if (HasMultipleObjectives())
@@ -248,9 +189,6 @@ public class QuestDataSO : ScriptableObject
         return 1;
     }
 
-    /// <summary>
-    /// Check if a specific NPC can give rewards for this quest
-    /// </summary>
     public bool CanNpcGiveReward(string npcID)
     {
         if (string.IsNullOrEmpty(npcID)) return false;
@@ -270,9 +208,6 @@ public class QuestDataSO : ScriptableObject
         return false;
     }
 
-    /// <summary>
-    /// Get objective by index (returns null for simple quests if index > 0)
-    /// </summary>
     public QuestObjectiveSO GetObjective(int index)
     {
         if (!HasMultipleObjectives())
@@ -284,9 +219,6 @@ public class QuestDataSO : ScriptableObject
         return objectives[index];
     }
 
-    /// <summary>
-    /// Find objective by target ID
-    /// </summary>
     public QuestObjectiveSO FindObjectiveByTarget(string targetID)
     {
         if (!HasMultipleObjectives())

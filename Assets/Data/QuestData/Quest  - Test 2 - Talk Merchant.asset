@@ -14,9 +14,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::QuestDataSO
   questSaveID: b23d0e87cd3415f419197a3ac4778e86
   questCategory: 1
-  questName: 'Kill 2 skeleton '
-  questDescription: earn a dragulas fang
-  questGoal: kill 2 skeletons
+  questName: Talk Merchant
+  questDescription: Talk Merchant and earn a woodensword
+  questGoal: Talk Merchant
   isComplexQuest: 0
   completionMode: 0
   objectives: []
@@ -38,8 +38,8 @@ MonoBehaviour:
   rewardGiverNpcID: quest_merchant_jack
   additionalRewardGiverNpcIDs: []
   rewardItems:
-  - itemData: {fileID: 11400000, guid: a4dec052ad05cba4991840c35a55649a, type: 2}
-    stackSize: 0
+  - itemData: {fileID: 11400000, guid: 15d21d1372c6c9540bef0c152d1fc21a, type: 2}
+    stackSize: 1
     itemEffect: {fileID: 0}
   prerequisiteQuest: {fileID: 0}
   nextQuestInChain: {fileID: 0}

@@ -1,470 +1,3 @@
-//using System.Collections.Generic;
-//using UnityEngine;
-
-//public class Player_QuestManager : MonoBehaviour, ISaveable
-//{
-//    public List<QuestData> activeQuests;
-//    public List<QuestData> complateQuests;
-
-//    private Entity_DropManager dropManager;
-//    private Inventory_Player inventory;
-
-//    [Header("Quest Database")]
-//    [SerializeField] private QuestDatabaseSO questDatabase;
-
-//    private void Awake()
-//    {
-//        dropManager = GetComponent<Entity_DropManager>();
-//        inventory = GetComponent<Inventory_Player>();
-//    }
-
-//    public  void TryGetRewardFrom(RewardType npcType)
-//    {
-//        List<QuestData> getRewardQuest = new List<QuestData>();
-
-//        foreach (var quest in activeQuests)
-//        {
-//            // Delivery quest check
-//            if (quest.questDataSo.questType != QuestType.Delivery)
-//            {
-//                var requiredItem = quest.questDataSo.itemToDelivery;
-//                var requiredAmount = quest.questDataSo.requiredAmount;
-
-//                if (inventory.HasItemAmount(requiredItem, requiredAmount))
-//                {
-//                    inventory.RemoveItemAmount(requiredItem, requiredAmount);
-//                    quest.AddQuestProgress(requiredAmount);
-//                }
-//            }
-//            if (quest.CanGetReward() && quest.questDataSo.rewardType == npcType)
-//                getRewardQuest.Add(quest);
-//        }
-
-//        foreach (var quest in getRewardQuest)
-//        {
-//            GiveQuestReward(quest.questDataSo);  
-//            CompleteQuest(quest);
-//        }
-//    }
-
-//    private void GiveQuestReward(QuestDataSO questDataSo)
-//    {
-//        foreach (var item in questDataSo.rewardItems)
-//        {
-//            if(item == null || item.itemData == null) continue;
-
-//            for(int i = 0; i < item.stackSize; i++)
-//            {
-//                dropManager.CreateItemDrop(item.itemData);
-//            }
-//        }
-//    }
-
-//    public bool HasComplatedQuest()
-//    {
-//        for(int i = 0; i < activeQuests.Count; i++)
-//        {
-//            // Delivery quest check
-
-//            QuestData quest = activeQuests[i];
-
-//            if (quest.questDataSo.questType != QuestType.Delivery)
-//            {
-//                var requiredItem = quest.questDataSo.itemToDelivery;
-//                var requiredAmount = quest.questDataSo.requiredAmount;
-
-//                if (inventory.HasItemAmount(requiredItem, requiredAmount))
-//                    return true;
-
-//            }
-
-//            if (quest.CanGetReward())
-//                return true;
-//        }
-//        return false;
-//    }
-
-//    public void AddProgress(string questTargetID, int amount = 1)
-//    {
-//        List<QuestData> getRewardQuests = new List<QuestData>();
-
-//        foreach (var quest in activeQuests)
-//        {
-//            if (quest.questDataSo.questTargetID != questTargetID) 
-//                continue;
-
-//            if(quest.CanGetReward())
-//                quest.AddQuestProgress(amount);
-
-//            if (quest.questDataSo.rewardType == RewardType.None && quest.CanGetReward())
-//                getRewardQuests.Add(quest);
-//        }
-//        foreach (var quest in getRewardQuests)
-//        {
-//            GiveQuestReward(quest.questDataSo);    
-//            CompleteQuest(quest);
-//        }
-//    }
-
-//    public void ActiveQuest(QuestDataSO questDataSo)
-//    {
-//        activeQuests.Add(new QuestData(questDataSo));
-//    }
-
-//    public bool QuestIsActive(QuestDataSO questToCheck)
-//    {
-//        if(questToCheck == null)
-//            return false;
-
-//        return activeQuests.Find(q => q.questDataSo == questToCheck) != null;
-//    }
-
-//    public int GetQuestProgress(QuestData questToCheck)
-//    {
-//        QuestData quest = activeQuests.Find(q => q == questToCheck);
-//        return quest != null ? quest.currentAmount : 0;
-//    }
-
-//    public void CompleteQuest(QuestData questData)
-//    {
-//        complateQuests.Add(questData);
-//        activeQuests.Remove(questData);
-//    }
-
-//    //public void LoadData(GameData gameData)
-//    //{
-//    //    gameData.activeQuests.Clear();
-
-//    //    foreach (var entry in gameData.activeQuests)
-//    //    {
-//    //        string questSaveID = entry.Key;
-//    //        int progress = entry.Value;
-
-//    //        QuestDataSO questDataSo = questDatabase.GetQuestById(questSaveID);
-
-//    //        if (questDataSo == null)
-//    //        {
-//    //            Debug.LogWarning($"Quest with ID {questSaveID} not found in the database.");
-//    //            continue;
-//    //        }
-
-//    //        QuestData questToLoad = new QuestData(questDataSo);
-//    //        questToLoad.currentAmount = progress;
-
-//    //        activeQuests.Add(questToLoad);
-//    //    }
-//    //}
-
-//    public void LoadData(GameData gameData)
-//    {
-//        activeQuests.Clear();
-//        complateQuests.Clear();
-
-//        foreach (var entry in gameData.activeQuests)
-//        {
-//            string questSaveID = entry.Key;
-//            int progress = entry.Value;
-
-//            QuestDataSO questDataSo = questDatabase.GetQuestById(questSaveID);
-
-//            if (questDataSo == null)
-//            {
-//                Debug.LogWarning($"Quest with ID {questSaveID} not found in the database.");
-//                continue;
-//            }
-
-//            QuestData questToLoad = new QuestData(questDataSo);
-//            questToLoad.currentAmount = progress;
-
-//            activeQuests.Add(questToLoad);
-//        }
-
-//        foreach (var entry in gameData.completedQuests)
-//        {
-//            string questSaveID = entry.Key;
-
-//            QuestDataSO questDataSo = questDatabase.GetQuestById(questSaveID);
-
-//            if (questDataSo == null)
-//            {
-//                Debug.LogWarning($"Completed quest with ID {questSaveID} not found in the database.");
-//                continue;
-//            }
-
-//            QuestData questToLoad = new QuestData(questDataSo);
-//            questToLoad.currentAmount = questDataSo.requiredAmount;
-//            questToLoad.canGetReward = true;
-
-//            complateQuests.Add(questToLoad);
-//        }
-//    }
-
-//    //public void SaveData(ref GameData gameData)
-//    //{
-//    //    foreach(var quest in activeQuests)
-//    //    {
-//    //        gameData.activeQuests.Add(quest.questDataSo.questSaveID, quest.currentAmount);
-//    //    }
-
-//    //    foreach (var quest in complateQuests)
-//    //    {
-//    //        gameData.completedQuests.Add(quest.questDataSo.questSaveID, true);
-//    //    }
-//    //}
-//    public void SaveData(ref GameData gameData)
-//    {
-//        gameData.activeQuests.Clear();
-//        gameData.completedQuests.Clear();
-
-//        foreach (var quest in activeQuests)
-//        {
-//            if (quest == null || quest.questDataSo == null)
-//                continue;
-
-//            gameData.activeQuests[quest.questDataSo.questSaveID] = quest.currentAmount;
-//        }
-
-//        foreach (var quest in complateQuests)
-//        {
-//            if (quest == null || quest.questDataSo == null)
-//                continue;
-
-//            gameData.completedQuests[quest.questDataSo.questSaveID] = true;
-//        }
-
-//        Debug.Log($"Saved {activeQuests.Count} active quests and {complateQuests.Count} completed quests");
-//    }
-
-//}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-//using System.Collections.Generic;
-//using UnityEngine;
-
-//public class Player_QuestManager : MonoBehaviour, ISaveable
-//{
-//    public List<QuestData> activeQuests;
-//    public List<QuestData> complateQuests;
-
-//    private Entity_DropManager dropManager;
-//    private Inventory_Player inventory;
-
-//    [Header("Quest Database")]
-//    [SerializeField] private QuestDatabaseSO questDatabase;
-
-//    private void Awake()
-//    {
-//        dropManager = GetComponent<Entity_DropManager>();
-//        inventory = GetComponent<Inventory_Player>();
-//    }
-
-//    public void TryGetRewardFrom(RewardType npcType)
-//    {
-//        List<QuestData> getRewardQuest = new List<QuestData>();
-
-//        foreach (var quest in activeQuests)
-//        {
-//            // Delivery quest check
-//            if (quest.questDataSo.questType == QuestType.Delivery)
-//            {
-//                var requiredItem = quest.questDataSo.itemToDelivery;
-//                var requiredAmount = quest.questDataSo.requiredAmount;
-
-//                if (inventory.HasItemAmount(requiredItem, requiredAmount))
-//                {
-//                    inventory.RemoveItemAmount(requiredItem, requiredAmount);
-//                    quest.AddQuestProgress(requiredAmount);
-//                }
-//            }
-//            if (quest.CanGetReward() && quest.questDataSo.rewardType == npcType)
-//                getRewardQuest.Add(quest);
-//        }
-
-//        foreach (var quest in getRewardQuest)
-//        {
-//            GiveQuestReward(quest.questDataSo);
-//            CompleteQuest(quest);
-//        }
-//    }
-
-//    private void GiveQuestReward(QuestDataSO questDataSo)
-//    {
-//        foreach (var item in questDataSo.rewardItems)
-//        {
-//            if (item == null || item.itemData == null) continue;
-
-//            for (int i = 0; i < item.stackSize; i++)
-//            {
-//                dropManager.CreateItemDrop(item.itemData);
-//            }
-//        }
-//    }
-
-//    public bool HasComplatedQuest()
-//    {
-//        for (int i = 0; i < activeQuests.Count; i++)
-//        {
-//            // Delivery quest check
-
-//            QuestData quest = activeQuests[i];
-
-//            if (quest.questDataSo.questType == QuestType.Delivery)
-//            {
-//                var requiredItem = quest.questDataSo.itemToDelivery;
-//                var requiredAmount = quest.questDataSo.requiredAmount;
-
-//                if (inventory.HasItemAmount(requiredItem, requiredAmount))
-//                    return true;
-
-//            }
-
-//            if (quest.CanGetReward())
-//                return true;
-//        }
-//        return false;
-//    }
-
-//    public void AddProgress(string questTargetID, int amount = 1)
-//    {
-//        List<QuestData> getRewardQuests = new List<QuestData>();
-
-//        foreach (var quest in activeQuests)
-//        {
-//            if (quest.questDataSo.questTargetID != questTargetID)
-//                continue;
-
-//            if (quest.CanGetReward() == false)
-//                quest.AddQuestProgress(amount);
-
-//            if (quest.questDataSo.rewardType == RewardType.None && quest.CanGetReward())
-//                getRewardQuests.Add(quest);
-//        }
-//        foreach (var quest in getRewardQuests)
-//        {
-//            GiveQuestReward(quest.questDataSo);
-//            CompleteQuest(quest);
-//        }
-//    }
-
-//    public void ActiveQuest(QuestDataSO questDataSo)
-//    {
-//        activeQuests.Add(new QuestData(questDataSo));
-//    }
-
-//    public bool QuestIsActive(QuestDataSO questToCheck)
-//    {
-//        if (questToCheck == null)
-//            return false;
-
-//        return activeQuests.Find(q => q.questDataSo == questToCheck) != null;
-//    }
-
-//    public int GetQuestProgress(QuestData questToCheck)
-//    {
-//        QuestData quest = activeQuests.Find(q => q == questToCheck);
-//        return quest != null ? quest.currentAmount : 0;
-//    }
-
-//    public void CompleteQuest(QuestData questData)
-//    {
-//        complateQuests.Add(questData);
-//        activeQuests.Remove(questData);
-//    }
-
-//    public void LoadData(GameData gameData)
-//    {
-//        activeQuests.Clear();
-//        complateQuests.Clear();
-
-//        foreach (var entry in gameData.activeQuests)
-//        {
-//            string questSaveID = entry.Key;
-//            int progress = entry.Value;
-
-//            QuestDataSO questDataSo = questDatabase.GetQuestById(questSaveID);
-
-//            if (questDataSo == null)
-//            {
-//                Debug.LogWarning($"Quest with ID {questSaveID} not found in the database.");
-//                continue;
-//            }
-
-//            QuestData questToLoad = new QuestData(questDataSo);
-//            questToLoad.currentAmount = progress;
-
-//            activeQuests.Add(questToLoad);
-//        }
-
-//        foreach (var entry in gameData.completedQuests)
-//        {
-//            string questSaveID = entry.Key;
-
-//            QuestDataSO questDataSo = questDatabase.GetQuestById(questSaveID);
-
-//            if (questDataSo == null)
-//            {
-//                Debug.LogWarning($"Completed quest with ID {questSaveID} not found in the database.");
-//                continue;
-//            }
-
-//            QuestData questToLoad = new QuestData(questDataSo);
-//            questToLoad.currentAmount = questDataSo.requiredAmount;
-//            questToLoad.canGetReward = true;
-
-//            complateQuests.Add(questToLoad);
-//        }
-//    }
-
-//    public void SaveData(ref GameData gameData)
-//    {
-//        gameData.activeQuests.Clear();
-//        gameData.completedQuests.Clear();
-
-//        foreach (var quest in activeQuests)
-//        {
-//            if (quest == null || quest.questDataSo == null)
-//                continue;
-
-//            gameData.activeQuests[quest.questDataSo.questSaveID] = quest.currentAmount;
-//        }
-
-//        foreach (var quest in complateQuests)
-//        {
-//            if (quest == null || quest.questDataSo == null)
-//                continue;
-
-//            gameData.completedQuests[quest.questDataSo.questSaveID] = true;
-//        }
-
-//        Debug.Log($"Saved {activeQuests.Count} active quests and {complateQuests.Count} completed quests");
-//    }
-
-//}
-
-
-
-
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -491,11 +24,21 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         inventory = GetComponent<Inventory_Player>();
     }
 
+    private void Start()
+    {
+        // Double-check inventory reference
+        if (inventory == null)
+        {
+            inventory = GetComponent<Inventory_Player>();
+            if (inventory == null)
+            {
+                inventory = FindFirstObjectByType<Inventory_Player>();
+            }
+        }
+    }
+
     #region Inventory Helpers
 
-    /// <summary>
-    /// Check if inventory has enough of an item
-    /// </summary>
     private bool HasItemAmount(ItemDataSO itemData, int amount)
     {
         if (inventory == null || itemData == null) return false;
@@ -512,16 +55,12 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         return count >= amount;
     }
 
-    /// <summary>
-    /// Remove a specific amount of an item from inventory
-    /// </summary>
     private void RemoveItemAmount(ItemDataSO itemData, int amount)
     {
         if (inventory == null || itemData == null) return;
 
         int remaining = amount;
 
-        // Find and remove items
         for (int i = inventory.itemList.Count - 1; i >= 0 && remaining > 0; i--)
         {
             var item = inventory.itemList[i];
@@ -547,18 +86,15 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
 
     #endregion
 
-    /// <summary>
-    /// Activate a new quest
-    /// </summary>
+    #region Quest Activation
+
     public bool ActivateQuest(QuestDataSO questDataSo)
     {
         if (questDataSo == null) return false;
 
-        // Check if already active or completed
         if (QuestIsActive(questDataSo) || QuestIsCompleted(questDataSo))
             return false;
 
-        // Check prerequisite
         if (questDataSo.prerequisiteQuest != null && !QuestIsCompleted(questDataSo.prerequisiteQuest))
         {
             Debug.Log($"Cannot accept quest '{questDataSo.questName}': Prerequisite not met.");
@@ -574,43 +110,35 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         return true;
     }
 
-    /// <summary>
-    /// Backward compatible method name
-    /// </summary>
     public void ActiveQuest(QuestDataSO questDataSo)
     {
         ActivateQuest(questDataSo);
     }
 
+    #endregion
 
-    /// <summary>
-    /// Add progress for simple quests or specific targets (backward compatible)
-    /// </summary>
+    #region Quest Progress
+
     public void AddProgress(string questTargetID, int amount = 1)
     {
         List<QuestData> getRewardQuests = new List<QuestData>();
 
         Debug.Log($"[Quest] AddProgress called - targetID: {questTargetID}, amount: {amount}");
-        Debug.Log($"[Quest] Active quests count: {activeQuests.Count}");
 
         foreach (var quest in activeQuests)
         {
             bool progressMade = false;
 
-            // Try complex quest progress first
             if (quest.questDataSo.HasMultipleObjectives())
             {
                 progressMade = quest.AddObjectiveProgress(questTargetID, amount);
 
-                // Check for objective completion events
                 if (progressMade)
                 {
-                    Debug.Log($"[Quest] Progress made on complex quest: {quest.questDataSo.questName}");
                     var objData = quest.FindObjectiveData(questTargetID);
                     if (objData != null)
                     {
                         OnObjectiveProgress?.Invoke(quest, objData);
-
                         if (objData.isCompleted)
                         {
                             OnObjectiveCompleted?.Invoke(quest, objData);
@@ -620,35 +148,24 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
             }
             else
             {
-                // Simple quest progress - use new helper method
                 string targetID = quest.questDataSo.GetSimpleQuestTargetID();
-
-                Debug.Log($"[Quest] Checking simple quest '{quest.questDataSo.questName}' - targetID: {targetID}, looking for: {questTargetID}");
 
                 if (targetID == questTargetID)
                 {
                     if (!quest.CanGetReward())
                     {
-                        int before = quest.currentAmount;
                         quest.AddQuestProgress(amount);
-                        Debug.Log($"[Quest] Progress: {before} -> {quest.currentAmount}/{quest.GetRequiredAmount()} for quest '{quest.questDataSo.questName}'");
                         progressMade = true;
-                    }
-                    else
-                    {
-                        Debug.Log($"[Quest] Quest '{quest.questDataSo.questName}' already complete, no progress added");
                     }
                 }
             }
 
-            // Check if quest is now completable with no turn-in required
             if (quest.questDataSo.rewardType == RewardType.None && quest.CanGetReward())
             {
                 getRewardQuests.Add(quest);
             }
         }
 
-        // Auto-complete quests with no reward NPC
         foreach (var quest in getRewardQuests)
         {
             GiveQuestReward(quest.questDataSo);
@@ -656,16 +173,12 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         }
     }
 
-    /// <summary>
-    /// Add progress by objective type (for complex quests)
-    /// </summary>
     public void AddProgress(QuestObjectiveType objectiveType, string targetID, int amount = 1)
     {
         foreach (var quest in activeQuests)
         {
             if (!quest.questDataSo.HasMultipleObjectives())
             {
-                // For simple quests, check target ID match
                 if (quest.questDataSo.questTargetID == targetID)
                 {
                     AddProgress(targetID, amount);
@@ -679,14 +192,12 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
                 if (objData != null)
                 {
                     OnObjectiveProgress?.Invoke(quest, objData);
-
                     if (objData.isCompleted)
                     {
                         OnObjectiveCompleted?.Invoke(quest, objData);
                     }
                 }
 
-                // Auto-complete if applicable
                 if (quest.questDataSo.rewardType == RewardType.None && quest.CanGetReward())
                 {
                     GiveQuestReward(quest.questDataSo);
@@ -696,34 +207,24 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         }
     }
 
-    /// <summary>
-    /// Complete a talk/visit objective
-    /// </summary>
     public void CompleteObjective(string targetID)
     {
         AddProgress(targetID, 999);
     }
 
+    #endregion
+
     #region Reward Collection
 
-    /// <summary>
-    /// Try to get rewards from NPC by reward type (backward compatible)
-    /// </summary>
     public void TryGetRewardFrom(RewardType npcType)
     {
         Debug.Log($"[Quest] TryGetRewardFrom called with rewardType: {npcType}");
-        Debug.Log($"[Quest] Active quests count: {activeQuests.Count}");
 
         List<QuestData> getRewardQuest = new List<QuestData>();
 
         foreach (var quest in activeQuests)
         {
-            Debug.Log($"[Quest] Checking quest: {quest.questDataSo.questName}");
-            Debug.Log($"[Quest]   - CanGetReward: {quest.CanGetReward()}");
-            Debug.Log($"[Quest]   - Quest RewardType: {quest.questDataSo.rewardType}");
-
-            // Handle delivery quests
-            if (quest.questDataSo.IsDeliveryQuest() || HasDeliveryObjectives(quest))
+            if (HasDeliveryObjectives(quest))
             {
                 TryCompleteDeliveryObjectives(quest);
             }
@@ -735,8 +236,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
             }
         }
 
-        Debug.Log($"[Quest] Quests to complete: {getRewardQuest.Count}");
-
         foreach (var quest in getRewardQuest)
         {
             GiveQuestReward(quest.questDataSo);
@@ -744,48 +243,31 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         }
     }
 
-    /// <summary>
-    /// Try to get rewards from specific NPC by ID
-    /// </summary>
     public void TryGetRewardFromNpc(string npcID)
     {
         Debug.Log($"[Quest] TryGetRewardFromNpc called with npcID: {npcID}");
-        Debug.Log($"[Quest] Active quests count: {activeQuests.Count}");
 
         List<QuestData> getRewardQuest = new List<QuestData>();
 
         foreach (var quest in activeQuests)
         {
-            Debug.Log($"[Quest] Checking quest: {quest.questDataSo.questName}");
-            Debug.Log($"[Quest]   - CanGetReward: {quest.CanGetReward()}");
-            Debug.Log($"[Quest]   - RewardGiverNpcID: {quest.questDataSo.rewardGiverNpcID}");
-            Debug.Log($"[Quest]   - CanNpcGiveReward({npcID}): {quest.questDataSo.CanNpcGiveReward(npcID)}");
-
-            // Handle delivery quests to this NPC
             TryCompleteDeliveryObjectives(quest, npcID);
 
-            // Check if can turn in
             if (quest.CanGetReward())
             {
-                // Check by NPC ID first
                 if (quest.questDataSo.CanNpcGiveReward(npcID))
                 {
-                    Debug.Log($"[Quest] Quest '{quest.questDataSo.questName}' ready for turn-in!");
                     getRewardQuest.Add(quest);
                     continue;
                 }
 
-                // Check if reward giver matches
                 if (!string.IsNullOrEmpty(quest.questDataSo.rewardGiverNpcID) &&
                     quest.questDataSo.rewardGiverNpcID == npcID)
                 {
-                    Debug.Log($"[Quest] Quest '{quest.questDataSo.questName}' ready for turn-in (by rewardGiverNpcID)!");
                     getRewardQuest.Add(quest);
                 }
             }
         }
-
-        Debug.Log($"[Quest] Quests to complete: {getRewardQuest.Count}");
 
         foreach (var quest in getRewardQuest)
         {
@@ -794,28 +276,69 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         }
     }
 
-    /// <summary>
-    /// Check if quest has delivery objectives
-    /// </summary>
+    public List<QuestData> GetCompletableQuests()
+    {
+        List<QuestData> completable = new List<QuestData>();
+
+        foreach (var quest in activeQuests)
+        {
+            if (quest.CanGetReward())
+            {
+                completable.Add(quest);
+            }
+            else if (HasDeliveryObjectives(quest) && CanCompleteDeliveryQuest(quest))
+            {
+                completable.Add(quest);
+            }
+        }
+
+        return completable;
+    }
+
+    public List<QuestData> GetCompletableQuestsForNpc(string npcID, RewardType rewardType)
+    {
+        List<QuestData> completable = new List<QuestData>();
+
+        foreach (var quest in activeQuests)
+        {
+            if (!quest.CanGetReward() && !CanCompleteDeliveryQuest(quest))
+                continue;
+
+            // Check by NPC ID
+            if (!string.IsNullOrEmpty(npcID))
+            {
+                if (quest.questDataSo.CanNpcGiveReward(npcID) ||
+                    quest.questDataSo.rewardGiverNpcID == npcID)
+                {
+                    completable.Add(quest);
+                    continue;
+                }
+            }
+
+            // Check by reward type
+            if (quest.questDataSo.rewardType == rewardType)
+            {
+                completable.Add(quest);
+            }
+        }
+
+        return completable;
+    }
+
     private bool HasDeliveryObjectives(QuestData quest)
     {
         return quest.questDataSo.IsDeliveryQuest();
     }
 
-    /// <summary>
-    /// Try to complete delivery objectives
-    /// </summary>
     private void TryCompleteDeliveryObjectives(QuestData quest, string specificNpcID = null)
     {
         if (!quest.questDataSo.HasMultipleObjectives())
         {
-            // Simple delivery quest
             if (quest.questDataSo.IsDeliveryQuest())
             {
                 var requiredItem = quest.questDataSo.GetDeliveryItem();
                 var requiredAmount = quest.questDataSo.GetSimpleQuestRequiredAmount();
 
-                // Check if delivering to correct NPC
                 if (specificNpcID != null)
                 {
                     string deliverTarget = quest.questDataSo.simpleObjectiveType == QuestObjectiveType.Deliver
@@ -835,7 +358,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
             return;
         }
 
-        // Complex quest delivery objectives
         foreach (var objData in quest.objectiveProgress)
         {
             if (objData.objectiveSO.objectiveType != QuestObjectiveType.Deliver)
@@ -844,7 +366,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
             if (objData.isCompleted)
                 continue;
 
-            // Check if this is the right NPC
             if (specificNpcID != null && objData.objectiveSO.turnInNpcID != specificNpcID)
                 continue;
 
@@ -865,9 +386,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         }
     }
 
-    /// <summary>
-    /// Give quest rewards to player
-    /// </summary>
     private void GiveQuestReward(QuestDataSO questDataSo)
     {
         if (questDataSo.rewardItems == null || questDataSo.rewardItems.Length == 0)
@@ -876,72 +394,129 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
             return;
         }
 
-        Debug.Log($"[Quest] Giving {questDataSo.rewardItems.Length} reward(s) for quest: {questDataSo.questName}");
-
-        foreach (var item in questDataSo.rewardItems)
+        // Ensure inventory reference is valid
+        if (inventory == null)
         {
-            if (item == null || item.itemData == null)
+            inventory = GetComponent<Inventory_Player>();
+            if (inventory == null)
+            {
+                inventory = FindFirstObjectByType<Inventory_Player>();
+            }
+        }
+
+        Debug.Log($"[Quest] Giving {questDataSo.rewardItems.Length} reward(s) for quest: {questDataSo.questName}");
+        Debug.Log($"[Quest] Inventory reference: {(inventory != null ? "VALID" : "NULL")}");
+
+        foreach (var rewardItem in questDataSo.rewardItems)
+        {
+            if (rewardItem == null || rewardItem.itemData == null)
             {
                 Debug.LogWarning($"[Quest] Quest '{questDataSo.questName}' has null reward item!");
                 continue;
             }
 
-            Debug.Log($"[Quest] Processing reward: {item.itemData.itemName} x{item.stackSize}");
+            ItemDataSO itemData = rewardItem.itemData;
+            int amount = rewardItem.stackSize;
 
-            // Try to add directly to inventory first
+            Debug.Log($"[Quest] Processing reward: {itemData.itemName} x{amount}");
+
+            // Try to add directly to inventory
             if (inventory != null)
             {
-                // Try different common method signatures
-                bool added = TryAddToInventory(item.itemData, item.stackSize);
-                if (added)
+                bool success = AddRewardToInventory(itemData, amount);
+
+                if (success)
                 {
-                    Debug.Log($"[Quest] Added {item.stackSize}x {item.itemData.itemName} to inventory");
+                    Debug.Log($"[Quest] SUCCESS: Added {amount}x {itemData.itemName} to inventory");
                 }
                 else
                 {
-                    Debug.LogWarning($"[Quest] Failed to add item to inventory - check Inventory_Player.AddItem() method");
+                    Debug.LogWarning($"[Quest] FAILED: Could not add {itemData.itemName} to inventory, dropping instead");
+                    DropRewardItems(itemData, amount);
                 }
-            }
-            // Fallback: drop items on ground
-            else if (dropManager != null)
-            {
-                for (int i = 0; i < item.stackSize; i++)
-                {
-                    dropManager.CreateItemDrop(item.itemData);
-                }
-                Debug.Log($"[Quest] Dropped {item.stackSize}x {item.itemData.itemName}");
             }
             else
             {
-                Debug.LogError($"[Quest] Cannot give reward! Both inventory and dropManager are null!");
+                Debug.LogWarning($"[Quest] No inventory found, dropping items");
+                DropRewardItems(itemData, amount);
             }
         }
 
-        Debug.Log($"[Quest] All rewards given for: {questDataSo.questName}");
-    }
+        // Force UI update
+        if (inventory != null)
+        {
+            inventory.TriggerUpdateUI();
+        }
 
-    /// <summary>
-    /// Try to add item to inventory using available methods
-    /// </summary>
-    private bool TryAddToInventory(ItemDataSO itemData, int amount)
+        Debug.Log($"[Quest] All rewards processed for: {questDataSo.questName}");
+    }
+    private bool AddRewardToInventory(ItemDataSO itemData, int amount)
     {
-        if (inventory == null) return false;
+        if (inventory == null || itemData == null) return false;
 
         try
         {
-            // Your inventory uses Inventory_Item objects, not raw ItemDataSO
-            // Create new Inventory_Item for each stack
+            // Check if it's a material - goes to storage stash
+            if (itemData.itemType == ItemType.Material)
+            {
+                if (inventory.storage != null)
+                {
+                    for (int i = 0; i < amount; i++)
+                    {
+                        Inventory_Item newItem = new Inventory_Item(itemData);
+                        inventory.storage.AddMaterialToStash(newItem);
+                    }
+                    Debug.Log($"[Quest] Added {amount}x {itemData.itemName} to material stash");
+                    return true;
+                }
+            }
+
+            // Regular items go to inventory
             for (int i = 0; i < amount; i++)
             {
                 Inventory_Item newItem = new Inventory_Item(itemData);
-                inventory.AddItem(newItem);
+
+                // Check if we can add
+                if (inventory.CanAddItem(newItem))
+                {
+                    inventory.AddItem(newItem);
+                }
+                else
+                {
+                    // Inventory full - drop remaining
+                    Debug.LogWarning($"[Quest] Inventory full! Dropping remaining {amount - i}x {itemData.itemName}");
+                    DropRewardItems(itemData, amount - i);
+                    return true; // Partial success
+                }
             }
+
             return true;
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"[Quest] Error adding item to inventory: {e.Message}");
+            Debug.LogError($"[Quest] Error adding reward to inventory: {e.Message}\n{e.StackTrace}");
             return false;
+        }
+    }
+
+    private void DropRewardItems(ItemDataSO itemData, int amount)
+    {
+        if (dropManager == null)
+        {
+            dropManager = GetComponent<Entity_DropManager>();
+        }
+
+        if (dropManager != null)
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                dropManager.CreateItemDrop(itemData);
+            }
+            Debug.Log($"[Quest] Dropped {amount}x {itemData.itemName}");
+        }
+        else
+        {
+            Debug.LogError($"[Quest] CRITICAL: Cannot give reward - no inventory and no drop manager!");
         }
     }
 
@@ -949,14 +524,10 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
 
     #region Quest Status Queries
 
-    /// <summary>
-    /// Check if any quest is completable
-    /// </summary>
     public bool HasCompletedQuest()
     {
         foreach (var quest in activeQuests)
         {
-            // Check delivery requirements
             if (HasDeliveryObjectives(quest))
             {
                 if (CanCompleteDeliveryQuest(quest))
@@ -969,9 +540,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         return false;
     }
 
-    /// <summary>
-    /// Check if any quest is completable for specific reward type
-    /// </summary>
     public bool HasCompletedQuestFor(RewardType rewardType)
     {
         foreach (var quest in activeQuests)
@@ -988,30 +556,22 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         return false;
     }
 
-    /// <summary>
-    /// Check if any quest is completable for specific NPC
-    /// </summary>
     public bool HasCompletedQuestForNpc(string npcID)
     {
         foreach (var quest in activeQuests)
         {
             if (!quest.CanGetReward()) continue;
 
-            // Check by reward giver NPC ID
             if (!string.IsNullOrEmpty(quest.questDataSo.rewardGiverNpcID) &&
                 quest.questDataSo.rewardGiverNpcID == npcID)
                 return true;
 
-            // Check additional reward givers
             if (quest.questDataSo.CanNpcGiveReward(npcID))
                 return true;
         }
         return false;
     }
 
-    /// <summary>
-    /// Get all quests that can be turned in to a specific NPC
-    /// </summary>
     public QuestData[] GetTurnInableQuestsForNpc(string npcID)
     {
         var result = new List<QuestData>();
@@ -1020,7 +580,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         {
             if (!quest.CanGetReward()) continue;
 
-            // Check by reward giver NPC ID
             if (!string.IsNullOrEmpty(quest.questDataSo.rewardGiverNpcID) &&
                 quest.questDataSo.rewardGiverNpcID == npcID)
             {
@@ -1028,7 +587,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
                 continue;
             }
 
-            // Check additional reward givers
             if (quest.questDataSo.CanNpcGiveReward(npcID))
             {
                 result.Add(quest);
@@ -1038,9 +596,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         return result.ToArray();
     }
 
-    /// <summary>
-    /// Get all quests that can be turned in to a specific reward type
-    /// </summary>
     public QuestData[] GetTurnInableQuestsForType(RewardType rewardType)
     {
         var result = new List<QuestData>();
@@ -1059,9 +614,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         return result.ToArray();
     }
 
-    /// <summary>
-    /// Check if delivery quest can be completed
-    /// </summary>
     private bool CanCompleteDeliveryQuest(QuestData quest)
     {
         if (!quest.questDataSo.HasMultipleObjectives())
@@ -1093,36 +645,24 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         return false;
     }
 
-    /// <summary>
-    /// Check if quest is active
-    /// </summary>
     public bool QuestIsActive(QuestDataSO questToCheck)
     {
         if (questToCheck == null) return false;
         return activeQuests.Find(q => q.questDataSo == questToCheck) != null;
     }
 
-    /// <summary>
-    /// Check if quest is completed
-    /// </summary>
     public bool QuestIsCompleted(QuestDataSO questToCheck)
     {
         if (questToCheck == null) return false;
         return completedQuests.Find(q => q.questDataSo == questToCheck) != null;
     }
 
-    /// <summary>
-    /// Get progress for specific quest (backward compatible)
-    /// </summary>
     public int GetQuestProgress(QuestData questToCheck)
     {
         QuestData quest = activeQuests.Find(q => q == questToCheck);
         return quest != null ? quest.currentAmount : 0;
     }
 
-    /// <summary>
-    /// Get all active objectives for a quest
-    /// </summary>
     public List<QuestObjectiveData> GetActiveObjectives(QuestData quest)
     {
         if (!quest.questDataSo.HasMultipleObjectives())
@@ -1131,9 +671,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         return quest.GetIncompleteObjectives();
     }
 
-    /// <summary>
-    /// Find quest by target ID
-    /// </summary>
     public QuestData FindQuestByTarget(string targetID)
     {
         foreach (var quest in activeQuests)
@@ -1156,9 +693,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
 
     #region Quest Completion
 
-    /// <summary>
-    /// Complete a quest and move to completed list
-    /// </summary>
     public void CompleteQuest(QuestData questData)
     {
         activeQuests.Remove(questData);
@@ -1167,7 +701,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         OnQuestCompleted?.Invoke(questData);
         Debug.Log($"Quest completed: {questData.questDataSo.questName}");
 
-        // Auto-activate next quest in chain
         if (questData.questDataSo.nextQuestInChain != null)
         {
             ActivateQuest(questData.questDataSo.nextQuestInChain);
@@ -1183,7 +716,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         activeQuests.Clear();
         completedQuests.Clear();
 
-        // Load active quests
         foreach (var entry in gameData.activeQuests)
         {
             string questSaveID = entry.Key;
@@ -1199,7 +731,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
             QuestData questToLoad = new QuestData(questDataSo);
             questToLoad.currentAmount = progress;
 
-            // Load complex quest progress if available
             if (gameData.questObjectiveProgress != null &&
                 gameData.questObjectiveProgress.TryGetValue(questSaveID, out var objectiveData))
             {
@@ -1209,7 +740,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
             activeQuests.Add(questToLoad);
         }
 
-        // Load completed quests
         foreach (var entry in gameData.completedQuests)
         {
             string questSaveID = entry.Key;
@@ -1234,7 +764,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
         gameData.activeQuests.Clear();
         gameData.completedQuests.Clear();
 
-        // Initialize objective progress dictionary if needed
         if (gameData.questObjectiveProgress == null)
         {
             gameData.questObjectiveProgress = new SerializableDictionary<string, SerializableDictionary<string, int>>();
@@ -1248,7 +777,6 @@ public class Player_QuestManager : MonoBehaviour, ISaveable
             string saveID = quest.questDataSo.questSaveID;
             gameData.activeQuests[saveID] = quest.currentAmount;
 
-            // Save complex quest objective progress
             if (quest.questDataSo.HasMultipleObjectives())
             {
                 var progressDict = quest.GetSerializableProgress();

@@ -7,7 +7,7 @@ public class Entity : MonoBehaviour
     public event Action OnFlipped;
     public Animator anim { get; private set; }
     public Rigidbody2D rb { get; private set; }
-    protected StateMachine stateMachine;
+    public StateMachine stateMachine { get; private set; }
     public Entity_SFX sfx { get; private set; }
 
     private bool facingRight = true;

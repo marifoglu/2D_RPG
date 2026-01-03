@@ -18,5 +18,5 @@ MonoBehaviour:
   - 
   playerChoiceAnswer: Do you have a new job for me?
   choiceLines: []
-  actionLine: Sure you take a look!
-  actionType: 3
+  actionLine: Sure you take a look to other section!
+  actionType: 0
