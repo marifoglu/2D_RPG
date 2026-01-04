@@ -30,11 +30,9 @@ public class SaveManager : MonoBehaviour
     private float sessionStartTime;
     private float totalPlayTime;
 
-    // ========== EVENTS - THESE ARE NEEDED BY OTHER SCRIPTS ==========
     public event Action OnSaveCompleted;
     public event Action OnLoadCompleted;
     public event Action<int> OnSlotDeleted;
-    // ================================================================
 
     private void Awake()
     {
@@ -93,7 +91,6 @@ public class SaveManager : MonoBehaviour
 
         yield return null;
 
-        // Initial load handled by OnSceneLoaded event
     }
 
     #region Save Operations
@@ -105,7 +102,6 @@ public class SaveManager : MonoBehaviour
 
         allSaveables = FindISaveable();
 
-        // DEBUG: Show what saveables were found
         Debug.Log($"[SaveManager] Saving - Found {allSaveables?.Count ?? 0} ISaveable objects:");
 
         if (allSaveables != null && allSaveables.Count > 0)
@@ -120,17 +116,14 @@ public class SaveManager : MonoBehaviour
             }
         }
 
-        // DEBUG: Show what was saved
         Debug.Log($"[SaveManager] After save - skillPoints: {gameData.skillPoints}, experience: {gameData.currentExperience}");
 
-        // Use -1 to save to base filename (mirethalGameData.json)
         dataHandler.SaveData(gameData, -1);
 
         Debug.Log("Game saved to: " + fileName);
         OnSaveCompleted?.Invoke();
     }
 
-    // Overload for compatibility - ignores slot, uses single file
     public void SaveGame(int slotIndex)
     {
         SaveGame();
@@ -142,7 +135,6 @@ public class SaveManager : MonoBehaviour
 
     public void LoadGame()
     {
-        // Use -1 to load from base filename (mirethalGameData.json)
         gameData = dataHandler.LoadData(-1);
 
         if (gameData == null)
@@ -152,12 +144,10 @@ public class SaveManager : MonoBehaviour
             SaveGame(); // Create the file immediately
         }
 
-        // DEBUG: Show what's in the save file
         Debug.Log($"[SaveManager] Loaded GameData - skillPoints: {gameData.skillPoints}, experience: {gameData.currentExperience}");
 
         allSaveables = FindISaveable();
 
-        // DEBUG: Show what saveables were found
         Debug.Log($"[SaveManager] Found {allSaveables?.Count ?? 0} ISaveable objects:");
         if (allSaveables != null)
         {
@@ -175,11 +165,9 @@ public class SaveManager : MonoBehaviour
 
         Debug.Log("Game loaded from: " + fileName);
 
-        // FIRE THE EVENT - other scripts subscribe to this!
         OnLoadCompleted?.Invoke();
     }
 
-    // Overload for compatibility - ignores slot, uses single file
     public void LoadGame(int slotIndex)
     {
         LoadGame();
@@ -244,13 +232,11 @@ public class SaveManager : MonoBehaviour
 
     #region Delete Operations
 
-    // ========== DELETE SLOT - NEEDED BY OTHER SCRIPTS ==========
     public void DeleteSlot(int slotIndex)
     {
         DeleteSaveData();
         OnSlotDeleted?.Invoke(slotIndex);
     }
-    // ===========================================================
 
     [ContextMenu("Delete Save Data")]
     public void DeleteSaveData()

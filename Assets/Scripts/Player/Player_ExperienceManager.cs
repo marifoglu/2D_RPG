@@ -37,9 +37,6 @@ public class Player_ExperienceManager : MonoBehaviour, ISaveable
         Debug.Log($"[Player_ExperienceManager] Started with {currentExp} experience. Need {expPerSkillPoint} EXP per skill point.");
     }
 
-    /// <summary>
-    /// Add experience from killing an enemy
-    /// </summary>
     public void AddExperience(int amount)
     {
         currentExp += amount;
@@ -51,9 +48,6 @@ public class Player_ExperienceManager : MonoBehaviour, ISaveable
         Debug.Log($"[Player_ExperienceManager] Gained {amount} EXP. Total: {currentExp}/{expPerSkillPoint}");
     }
 
-    /// <summary>
-    /// Add experience based on enemy rarity
-    /// </summary>
     public void AddExperienceFromEnemy(EnemyRarity rarity)
     {
         if (expConfig == null)
@@ -95,9 +89,7 @@ public class Player_ExperienceManager : MonoBehaviour, ISaveable
     // Getters
     public int GetCurrentExp() => currentExp;
 
-    /// <summary>
-    /// Get current skill points from UI_SkillTree
-    /// </summary>
+
     public int GetCurrentSkillPoints()
     {
         if (skillTree != null)
