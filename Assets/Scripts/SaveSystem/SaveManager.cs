@@ -13,16 +13,16 @@ public class SaveManager : MonoBehaviour
     private GameData gameData;
     private List<ISaveable> allSaveables;
 
-    [SerializeField] private string fileName = "miretalGameData.json";
+    [SerializeField] private string fileName = "mirethalGameData.json";
     [SerializeField] private bool encryptData = true;
 
     public const int MAX_SAVE_SLOTS = 5;
 
-    // Current active slot (-1 means no slot selected / new game)
-    private int currentSlotIndex = -1;
+    // Current active slot (kept for compatibility, but we use single file)
+    private int currentSlotIndex = 0;
     public int CurrentSlotIndex => currentSlotIndex;
 
-    // Slot metadata
+    // Slot metadata (kept for compatibility)
     private SaveSlotData[] saveSlots;
     public SaveSlotData[] SaveSlots => saveSlots;
 
@@ -30,10 +30,11 @@ public class SaveManager : MonoBehaviour
     private float sessionStartTime;
     private float totalPlayTime;
 
-    // Events
+    // ========== EVENTS - THESE ARE NEEDED BY OTHER SCRIPTS ==========
     public event Action OnSaveCompleted;
     public event Action OnLoadCompleted;
     public event Action<int> OnSlotDeleted;
+    // ================================================================
 
     private void Awake()
     {
@@ -47,119 +48,92 @@ public class SaveManager : MonoBehaviour
         DontDestroyOnLoad(gameObject);
     }
 
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    // This is called every time a scene loads
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        Debug.Log($"[SaveManager] OnSceneLoaded: {scene.name}");
+
+        if (scene.name != "MainMenu")
+        {
+            StartCoroutine(LoadAfterSceneReady());
+        }
+    }
+
+    private IEnumerator LoadAfterSceneReady()
+    {
+        yield return null; // Wait one frame for all objects to initialize
+        LoadGame();
+        Debug.Log("Auto-loaded save data after scene change");
+    }
+
     private IEnumerator Start()
     {
         Debug.Log("Save Directory: " + Application.persistentDataPath);
         dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, encryptData);
 
-        // Load slot metadata
-        saveSlots = dataHandler.LoadSlotMetadata();
+        // Initialize slot metadata for compatibility
+        saveSlots = new SaveSlotData[MAX_SAVE_SLOTS];
+        for (int i = 0; i < MAX_SAVE_SLOTS; i++)
+        {
+            saveSlots[i] = new SaveSlotData(i);
+        }
 
         allSaveables = FindISaveable();
         sessionStartTime = Time.time;
 
         yield return null;
 
-        // Don't auto-load in main menu - wait for player to select a slot
-        if (SceneManager.GetActiveScene().name != "MainMenu")
-        {
-            // If we have an active slot, load it
-            if (currentSlotIndex >= 0)
-            {
-                LoadGame(currentSlotIndex);
-            }
-        }
+        // Initial load handled by OnSceneLoaded event
     }
-
-    #region Slot Management
-
-    public SaveSlotData GetSlotData(int slotIndex)
-    {
-        if (slotIndex < 0 || slotIndex >= MAX_SAVE_SLOTS)
-            return null;
-
-        return saveSlots[slotIndex];
-    }
-
-    public bool IsSlotEmpty(int slotIndex)
-    {
-        if (slotIndex < 0 || slotIndex >= MAX_SAVE_SLOTS)
-            return true;
-
-        return saveSlots[slotIndex].isEmpty;
-    }
-
-    public void SetCurrentSlot(int slotIndex)
-    {
-        currentSlotIndex = slotIndex;
-    }
-
-    #endregion
 
     #region Save Operations
 
     public void SaveGame()
     {
-        if (currentSlotIndex < 0)
-        {
-            Debug.LogWarning("No save slot selected. Cannot save.");
-            return;
-        }
-
-        SaveGame(currentSlotIndex);
-    }
-
-    public void SaveGame(int slotIndex)
-    {
-        if (slotIndex < 0 || slotIndex >= MAX_SAVE_SLOTS)
-        {
-            Debug.LogError($"Invalid slot index: {slotIndex}");
-            return;
-        }
-
         if (gameData == null)
-        {
             gameData = new GameData();
-        }
 
-        // Refresh saveable list
         allSaveables = FindISaveable();
 
-        if (allSaveables == null || allSaveables.Count == 0)
-        {
-            Debug.LogWarning("No saveable objects found");
-        }
-        else
+        // DEBUG: Show what saveables were found
+        Debug.Log($"[SaveManager] Saving - Found {allSaveables?.Count ?? 0} ISaveable objects:");
+
+        if (allSaveables != null && allSaveables.Count > 0)
         {
             foreach (var saveable in allSaveables)
             {
-                saveable.SaveData(ref gameData);
+                if (saveable != null)
+                {
+                    Debug.Log($"  - Saving: {saveable.GetType().Name}");
+                    saveable.SaveData(ref gameData);
+                }
             }
         }
 
-        // Save game data to slot
-        dataHandler.SaveData(gameData, slotIndex);
+        // DEBUG: Show what was saved
+        Debug.Log($"[SaveManager] After save - skillPoints: {gameData.skillPoints}, experience: {gameData.currentExperience}");
 
-        // Update slot metadata
-        UpdateSlotMetadata(slotIndex);
+        // Use -1 to save to base filename (mirethalGameData.json)
+        dataHandler.SaveData(gameData, -1);
 
-        currentSlotIndex = slotIndex;
-
-        Debug.Log($"Game saved to slot {slotIndex}");
+        Debug.Log("Game saved to: " + fileName);
         OnSaveCompleted?.Invoke();
     }
 
-    private void UpdateSlotMetadata(int slotIndex)
+    // Overload for compatibility - ignores slot, uses single file
+    public void SaveGame(int slotIndex)
     {
-        string currentScene = SceneManager.GetActiveScene().name;
-
-        // Calculate total play time
-        float currentSessionTime = Time.time - sessionStartTime;
-        saveSlots[slotIndex].playTime += currentSessionTime;
-        sessionStartTime = Time.time; // Reset for next save
-
-        saveSlots[slotIndex].UpdateFromGameData(gameData, currentScene);
-        dataHandler.SaveSlotMetadata(saveSlots);
+        SaveGame();
     }
 
     #endregion
@@ -168,144 +142,140 @@ public class SaveManager : MonoBehaviour
 
     public void LoadGame()
     {
-        if (currentSlotIndex < 0)
-        {
-            Debug.LogWarning("No save slot selected. Starting new game.");
-            gameData = new GameData();
-            return;
-        }
-
-        LoadGame(currentSlotIndex);
-    }
-
-    public void LoadGame(int slotIndex)
-    {
-        if (slotIndex < 0 || slotIndex >= MAX_SAVE_SLOTS)
-        {
-            Debug.LogError($"Invalid slot index: {slotIndex}");
-            return;
-        }
-
-        gameData = dataHandler.LoadData(slotIndex);
+        // Use -1 to load from base filename (mirethalGameData.json)
+        gameData = dataHandler.LoadData(-1);
 
         if (gameData == null)
         {
-            Debug.Log($"No data found in slot {slotIndex}. Initializing defaults.");
+            Debug.Log("No save file found. Creating new game data.");
             gameData = new GameData();
-            return;
+            SaveGame(); // Create the file immediately
         }
 
-        // Refresh saveable list
+        // DEBUG: Show what's in the save file
+        Debug.Log($"[SaveManager] Loaded GameData - skillPoints: {gameData.skillPoints}, experience: {gameData.currentExperience}");
+
         allSaveables = FindISaveable();
 
-        if (allSaveables == null || allSaveables.Count == 0)
+        // DEBUG: Show what saveables were found
+        Debug.Log($"[SaveManager] Found {allSaveables?.Count ?? 0} ISaveable objects:");
+        if (allSaveables != null)
         {
-            Debug.LogWarning("No saveable objects found. Skipping load.");
-            return;
+            foreach (var saveable in allSaveables)
+            {
+                if (saveable != null)
+                {
+                    Debug.Log($"  - {saveable.GetType().Name}");
+                    saveable.LoadData(gameData);
+                }
+            }
         }
 
-        foreach (var saveable in allSaveables)
-        {
-            saveable.LoadData(gameData);
-        }
-
-        currentSlotIndex = slotIndex;
         sessionStartTime = Time.time;
-        totalPlayTime = saveSlots[slotIndex].playTime;
 
-        Debug.Log($"Game loaded from slot {slotIndex}");
+        Debug.Log("Game loaded from: " + fileName);
+
+        // FIRE THE EVENT - other scripts subscribe to this!
         OnLoadCompleted?.Invoke();
+    }
+
+    // Overload for compatibility - ignores slot, uses single file
+    public void LoadGame(int slotIndex)
+    {
+        LoadGame();
     }
 
     public void StartNewGame(int slotIndex)
     {
-        if (slotIndex < 0 || slotIndex >= MAX_SAVE_SLOTS)
-        {
-            Debug.LogError($"Invalid slot index: {slotIndex}");
-            return;
-        }
+        NewGame();
+    }
 
-        // Delete any existing data in this slot
-        if (!saveSlots[slotIndex].isEmpty)
-        {
-            DeleteSlot(slotIndex);
-        }
-
-        currentSlotIndex = slotIndex;
+    public void NewGame()
+    {
+        dataHandler.DeleteData(-1);
         gameData = new GameData();
-        sessionStartTime = Time.time;
-        totalPlayTime = 0f;
-
-        // Initialize the slot metadata
-        saveSlots[slotIndex] = new SaveSlotData(slotIndex);
-        saveSlots[slotIndex].isEmpty = false;
-        saveSlots[slotIndex].saveDateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm");
-        saveSlots[slotIndex].lastSceneName = "New Game";
-
-        dataHandler.SaveSlotMetadata(saveSlots);
-
-        Debug.Log($"New game started in slot {slotIndex}");
+        SaveGame();
+        Debug.Log("New game started");
     }
 
     public void ContinueGame(int slotIndex)
     {
-        if (IsSlotEmpty(slotIndex))
-        {
-            Debug.LogWarning($"Slot {slotIndex} is empty. Cannot continue.");
-            return;
-        }
+        LoadGame();
+    }
 
+    #endregion
+
+    #region Slot Management (kept for compatibility)
+
+    public SaveSlotData GetSlotData(int slotIndex)
+    {
+        if (slotIndex < 0 || slotIndex >= MAX_SAVE_SLOTS)
+            return null;
+        return saveSlots[slotIndex];
+    }
+
+    public bool IsSlotEmpty(int slotIndex)
+    {
+        // Check if actual save file exists
+        return !dataHandler.SaveExists(-1);
+    }
+
+    public void SetCurrentSlot(int slotIndex)
+    {
         currentSlotIndex = slotIndex;
-        LoadGame(slotIndex);
+    }
+
+    public void RefreshSlotMetadata()
+    {
+        // Update slot 0 based on actual file
+        if (dataHandler.SaveExists(-1))
+        {
+            saveSlots[0].isEmpty = false;
+            saveSlots[0].lastSceneName = SceneManager.GetActiveScene().name;
+            saveSlots[0].saveDateTime = DateTime.Now.ToString("yyyy/MM/dd HH:mm");
+        }
+        else
+        {
+            saveSlots[0].isEmpty = true;
+        }
     }
 
     #endregion
 
     #region Delete Operations
 
+    // ========== DELETE SLOT - NEEDED BY OTHER SCRIPTS ==========
     public void DeleteSlot(int slotIndex)
     {
-        if (slotIndex < 0 || slotIndex >= MAX_SAVE_SLOTS)
-        {
-            Debug.LogError($"Invalid slot index: {slotIndex}");
-            return;
-        }
-
-        // Delete the save file
-        dataHandler.DeleteData(slotIndex);
-
-        // Reset slot metadata
-        saveSlots[slotIndex] = new SaveSlotData(slotIndex);
-        dataHandler.SaveSlotMetadata(saveSlots);
-
-        // If this was the current slot, reset it
-        if (currentSlotIndex == slotIndex)
-        {
-            currentSlotIndex = -1;
-            gameData = null;
-        }
-
-        Debug.Log($"Slot {slotIndex} deleted");
+        DeleteSaveData();
         OnSlotDeleted?.Invoke(slotIndex);
+    }
+    // ===========================================================
+
+    [ContextMenu("Delete Save Data")]
+    public void DeleteSaveData()
+    {
+        dataHandler.DeleteData(-1);
+        gameData = null;
+        Debug.Log("Save data deleted");
     }
 
     [ContextMenu("*** Delete All Save Data ***")]
     public void DeleteAllSaveData()
     {
-        for (int i = 0; i < MAX_SAVE_SLOTS; i++)
-        {
-            DeleteSlot(i);
-        }
-
-        currentSlotIndex = -1;
-        gameData = null;
+        DeleteSaveData();
     }
 
     #endregion
 
     #region Utility
 
-    public GameData GetGameData() => gameData;
+    public GameData GetGameData()
+    {
+        if (gameData == null)
+            gameData = new GameData();
+        return gameData;
+    }
 
     public float GetTotalPlayTime()
     {
@@ -313,21 +283,25 @@ public class SaveManager : MonoBehaviour
         return totalPlayTime + currentSession;
     }
 
+    public bool HasAnySaveData()
+    {
+        return dataHandler.SaveExists(-1);
+    }
+
     private void OnApplicationQuit()
     {
-        // Auto save on quit if we have an active slot
-        if (currentSlotIndex >= 0 && SceneManager.GetActiveScene().name != "MainMenu")
+        if (SceneManager.GetActiveScene().name != "MainMenu")
         {
-            SaveGame(currentSlotIndex);
+            SaveGame();
+            Debug.Log("Auto-saved on quit");
         }
     }
 
     private void OnApplicationPause(bool pauseStatus)
     {
-        // Auto-save on mobile when app is paused
-        if (pauseStatus && currentSlotIndex >= 0 && SceneManager.GetActiveScene().name != "MainMenu")
+        if (pauseStatus && SceneManager.GetActiveScene().name != "MainMenu")
         {
-            SaveGame(currentSlotIndex);
+            SaveGame();
         }
     }
 
@@ -336,11 +310,6 @@ public class SaveManager : MonoBehaviour
         return FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None)
             .OfType<ISaveable>()
             .ToList();
-    }
-
-    public void RefreshSlotMetadata()
-    {
-        saveSlots = dataHandler.LoadSlotMetadata();
     }
 
     #endregion

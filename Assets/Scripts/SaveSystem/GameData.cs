@@ -13,8 +13,11 @@ public class GameData
     public SerializableDictionary<string, int> storageMaterials;
 
     public SerializableDictionary<string, ItemType> equipedItems; //  itemSaveId -> slot for item
-
+       
+    // Experience skill point system
     public int skillPoints;
+    public int currentExperience;
+
     public SerializableDictionary<string, bool> skillTreeUI; // skillID -> isUnlocked status
     public SerializableDictionary<SkillType, SkillUpgradeType> skillUpgrades; // SkillType -> SkillUpgradeType
 

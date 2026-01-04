@@ -613,6 +613,7 @@ GameObject:
   - component: {fileID: 6415114176876646641}
   - component: {fileID: 8760891843074149406}
   - component: {fileID: 3452308478796387537}
+  - component: {fileID: 3281777608356861310}
   - component: {fileID: 7779127851839446860}
   - component: {fileID: 2932008107251552461}
   - component: {fileID: 892032920956328776}
@@ -735,7 +736,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    ImpulseDuration: 0.2
+    ImpulseDuration: 0.35
     ImpulseType: 0
     DissipationRate: 0.25
     RawSignal: {fileID: 0}
@@ -797,8 +798,6 @@ MonoBehaviour:
   noFriction: {fileID: 6200000, guid: a4bdca4b67f40e44b92cd2769f40204e, type: 2}
   fullFriction: {fileID: 6200000, guid: fafd4a3d7955c2f4f913bd7db1e32678, type: 2}
   ledgeClimbOffset: {x: 1, y: 0.25}
-  combat: {fileID: 6415114176876646641}
-  stats: {fileID: 2932008107251552461}
   attackVelocity:
   - {x: 3, y: 1.5}
   - {x: 1, y: 2.5}
@@ -934,6 +933,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 51633f54c387af048ae02322aa856cdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Player_SkillManager
+--- !u!114 &3281777608356861310
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4778967929122148497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a538ef01f26ca604086456605316b40a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player_QuestManager
+  activeQuests: []
+  completedQuests: []
+  questDatabase: {fileID: 11400000, guid: eed134ed4259bb4438227a47c2453ede, type: 2}
 --- !u!114 &7779127851839446860
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1115,6 +1129,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Entity_SFX
   attackHit: player_attackHit
   attackMiss: player_attackMiss
+  soundDistance: 8.6
+  showGizmos: 0
 --- !u!114 &1808583344944458888
 MonoBehaviour:
   m_ObjectHideFlags: 0

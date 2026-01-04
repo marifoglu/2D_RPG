@@ -2442,8 +2442,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::UI_MainMenu
   mainMenuPanel: {fileID: 1314036616}
   optionsPanel: {fileID: 4624863265720765768}
-  saveLoadPanel: {fileID: 3361319859681637178}
-  saveLoadMenu: {fileID: 0}
+  optionsMenu: {fileID: 0}
+  firstGameScene: Demo_Level_0
 --- !u!1 &1364227537
 GameObject:
   m_ObjectHideFlags: 0
@@ -9339,6 +9339,8 @@ MonoBehaviour:
   bgmParameter: bgmMixer
   sfxSlider: {fileID: 8102687168831521095}
   sfxParameter: sfxMixer
+  acceptButton: {fileID: 0}
+  cancelButton: {fileID: 0}
 --- !u!224 &6763784428734719182
 RectTransform:
   m_ObjectHideFlags: 0

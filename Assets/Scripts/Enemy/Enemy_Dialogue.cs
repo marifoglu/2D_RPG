@@ -89,7 +89,7 @@ public class Enemy_Dialogue : MonoBehaviour
         if (!string.IsNullOrEmpty(dialogueAnimName) && !isTrigger)
             enemy.anim.SetBool(dialogueAnimName, false);
 
-        // Resume enemy
+        // Resume enemy - re-enable state machine first, then change state
         enemy.stateMachine.canChangeState = true;
         enemy.stateMachine.ChangeState(enemy.idleState);
 

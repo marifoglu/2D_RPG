@@ -26,6 +26,12 @@ public class UI_PauseMenu : MonoBehaviour
 
     public void QuitButton()
     {
+        // Save before quitting!
+        if (SaveManager.instance != null && SaveManager.instance.CurrentSlotIndex >= 0)
+        {
+            SaveManager.instance.SaveGame();
+        }
+
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else

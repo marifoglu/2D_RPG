@@ -954,7 +954,6 @@ GameObject:
   - component: {fileID: 5770613845283952874}
   - component: {fileID: 7889127384290497420}
   - component: {fileID: 4227549484606489836}
-  - component: {fileID: 2877710373170590804}
   m_Layer: 8
   m_Name: DialogueTrigger
   m_TagString: Untagged
@@ -978,7 +977,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -15.02, y: -3.66}
+  m_AnchoredPosition: {x: -5.7, y: -1.44}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!61 &7889127384290497420
@@ -1035,36 +1034,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5912096575975435995}
   m_CullTransparentMesh: 1
---- !u!114 &2877710373170590804
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5912096575975435995}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.Image
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0, b: 0, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
-  m_PreserveAspect: 0
-  m_FillCenter: 1
-  m_FillMethod: 4
-  m_FillAmount: 1
-  m_FillClockwise: 1
-  m_FillOrigin: 0
-  m_UseSpriteMesh: 0
-  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &6469963707615360463
 GameObject:
   m_ObjectHideFlags: 0
@@ -1200,6 +1169,7 @@ GameObject:
   - component: {fileID: 4420814471710580292}
   - component: {fileID: 6547730118826007068}
   - component: {fileID: 7378113535157720752}
+  - component: {fileID: 4047028894970422819}
   m_Layer: 8
   m_Name: Enemy_Skeleton
   m_TagString: Untagged
@@ -1315,6 +1285,7 @@ MonoBehaviour:
   fullFriction: {fileID: 6200000, guid: fafd4a3d7955c2f4f913bd7db1e32678, type: 2}
   ledgeClimbOffset: {x: 0, y: 0}
   questTargetID: quest_enemy_skeleton
+  enemyRarity: 0
   battleMoveSpeed: 3
   attackDistance: 2
   battleTimeDuration: 5
@@ -1597,6 +1568,25 @@ MonoBehaviour:
   dropData: {fileID: 0}
   maxRarityAmount: 1200
   maxItemsToDrop: 3
+--- !u!114 &4047028894970422819
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6532677152702245845}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c940f8ae712cca4e9ecc0db5434cb20, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Enemy_Dialogue
+  canUseDialogue: 1
+  dialogueLine: {fileID: 11400000, guid: 6ecbb0ae74f389b4c82c9b1f5ddc155e, type: 2}
+  triggerZone: {fileID: 7889127384290497420}
+  delayBeforeAttack: 5
+  dialogueAnimName: attack
+  isTrigger: 1
+  enemyDisplayName: Enemy
 --- !u!1 &7571976850368723302
 GameObject:
   m_ObjectHideFlags: 0

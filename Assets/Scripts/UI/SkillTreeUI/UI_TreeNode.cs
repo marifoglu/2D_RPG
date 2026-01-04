@@ -95,16 +95,33 @@ public class UI_TreeNode : MonoBehaviour, IPointerEnterHandler, IPointerExitHand
         skillTree.skillManager.GetSkillByType(skillData.skillType).SetSkillUpgrade(skillData);
     }
 
+    //public void UnlockWithSaveData()
+    //{
+    //    isUnlocked = true;
+    //    UpdateIconColor(Color.white);
+    //    LockConflictNodes();
+
+    //    skillTree.RemoveSkillPoints(skillData.cost);
+    //    connectionHandler.UnlockConnectionImage(true);
+
+    //    skillTree.skillManager.GetSkillByType(skillData.skillType).SetSkillUpgrade(skillData);
+    //}
+
     public void UnlockWithSaveData()
     {
+        GetNeededComponents();
+
         isUnlocked = true;
         UpdateIconColor(Color.white);
         LockConflictNodes();
 
-        skillTree.RemoveSkillPoints(skillData.cost);
+        // DO NOT spend points again when loading
+        // skillTree.RemoveSkillPoints(skillData.cost);
+
         connectionHandler.UnlockConnectionImage(true);
 
-        skillTree.skillManager.GetSkillByType(skillData.skillType).SetSkillUpgrade(skillData);
+        if (skillTree != null && skillTree.skillManager != null)
+            skillTree.skillManager.GetSkillByType(skillData.skillType).SetSkillUpgrade(skillData);
     }
 
     private bool CanBeUnlock()
