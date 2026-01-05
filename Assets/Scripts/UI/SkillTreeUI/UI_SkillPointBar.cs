@@ -17,6 +17,7 @@ public class UI_SkillPointBar : MonoBehaviour
     [SerializeField] private float nearCompleteThreshold = 0.8f;
 
     private Player_ExperienceManager expManager;
+    private UI_SkillTree skillTree;  // Direct reference to skill tree
     private Image fillImage;
     private bool isInitialized;
 
@@ -35,7 +36,7 @@ public class UI_SkillPointBar : MonoBehaviour
 
     private void Start()
     {
-        InitializeExpManager();
+        InitializeReferences();
 
         // Subscribe to save system load event to refresh UI after loading
         if (SaveManager.instance != null)
@@ -44,7 +45,7 @@ public class UI_SkillPointBar : MonoBehaviour
         }
     }
 
-    private void InitializeExpManager()
+    private void InitializeReferences()
     {
         // Find player experience manager
         Player player = FindAnyObjectByType<Player>();
@@ -56,16 +57,33 @@ public class UI_SkillPointBar : MonoBehaviour
             {
                 // Subscribe to events
                 expManager.OnExperienceChanged += UpdateUI;
-                expManager.OnSkillPointEarned += PlaySkillPointEarnedEffect;
-
-                isInitialized = true;
-                UpdateUI();
+                expManager.OnSkillPointEarned += OnSkillPointEarned;
             }
             else
             {
-                Debug.LogWarning("Player_ExperienceManager not found on Player!");
+                Debug.LogWarning("[UI_SkillPointBar] Player_ExperienceManager not found on Player!");
             }
         }
+
+        // Find UI_SkillTree directly
+        UI ui = FindAnyObjectByType<UI>();
+        if (ui != null)
+        {
+            skillTree = ui.skillTreeUI;
+        }
+
+        if (skillTree == null)
+        {
+            skillTree = FindAnyObjectByType<UI_SkillTree>(FindObjectsInactive.Include);
+        }
+
+        if (skillTree == null)
+        {
+            Debug.LogWarning("[UI_SkillPointBar] UI_SkillTree not found!");
+        }
+
+        isInitialized = (expManager != null && skillTree != null);
+        UpdateUI();
     }
 
     private void OnGameLoaded()
@@ -73,7 +91,7 @@ public class UI_SkillPointBar : MonoBehaviour
         // Re-initialize if needed and refresh UI after save data is loaded
         if (!isInitialized)
         {
-            InitializeExpManager();
+            InitializeReferences();
         }
 
         // Delay the UI update slightly to ensure all LoadData calls have completed
@@ -82,10 +100,15 @@ public class UI_SkillPointBar : MonoBehaviour
         Debug.Log("[UI_SkillPointBar] Game loaded - refreshing UI");
     }
 
+    private void OnSkillPointEarned()
+    {
+        PlaySkillPointEarnedEffect();
+        UpdateUI();  // Update immediately when skill point is earned
+    }
+
     private void UpdateUI()
     {
-        if (!isInitialized || expManager == null)
-            return;
+        if (expManager == null) return;
 
         // Update slider
         float progress = expManager.GetExpProgress();
@@ -108,10 +131,10 @@ public class UI_SkillPointBar : MonoBehaviour
             expText.text = $"{current}/{required}";
         }
 
-        // Update skill points count
-        if (skillPointsText != null)
+        // Update skill points count - READ DIRECTLY FROM UI_SkillTree
+        if (skillPointsText != null && skillTree != null)
         {
-            int totalPoints = expManager.GetCurrentSkillPoints();
+            int totalPoints = skillTree.GetSkillPoints();
             skillPointsText.text = $"Skill Points: {totalPoints}";
             Debug.Log($"[UI_SkillPointBar] Updated skill points display: {totalPoints}");
         }
@@ -124,9 +147,6 @@ public class UI_SkillPointBar : MonoBehaviour
             skillPointEarnedEffect.SetActive(true);
             Invoke(nameof(HideSkillPointEffect), effectDuration);
         }
-
-        // Optional: Play sound effect here
-        // AudioManager.instance.PlaySFX("SkillPointEarned");
     }
 
     private void HideSkillPointEffect()
@@ -142,10 +162,9 @@ public class UI_SkillPointBar : MonoBehaviour
         if (expManager != null)
         {
             expManager.OnExperienceChanged -= UpdateUI;
-            expManager.OnSkillPointEarned -= PlaySkillPointEarnedEffect;
+            expManager.OnSkillPointEarned -= OnSkillPointEarned;
         }
 
-        // Unsubscribe from save manager
         if (SaveManager.instance != null)
         {
             SaveManager.instance.OnLoadCompleted -= OnGameLoaded;

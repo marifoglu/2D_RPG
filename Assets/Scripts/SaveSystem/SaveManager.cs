@@ -241,6 +241,12 @@ public class SaveManager : MonoBehaviour
     [ContextMenu("Delete Save Data")]
     public void DeleteSaveData()
     {
+        if (dataHandler == null)
+        {
+            Debug.LogWarning("[SaveManager] DeleteSaveData called before initialization. Skipping delete.");
+            return;
+        }
+
         dataHandler.DeleteData(-1);
         gameData = null;
         Debug.Log("Save data deleted");
