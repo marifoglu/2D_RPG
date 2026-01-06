@@ -1,7 +1,9 @@
 using UnityEngine;
 
-public class Enemy_Skeleton : Enemy, ICounterable
+public class Enemy_Slime : Enemy, ICounterable
 {
+    [Header("Slime Specific Settings")]
+    [SerializeField] private bool hasRecoveryAnimation = false;
 
     protected override void Awake()
     {
@@ -12,6 +14,8 @@ public class Enemy_Skeleton : Enemy, ICounterable
         battleState = new Enemy_BattleState(this, stateMachine, "battle");
         deadState = new Enemy_DeadState(this, stateMachine, "dead");
         stunnedState = new Enemy_StunnedState(this, stateMachine, "stunned");
+
+        anim.SetBool("hasStunRecovery", hasRecoveryAnimation);
     }
 
     override protected void Start()
