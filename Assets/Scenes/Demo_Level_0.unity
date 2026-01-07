@@ -4948,8 +4948,8 @@ MonoBehaviour:
   ReactionSettings:
     m_SecondaryNoise: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
     AmplitudeGain: 2
-    FrequencyGain: 1
-    Duration: 0.25
+    FrequencyGain: 2
+    Duration: 0.2
     m_NoiseOffsets: {x: 211.68265, y: 843.9479, z: -154.6351}
 --- !u!1 &809086317
 GameObject:
@@ -6577,7 +6577,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3954255473930742779, guid: e80f709497d1afa458cd2cb4bb02deea, type: 3}
       propertyPath: ImpulseDefinition.ImpulseDuration
-      value: 0.35
+      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 4778967929122148497, guid: e80f709497d1afa458cd2cb4bb02deea, type: 3}
       propertyPath: m_Name
@@ -19035,6 +19035,7 @@ MonoBehaviour:
   canBeStunned: 0
   knockbackForce: {x: 5, y: 3}
   knockbackDuration: 0.15
+  hasRecoveryAnimation: 1
 --- !u!1 &8507802904550575304
 GameObject:
   m_ObjectHideFlags: 0

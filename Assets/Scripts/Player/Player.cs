@@ -39,6 +39,8 @@ public class Player : Entity
     public Player_HeavyAttackState heavyAttackState { get; private set; }
     public Player_DodgeBackState dodgeBackState { get; private set; }
     public Player_StaggerState staggerState { get; private set; }
+    public Player_UpAttackState upAttackState { get; private set; }
+
 
     #endregion
 
@@ -52,6 +54,14 @@ public class Player : Entity
     [Header("Heavy Attack Details")]
     public Vector2 heavyAttackVelocity = new Vector2(10f, 0f); // Single velocity, no array!
     public float heavyAttackVelocityDuration = 0.15f;
+
+    [Header("Ultimate Attack")]
+    public float riseSpeed = 25f;
+    public float riseMaxDistance = 3f;
+
+    [Header("Up Attack Details")]
+    public Vector2 upAttackVelocity = new Vector2(0f, 8f);  // Upward thrust
+    public float upAttackVelocityDuration = 0.2f;
 
     [Header("Movement Details")]
     public float moveSpeed;
@@ -82,10 +92,6 @@ public class Player : Entity
 
     [Header("One-Way Platform")]
     public bool isDroppingThroughPlatform { get; set; } = false;
-
-    [Header("Ultimate Attack")]
-    public float riseSpeed = 25f;
-    public float riseMaxDistance = 3f;
 
     [Header("Ladder System")]
     private bool isOnLadder;
@@ -136,6 +142,8 @@ public class Player : Entity
         heavyAttackState = new Player_HeavyAttackState(this, stateMachine, "HeavyAttack");
         dodgeBackState = new Player_DodgeBackState(this, stateMachine, "BackwardDodge");
         staggerState = new Player_StaggerState(this, stateMachine, "Stagger");
+        upAttackState = new Player_UpAttackState(this, stateMachine, "UpAttack");
+
 
     }
 

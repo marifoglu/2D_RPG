@@ -62,6 +62,14 @@ public class Player_GroundedState : PlayerState
             return;
         }
 
+        // Up Attack from ground (launcher)
+        if (input.PlayerCharacter.Attack.WasPressedThisFrame() && player.moveInput.y > 0.5f)
+        {
+            stateMachine.ChangeState(player.upAttackState);
+            return;
+        }
+
+
         // Basic attack
         if (input.PlayerCharacter.Attack.WasPressedThisFrame())
         {

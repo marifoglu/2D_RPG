@@ -44,7 +44,7 @@ public class QuestData
 
     // Complex quest tracking
     public List<QuestObjectiveData> objectiveProgress;
-    private bool isInitialized;
+    //private bool isInitialized;
 
     public QuestData(QuestDataSO questDataSo)
     {
@@ -70,14 +70,13 @@ public class QuestData
             }
         }
 
-        isInitialized = true;
+        //isInitialized = true;
     }
 
     #region Simple Quest Methods (Backward Compatible)
 
     public void AddQuestProgress(int amount = 1)
     {
-        // For complex quests, use AddObjectiveProgress instead
         if (questDataSo.HasMultipleObjectives())
         {
             Debug.LogWarning($"Quest '{questDataSo.questName}' is complex. Use AddObjectiveProgress() instead.");
@@ -147,7 +146,6 @@ public class QuestData
     {
         if (!questDataSo.HasMultipleObjectives())
         {
-            // Fall back to simple quest progress for matching target
             if (questDataSo.questTargetID == targetID)
             {
                 AddQuestProgress(amount);
