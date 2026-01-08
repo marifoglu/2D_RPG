@@ -69,7 +69,6 @@ public class Player_GroundedState : PlayerState
             return;
         }
 
-
         // Basic attack
         if (input.PlayerCharacter.Attack.WasPressedThisFrame())
         {
@@ -90,6 +89,7 @@ public class Player_GroundedState : PlayerState
             stateMachine.ChangeState(player.moveState);
         }
 
+        // Ranged Attack - Sword Throw
         if (input.PlayerCharacter.RangeAttack.WasPressedThisFrame() && skillManager.swordThrow.CanUseSkill())
             stateMachine.ChangeState(player.swordThrowState);
     }

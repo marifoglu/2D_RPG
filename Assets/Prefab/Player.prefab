@@ -192,7 +192,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 0.69, y: 0.44}
+  m_Size: {x: 3.6923077, y: 3.6923077}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
@@ -611,6 +611,7 @@ GameObject:
   - component: {fileID: 6414338983877222778}
   - component: {fileID: 6118391032112657815}
   - component: {fileID: 6415114176876646641}
+  - component: {fileID: 3860772402373270991}
   - component: {fileID: 8760891843074149406}
   - component: {fileID: 3452308478796387537}
   - component: {fileID: 3281777608356861310}
@@ -620,6 +621,7 @@ GameObject:
   - component: {fileID: 665516839532789976}
   - component: {fileID: 3367057287045948992}
   - component: {fileID: 1808583344944458888}
+  - component: {fileID: 6201035585230201923}
   m_Layer: 7
   m_Name: Player
   m_TagString: Player
@@ -643,12 +645,14 @@ Transform:
   - {fileID: 5691026823284759941}
   - {fileID: 2868887876485168572}
   - {fileID: 6737339295785575906}
+  - {fileID: 4345344461903911136}
   - {fileID: 6092519004177710535}
   - {fileID: 7000304602894217236}
   - {fileID: 4072779527046133748}
   - {fileID: 6803333923589930694}
   - {fileID: 6171434721164339001}
   - {fileID: 4522083523778181951}
+  - {fileID: 3572688182308460404}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!50 &4576847679870811662
@@ -736,7 +740,7 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-    ImpulseDuration: 0.35
+    ImpulseDuration: 0.2
     ImpulseType: 0
     DissipationRate: 0.25
     RawSignal: {fileID: 0}
@@ -807,6 +811,10 @@ MonoBehaviour:
   comboResetTime: 1
   heavyAttackVelocity: {x: 10, y: 0}
   heavyAttackVelocityDuration: 0.15
+  riseSpeed: 25
+  riseMaxDistance: 3
+  upAttackVelocity: {x: 0, y: 8}
+  upAttackVelocityDuration: 0.2
   moveSpeed: 5
   jumpForce: 12
   wallJumpForce: {x: 6, y: 12}
@@ -817,8 +825,6 @@ MonoBehaviour:
   dodgeBackDistance: 5
   dodgeBackSpeed: 5
   ledgeClimbCooldown: 0.1
-  riseSpeed: 25
-  riseMaxDistance: 3
   whatIsLadder:
     serializedVersion: 2
     m_Bits: 16384
@@ -894,6 +900,33 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   counterRecovery: 0.4
+--- !u!114 &3860772402373270991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4778967929122148497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: eac9b2c6be01ce34eb7c1acf91a550f8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player_UpCombat
+  upAttackScale:
+    physical: 1
+    elemental: 1
+    chillDuration: 3
+    chillSlowMultiplier: 0.2
+    burnDuration: 3
+    burnDamageScale: 1
+    lightningDuration: 3
+    lightningDamageScale: 1
+    lightningCharge: 1
+  upTargetCheck: {fileID: 4345344461903911136}
+  upTargetCheckRadius: 1.07
+  whatIsTarget:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &8760891843074149406
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1146,6 +1179,52 @@ MonoBehaviour:
   lightingStrikeVfx: {fileID: 510414179274297462, guid: 15101063922375c43b97b583a3ae005d, type: 3}
   currentCharge: 0
   maximumCharge: 1
+--- !u!114 &6201035585230201923
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4778967929122148497}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e85a8703faff687408ccf56fb0707128, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Player_ExperienceManager
+  expConfig: {fileID: 11400000, guid: f54ab58da2ee88a49bb6cbb31be3a92a, type: 2}
+  expPerSkillPoint: 10
+  currentExp: 0
+--- !u!1 &5162454030085907129
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4345344461903911136}
+  m_Layer: 7
+  m_Name: UpwardTargetCheck
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4345344461903911136
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5162454030085907129}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.15, y: 1.22, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3336536815962573573}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &5224352528445566572
 GameObject:
   m_ObjectHideFlags: 0
@@ -1328,6 +1407,64 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7000304602894217236}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &5263129385995614476
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3572688182308460404}
+  - component: {fileID: 1551853997217016089}
+  m_Layer: 7
+  m_Name: 'AFKManager '
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3572688182308460404
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5263129385995614476}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 3336536815962573573}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1551853997217016089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5263129385995614476}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 379197087cd8ac246b2602a3b27a61ce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::AFKManager
+  afkTimeThreshold: 5
+  cinemachineCamera: {fileID: 0}
+  originalCameraSize: 8
+  zoomedInSize: 3
+  zoomSpeed: 2
+  zoomedInVerticalOffset: 0.5
+  normalIdleDuration: 10
+  defaultAFKVfxPrefab: {fileID: 3803268763627986799, guid: 1e044895ba659824c9eefde753462b9a, type: 3}
+  defaultVfxOffset: {x: 0, y: 0, z: 0}
+  sceneVFXList: []
+  vfxSpawnDelay: 1.5
+  originalTrackedObjectOffset: {x: 0, y: 0, z: 0}
+  originalFollowOffset: {x: 0, y: 0, z: 0}
+  originalDeadZoneSize: {x: 0, y: 0}
 --- !u!1 &6827517292631806129
 GameObject:
   m_ObjectHideFlags: 0
@@ -1557,7 +1694,7 @@ AudioSource:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7724775162884831194}
-  m_Enabled: 1
+  m_Enabled: 0
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}

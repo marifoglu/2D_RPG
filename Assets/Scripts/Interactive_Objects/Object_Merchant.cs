@@ -19,6 +19,25 @@ public class Object_Merchant : Object_NPC, IInteractable
     {
         base.Interact();
 
+        // Find player inventory if not already cached
+        if (inventory == null)
+        {
+            inventory = Player.instance?.inventory;
+        }
+
+        // Validate before setting up UI
+        if (inventory == null)
+        {
+            Debug.LogWarning("Cannot interact with merchant: Player inventory not found!");
+            return;
+        }
+
+        if (merchant == null)
+        {
+            Debug.LogWarning("Cannot interact with merchant: Merchant inventory not found!");
+            return;
+        }
+
         ui.merchantUI.SetupMerchantUI(merchant, inventory);
         ui.OpenDialogueUI(firstDialogueLine, new DialogueNPCData(rewardNpc, quest));
 

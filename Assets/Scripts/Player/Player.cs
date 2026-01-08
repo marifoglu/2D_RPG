@@ -37,8 +37,8 @@ public class Player : Entity
     public Player_DomainExpansionState domainExpansionState { get; private set; }
     public Player_LadderClimbState ladderClimbState { get; private set; }
     public Player_HeavyAttackState heavyAttackState { get; private set; }
-    public Player_DodgeBackState dodgeBackState { get; private set; }
     public Player_StaggerState staggerState { get; private set; }
+    public Player_BackstabState backstabState { get; private set; }
     public Player_UpAttackState upAttackState { get; private set; }
 
 
@@ -140,8 +140,8 @@ public class Player : Entity
         domainExpansionState = new Player_DomainExpansionState(this, stateMachine, "JumpFall");
         ladderClimbState = new Player_LadderClimbState(this, stateMachine, "LadderClimb");
         heavyAttackState = new Player_HeavyAttackState(this, stateMachine, "HeavyAttack");
-        dodgeBackState = new Player_DodgeBackState(this, stateMachine, "BackwardDodge");
         staggerState = new Player_StaggerState(this, stateMachine, "Stagger");
+        backstabState = new Player_BackstabState(this, stateMachine, "Backstab");
         upAttackState = new Player_UpAttackState(this, stateMachine, "UpAttack");
 
 
@@ -278,6 +278,10 @@ public class Player : Entity
         input.PlayerCharacter.Spell.performed += ctx => skillManager.shard.TryUseSkill();
         input.PlayerCharacter.Spell.performed += ctx => skillManager.timeEcho.TryUseSkill();
         
+        // Backstab
+        input.PlayerCharacter.Backstab.performed += ctx => skillManager.backstab?.TryUseSkill();
+
+
         input.PlayerCharacter.Interaction.performed += ctx => TryInteract();
 
         input.PlayerCharacter.QuickItemSlot_4.performed += ctx => inventory.TryUseQuickItemInSlot(1);

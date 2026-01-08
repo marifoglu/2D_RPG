@@ -33,6 +33,13 @@ public enum SkillUpgradeType
     TimeEcho_CleanseWisp, // wisp will remove negative status effects from the player.
     TimeEcho_CoolDownWisp, // wisp will reduce all skills cooldown.
 
+    // Backstab Tree ---
+    Backstab, // Teleport behind the closest enemy and perform a backstab attack.
+    Backstab_ChainStrike, // After backstab, can chain to another nearby enemy within a short window.
+    Backstab_ShadowMark, // Backstabbed enemies take increased damage for a duration.
+    Backstab_ExecutionStrike, // Backstab deals massively increased damage to enemies below 30% HP.
+    Backstab_PhantomStep, // Leaves a damaging shadow clone at original position when teleporting.
+
     // Domain Expansion ---
     Domain_SlowingDown, // Create an area that slows down time for enemies inside.
     Domain_EchoSpam, // You can no longer move, but your Time Echo skill can be used multiple times rapidly.

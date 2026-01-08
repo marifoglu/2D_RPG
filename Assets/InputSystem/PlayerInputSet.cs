@@ -217,6 +217,15 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Backstab"",
+                    ""type"": ""Button"",
+                    ""id"": ""7407d83e-ccfb-46c4-baba-381d1f1d5746"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -571,6 +580,17 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""action"": ""Movement"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""bf38df53-5456-41b3-8c31-8b7001877684"",
+                    ""path"": ""<Keyboard>/g"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard & Mouse"",
+                    ""action"": ""Backstab"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -771,6 +791,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         m_PlayerCharacter_Interact = m_PlayerCharacter.FindAction("Interact", throwIfNotFound: true);
         m_PlayerCharacter_QuickItemSlot_4 = m_PlayerCharacter.FindAction("QuickItemSlot_4", throwIfNotFound: true);
         m_PlayerCharacter_QuickItemSlot_5 = m_PlayerCharacter.FindAction("QuickItemSlot_5", throwIfNotFound: true);
+        m_PlayerCharacter_Backstab = m_PlayerCharacter.FindAction("Backstab", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_InventoryUI = m_UI.FindAction("InventoryUI", throwIfNotFound: true);
@@ -874,6 +895,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerCharacter_Interact;
     private readonly InputAction m_PlayerCharacter_QuickItemSlot_4;
     private readonly InputAction m_PlayerCharacter_QuickItemSlot_5;
+    private readonly InputAction m_PlayerCharacter_Backstab;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerCharacter".
     /// </summary>
@@ -942,6 +964,10 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @QuickItemSlot_5 => m_Wrapper.m_PlayerCharacter_QuickItemSlot_5;
         /// <summary>
+        /// Provides access to the underlying input action "PlayerCharacter/Backstab".
+        /// </summary>
+        public InputAction @Backstab => m_Wrapper.m_PlayerCharacter_Backstab;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_PlayerCharacter; }
@@ -1009,6 +1035,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @QuickItemSlot_5.started += instance.OnQuickItemSlot_5;
             @QuickItemSlot_5.performed += instance.OnQuickItemSlot_5;
             @QuickItemSlot_5.canceled += instance.OnQuickItemSlot_5;
+            @Backstab.started += instance.OnBackstab;
+            @Backstab.performed += instance.OnBackstab;
+            @Backstab.canceled += instance.OnBackstab;
         }
 
         /// <summary>
@@ -1062,6 +1091,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @QuickItemSlot_5.started -= instance.OnQuickItemSlot_5;
             @QuickItemSlot_5.performed -= instance.OnQuickItemSlot_5;
             @QuickItemSlot_5.canceled -= instance.OnQuickItemSlot_5;
+            @Backstab.started -= instance.OnBackstab;
+            @Backstab.performed -= instance.OnBackstab;
+            @Backstab.canceled -= instance.OnBackstab;
         }
 
         /// <summary>
@@ -1377,6 +1409,13 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnQuickItemSlot_5(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Backstab" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnBackstab(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.

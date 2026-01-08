@@ -30,4 +30,21 @@ public class Player_AnimationTriggers : Entity_AnimationTriggers
         if (upCombat != null)
             upCombat.PerformUpAttack();
     }
+
+    // backstab attack animation when damage applied
+    private void BackstabHitTrigger()
+    {
+        if (player != null && player.skillManager.backstab != null)
+        {
+            player.skillManager.backstab.ExecuteBackstabAttack();
+        }
+    }
+
+    private void BackstabCompleteTrigger()
+    {
+        if (player != null)
+        {
+            player.CurrentStateAnimationTrigger();
+        }
+    }
 }
