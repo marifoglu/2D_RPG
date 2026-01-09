@@ -832,6 +832,8 @@ MonoBehaviour:
   ladderEnterYOffset: 0.4
   minDistanceBelowTopToGrab: 0.5
   ladderExitIgnoreDuration: 0.2
+  teleportStartVFX: {fileID: 0}
+  teleportArrivalVFX: {fileID: 0}
 --- !u!114 &6414338983877222778
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1238,6 +1240,7 @@ GameObject:
   - component: {fileID: 2761176374052998499}
   - component: {fileID: 4478794686084903820}
   - component: {fileID: 2765072252389431661}
+  - component: {fileID: 379467433141644677}
   - component: {fileID: 4958637403050206839}
   m_Layer: 7
   m_Name: Skills_Holder
@@ -1350,6 +1353,42 @@ MonoBehaviour:
   timeEchoDuration: 3
   maxAttacks: 3
   duplicateChance: 1
+--- !u!114 &379467433141644677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5224352528445566572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13df86d0b1beafe4e870555f07807cc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Skill_Backstab
+  skillType: 4
+  upgradeType: 22
+  cooldown: 0
+  maxTargetDistance: 10
+  teleportOffsetBehindEnemy: 1.2
+  stunDuration: 1.5
+  stunKnockback: {x: 2, y: 1}
+  backstabDamageMultiplier: 2.5
+  backstabDamageScale:
+    physical: 1
+    elemental: 1
+    chillDuration: 3
+    chillSlowMultiplier: 0.2
+    burnDuration: 3
+    burnDamageScale: 1
+    lightningDuration: 3
+    lightningDamageScale: 1
+    lightningCharge: 1
+  disappearVFX: {fileID: 6127202488801314974, guid: 513e145d2e8fabd40ae1d2e7e2548258, type: 3}
+  appearVFX: {fileID: 6858235655514556814, guid: 082fe0917cf0491459cb5df7d3e2ca31, type: 3}
+  backstabHitVFX: {fileID: 2462900991301843037, guid: f8ffc56d64b63cd429be96dbf238642a, type: 3}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 256
 --- !u!114 &4958637403050206839
 MonoBehaviour:
   m_ObjectHideFlags: 0

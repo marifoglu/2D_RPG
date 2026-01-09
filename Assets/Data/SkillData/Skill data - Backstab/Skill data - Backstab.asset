@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7912fbb8459f0a34b9f6c72870fc05ec, type: 3}
+  m_Name: Skill data - Backstab
+  m_EditorClassIdentifier: Assembly-CSharp::Skill_DataSO
+  displayName: BackStabBackk
+  description: attack from bag
+  icon: {fileID: 1555435139837261901, guid: e31822c94ae12a844a2145f2fb7c2403, type: 3}
+  cost: 5
+  unlockedByDefault: 0
+  skillType: 4
+  upgradeData:
+    upgradeType: 0
+    cooldown: 5
+    damageScaleData:
+      physical: 100
+      elemental: 1
+      chillDuration: 3
+      chillSlowMultiplier: 0.2
+      burnDuration: 3
+      burnDamageScale: 5
+      lightningDuration: 3
+      lightningDamageScale: 1
+      lightningCharge: 1

@@ -124,7 +124,6 @@ GameObject:
   - component: {fileID: 1297692428688527433}
   - component: {fileID: 388604380248417600}
   - component: {fileID: 8863039212596704250}
-  - component: {fileID: 2904615577201663128}
   - component: {fileID: 4296271617832141991}
   - component: {fileID: 7497632778072351933}
   m_Layer: 11
@@ -210,21 +209,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Object_Checkpoint
   checkpointID: b43bad03-90b1-46b0-aaf1-5a07b3c0320b
   respawnPoint: {fileID: 0}
---- !u!114 &2904615577201663128
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6136122722722101530}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1945b37f614d7f14c84e37fa4dc4acfe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::AudioRangeController
-  minDistanceToHearSound: 12
-  maxVolume: 0
-  showGizmos: 0
 --- !u!82 &4296271617832141991
 AudioSource:
   m_ObjectHideFlags: 0

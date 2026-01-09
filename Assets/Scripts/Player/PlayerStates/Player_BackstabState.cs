@@ -46,8 +46,9 @@ public class Player_BackstabState : PlayerState
         currentPhase = BackstabPhase.Disappearing;
         stateTimer = disappearDuration;
 
-        // Play disappear animation
-        anim.SetTrigger("BackstabDisappear");
+        // Use your existing teleport animations
+        anim.SetBool("Teleport", true);
+        anim.SetTrigger("TeleportStart");
     }
 
     public override void Update()
@@ -98,8 +99,8 @@ public class Player_BackstabState : PlayerState
         currentPhase = BackstabPhase.Appearing;
         stateTimer = appearDuration;
 
-        // Play appear/attack animation
-        anim.SetTrigger("BackstabAppear");
+        // Trigger appear animation
+        anim.SetTrigger("TeleportEnd");
     }
 
     private void HandleAppearPhase()
@@ -107,21 +108,17 @@ public class Player_BackstabState : PlayerState
         if (stateTimer <= 0)
         {
             currentPhase = BackstabPhase.Attacking;
-            anim.SetTrigger("BackstabAttack");
+            // Execute attack immediately after appearing
+            backstabSkill.ExecuteBackstabAttack();
+            stateTimer = attackRecoveryDuration;
+            currentPhase = BackstabPhase.Recovering;
         }
     }
 
     private void HandleAttackPhase()
     {
-        // Wait for animation trigger to execute the attack
-        if (triggerCalled)
-        {
-            backstabSkill.ExecuteBackstabAttack();
-
-            currentPhase = BackstabPhase.Recovering;
-            stateTimer = attackRecoveryDuration;
-            triggerCalled = false;
-        }
+        // Attack already executed in HandleAppearPhase
+        // This phase is now skipped
     }
 
     private void HandleRecoveryPhase()
@@ -150,18 +147,9 @@ public class Player_BackstabState : PlayerState
         // Clear target reference
         backstabSkill?.ClearTarget();
 
-        // Reset animation triggers
-        anim.ResetTrigger("BackstabDisappear");
-        anim.ResetTrigger("BackstabAppear");
-        anim.ResetTrigger("BackstabAttack");
-    }
-
-    // Called from animation event when attack should deal damage
-    public void OnBackstabHit()
-    {
-        if (currentPhase == BackstabPhase.Attacking)
-        {
-            backstabSkill?.ExecuteBackstabAttack();
-        }
+        // Reset teleport animation
+        anim.SetBool("Teleport", false);
+        anim.ResetTrigger("TeleportStart");
+        anim.ResetTrigger("TeleportEnd");
     }
 }

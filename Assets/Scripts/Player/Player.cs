@@ -13,7 +13,7 @@ public class Player : Entity
     public Player_SkillManager skillManager { get; private set; }
     public Player_VFX vfx { get; private set; }
     public Entity_Health health { get; private set; }
-    public Entity_Stamina stamina { get; private set; } // Stamina component
+    public Entity_Stamina stamina { get; private set; }
     public Entity_StatusHandler statusHandler { get; private set; }
     public Inventory_Player inventory { get; private set; }
     public Player_Combat combat { get; private set; }
@@ -40,6 +40,7 @@ public class Player : Entity
     public Player_StaggerState staggerState { get; private set; }
     public Player_BackstabState backstabState { get; private set; }
     public Player_UpAttackState upAttackState { get; private set; }
+    public Player_TeleportState teleportState { get; private set; }
 
 
     #endregion
@@ -103,6 +104,12 @@ public class Player : Entity
     [SerializeField] private float ladderExitIgnoreDuration = 0.5f;
     private float ladderIgnoreUntil = 0f;
 
+    [Header("Teleport VFX")]
+    [SerializeField] private GameObject teleportStartVFX;
+    [SerializeField] private Vector2 teleportStartVFXOffset = Vector2.zero;
+    [Space(10)]
+    [SerializeField] private GameObject teleportArrivalVFX;
+    [SerializeField] private Vector2 teleportArrivalVFXOffset = Vector2.zero;
 
     protected override void Awake()
     {
@@ -143,8 +150,7 @@ public class Player : Entity
         staggerState = new Player_StaggerState(this, stateMachine, "Stagger");
         backstabState = new Player_BackstabState(this, stateMachine, "Backstab");
         upAttackState = new Player_UpAttackState(this, stateMachine, "UpAttack");
-
-
+        teleportState = new Player_TeleportState(this, stateMachine, "Teleport");
     }
 
     public void ForceFallState()
@@ -214,7 +220,7 @@ public class Player : Entity
         anim.speed = originalAnimSpeed;
         wallJumpForce = originalWallJump;
         jumpAttackVelocity = originalJumpAttack;
-        heavyAttackVelocity = originalHeavyAttackVelocity; // Restore!
+        heavyAttackVelocity = originalHeavyAttackVelocity;
 
         for (int i = 0; i < attackVelocity.Length; i++)
         {
@@ -230,7 +236,7 @@ public class Player : Entity
 
         stateMachine.ChangeState(deadState);
     }
-    // Add/update these methods:
+
     public void SetBlocking(bool blocking)
     {
         isBlocking = blocking;
@@ -265,6 +271,84 @@ public class Player : Entity
             counterState?.TriggerCounterAttack();
         }
     }
+
+    // Teleport to shrine method
+    public void TryTeleportToShrine()
+    {
+        // Debug logging
+        if (ShrineManager.instance == null)
+        {
+            Debug.LogError("ShrineManager.instance is NULL!");
+            return;
+        }
+
+        if (!CanTeleportToShrine())
+        {
+            Debug.Log("Cannot teleport: No active shrine or already teleporting!");
+            return;
+        }
+
+        // Get the LAST ACTIVATED shrine from GameData
+        GameData gameData = SaveManager.instance.GetGameData();
+        string lastShrineID = gameData.lastActivatedShrineID;
+
+        if (string.IsNullOrEmpty(lastShrineID))
+        {
+            Debug.Log("No last activated shrine found! Walk past a shrine first.");
+            return;
+        }
+
+        var availableShrines = ShrineManager.instance.GetAvailableShrines();
+        Object_TeleportShrine targetShrine = null;
+
+        foreach (var shrine in availableShrines)
+        {
+            if (shrine.GetShrineID() == lastShrineID)
+            {
+                targetShrine = shrine;
+                break;
+            }
+        }
+
+        if (targetShrine == null)
+        {
+            return;
+        }
+
+        Vector3 destination = targetShrine.GetArrivalPosition();
+        teleportState.SetupTeleport(destination, targetShrine, null);
+        stateMachine.ChangeState(teleportState);
+    }
+
+    public bool CanTeleportToShrine()
+    {
+        // Can't teleport if already teleporting
+        if (stateMachine.currentState == teleportState)
+            return false;
+
+        // Can't teleport if dead
+        if (health.isDead)
+            return false;
+
+        // Can't teleport during certain states
+        if (stateMachine.currentState == dashState ||
+            stateMachine.currentState == domainExpansionState ||
+            stateMachine.currentState == staggerState)
+            return false;
+
+        // Need an active shrine to teleport to
+        if (ShrineManager.instance == null || ShrineManager.instance.ActiveShrineCount == 0)
+            return false;
+
+        return true;
+    }
+
+    public GameObject GetTeleportStartVFX() => teleportStartVFX;
+    public GameObject GetTeleportArrivalVFX() => teleportArrivalVFX;
+    public Vector2 GetTeleportStartVFXOffset() => teleportStartVFXOffset;
+    public Vector2 GetTeleportArrivalVFXOffset() => teleportArrivalVFXOffset;
+
+
     private void OnEnable()
     {
         if (input == null)
@@ -283,6 +367,8 @@ public class Player : Entity
 
 
         input.PlayerCharacter.Interaction.performed += ctx => TryInteract();
+        input.PlayerCharacter.Teleport.performed += ctx => TryTeleportToShrine();
+
 
         input.PlayerCharacter.QuickItemSlot_4.performed += ctx => inventory.TryUseQuickItemInSlot(1);
         input.PlayerCharacter.QuickItemSlot_5.performed += ctx => inventory.TryUseQuickItemInSlot(2);

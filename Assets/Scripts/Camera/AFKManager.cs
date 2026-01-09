@@ -212,12 +212,36 @@ public class AFKManager : MonoBehaviour
         }
     }
 
+    //private void EnterAFKMode()
+    //{
+    //    if (isAFK) return;
+
+    //    isAFK = true;
+    //    Debug.Log("[AFKManager] Player is now AFK");
+
+    //    // Start camera zoom in and center on player
+    //    StartCameraZoom(zoomedInSize, true);
+
+    //    // Start AFK idle animation cycle
+    //    StartAFKIdleAnimations();
+
+    //    // Spawn scene VFX
+    //    SpawnAFKVFX();
+    //}
+
     private void EnterAFKMode()
     {
         if (isAFK) return;
 
         isAFK = true;
         Debug.Log("[AFKManager] Player is now AFK");
+
+        // Capture current camera size BEFORE zooming
+        if (cinemachineCamera != null)
+        {
+            originalCameraSize = cinemachineCamera.Lens.OrthographicSize;
+            Debug.Log($"[AFKManager] Captured current camera size: {originalCameraSize}");
+        }
 
         // Start camera zoom in and center on player
         StartCameraZoom(zoomedInSize, true);

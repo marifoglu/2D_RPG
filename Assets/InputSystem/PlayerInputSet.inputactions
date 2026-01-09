@@ -140,6 +140,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
+                },
+                {
+                    "name": "Teleport",
+                    "type": "Button",
+                    "id": "02770b49-1ea3-43c7-aba9-1bc79f3ba088",
+                    "expectedControlType": "",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -503,6 +512,17 @@
                     "processors": "",
                     "groups": ";Keyboard & Mouse",
                     "action": "Backstab",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "6b046977-7169-4784-b3de-66a2b7f63c8b",
+                    "path": "<Keyboard>/0",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": ";Keyboard & Mouse",
+                    "action": "Teleport",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

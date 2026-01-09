@@ -59,8 +59,6 @@ public class SaveManager : MonoBehaviour
     // This is called every time a scene loads
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        Debug.Log($"[SaveManager] OnSceneLoaded: {scene.name}");
-
         if (scene.name != "MainMenu")
         {
             StartCoroutine(LoadAfterSceneReady());
@@ -71,12 +69,10 @@ public class SaveManager : MonoBehaviour
     {
         yield return null; // Wait one frame for all objects to initialize
         LoadGame();
-        Debug.Log("Auto-loaded save data after scene change");
     }
 
     private IEnumerator Start()
     {
-        Debug.Log("Save Directory: " + Application.persistentDataPath);
         dataHandler = new FileDataHandler(Application.persistentDataPath, fileName, encryptData);
 
         // Initialize slot metadata for compatibility
@@ -90,7 +86,6 @@ public class SaveManager : MonoBehaviour
         sessionStartTime = Time.time;
 
         yield return null;
-
     }
 
     #region Save Operations
@@ -102,25 +97,19 @@ public class SaveManager : MonoBehaviour
 
         allSaveables = FindISaveable();
 
-        Debug.Log($"[SaveManager] Saving - Found {allSaveables?.Count ?? 0} ISaveable objects:");
-
         if (allSaveables != null && allSaveables.Count > 0)
         {
             foreach (var saveable in allSaveables)
             {
                 if (saveable != null)
                 {
-                    Debug.Log($"  - Saving: {saveable.GetType().Name}");
                     saveable.SaveData(ref gameData);
                 }
             }
         }
 
-        Debug.Log($"[SaveManager] After save - skillPoints: {gameData.skillPoints}, experience: {gameData.currentExperience}");
-
         dataHandler.SaveData(gameData, -1);
 
-        Debug.Log("Game saved to: " + fileName);
         OnSaveCompleted?.Invoke();
     }
 
@@ -144,11 +133,8 @@ public class SaveManager : MonoBehaviour
             SaveGame(); // Create the file immediately
         }
 
-        Debug.Log($"[SaveManager] Loaded GameData - skillPoints: {gameData.skillPoints}, experience: {gameData.currentExperience}");
-
         allSaveables = FindISaveable();
 
-        Debug.Log($"[SaveManager] Found {allSaveables?.Count ?? 0} ISaveable objects:");
         if (allSaveables != null)
         {
             foreach (var saveable in allSaveables)
@@ -162,8 +148,6 @@ public class SaveManager : MonoBehaviour
         }
 
         sessionStartTime = Time.time;
-
-        Debug.Log("Game loaded from: " + fileName);
 
         OnLoadCompleted?.Invoke();
     }
@@ -183,14 +167,12 @@ public class SaveManager : MonoBehaviour
         dataHandler.DeleteData(-1);
         gameData = new GameData();
         SaveGame();
-        Debug.Log("New game started");
     }
 
     public void ContinueGame(int slotIndex)
     {
         LoadGame();
     }
-
     #endregion
 
     #region Slot Management (kept for compatibility)
@@ -243,7 +225,6 @@ public class SaveManager : MonoBehaviour
     {
         if (dataHandler == null)
         {
-            Debug.LogWarning("[SaveManager] DeleteSaveData called before initialization. Skipping delete.");
             return;
         }
 
@@ -257,11 +238,9 @@ public class SaveManager : MonoBehaviour
     {
         DeleteSaveData();
     }
-
     #endregion
 
     #region Utility
-
     public GameData GetGameData()
     {
         if (gameData == null)
@@ -285,7 +264,6 @@ public class SaveManager : MonoBehaviour
         if (SceneManager.GetActiveScene().name != "MainMenu")
         {
             SaveGame();
-            Debug.Log("Auto-saved on quit");
         }
     }
 
@@ -296,13 +274,11 @@ public class SaveManager : MonoBehaviour
             SaveGame();
         }
     }
-
     private List<ISaveable> FindISaveable()
     {
         return FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None)
             .OfType<ISaveable>()
             .ToList();
     }
-
     #endregion
 }

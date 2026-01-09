@@ -38,6 +38,10 @@ public class Entity_Health : MonoBehaviour, IDamageable
     private CinemachineImpulseSource impulseSource;
     [SerializeField] private ScreenShakeProfile screenShakeProfile;
 
+    // Session-based health tracking (not saved to disk)
+    private static float sessionHealthPercentage = -1f; // -1 means not set this session
+    private static bool isNewGameSession = true;
+
     protected virtual void Awake()
     {
         entityVFX = GetComponent<Entity_VFX>();
@@ -59,23 +63,44 @@ public class Entity_Health : MonoBehaviour, IDamageable
         {
             Debug.Log($"[{gameObject.name}] Entity_DropManager found!");
         }
-
-        SetupHealth();
     }
 
 
     protected virtual void Start()
     {
-
+        SetupHealth();
     }
+
     private void SetupHealth()
     {
         if (entityStats == null)
             return;
 
-        currentHealth = entityStats.GetMaxHealth();
-        OnHealthUpdate += UpdateHealthBar;
+        // For player only: Use session health if available, otherwise start at max
+        if (GetComponent<Player>() != null)
+        {
+            if (isNewGameSession || sessionHealthPercentage < 0)
+            {
+                // Fresh game start - reset to max health
+                currentHealth = entityStats.GetMaxHealth();
+                sessionHealthPercentage = 1f;
+                isNewGameSession = false;
+                Debug.Log("[Entity_Health] New game session - Player health set to 100%");
+            }
+            else
+            {
+                // Scene transition within same session - restore session health
+                currentHealth = entityStats.GetMaxHealth() * sessionHealthPercentage;
+                Debug.Log($"[Entity_Health] Scene transition - Restored player health to {sessionHealthPercentage * 100}%");
+            }
+        }
+        else
+        {
+            // For enemies and other entities - always max health
+            currentHealth = entityStats.GetMaxHealth();
+        }
 
+        OnHealthUpdate += UpdateHealthBar;
         UpdateHealthBar();
         InvokeRepeating(nameof(RegenerateHealth), 0, regenInterval);
     }
@@ -186,6 +211,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
         return true;
     }
+
     public void RegenerateHealth()
     {
         if (canRegenarteHealth == false)
@@ -194,20 +220,34 @@ public class Entity_Health : MonoBehaviour, IDamageable
         float regenAmount = entityStats.resources.healthRegen.GetValue();
         increaseHealth(regenAmount);
     }
+
     public void increaseHealth(float healthAmount)
     {
-        if(isDead)
+        if (isDead)
             return;
 
         float newHealth = currentHealth + healthAmount;
         float maxHealth = entityStats.GetMaxHealth();
         currentHealth = Mathf.Min(newHealth, maxHealth);
 
+        // Update session health for player
+        if (GetComponent<Player>() != null && entityStats != null)
+        {
+            sessionHealthPercentage = GetHealthPercentage();
+        }
+
         OnHealthUpdate?.Invoke();
     }
+
     public void ReduceHealth(float takenDamage)
     {
         currentHealth -= takenDamage;
+
+        // Update session health for player
+        if (GetComponent<Player>() != null && entityStats != null)
+        {
+            sessionHealthPercentage = GetHealthPercentage();
+        }
 
         entityVFX?.PlayOnDamageVfx();
         OnHealthUpdate?.Invoke();
@@ -218,6 +258,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
             Die();
         }
     }
+
     private void UpdateHealthBar()
     {
         if (healthBar == null || entityStats == null)
@@ -239,6 +280,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
     }
 
     public void SetCanTakeDamage(bool canTakeDamage) => this.canTakeDamage = canTakeDamage;
+
     private bool AttackEvaded()
     {
         if (entityStats == null)
@@ -252,6 +294,13 @@ public class Entity_Health : MonoBehaviour, IDamageable
     public void SetHealthToPercentage(float percentage) // Use it in Skill_Shard Teleport HP Rewind upgrade
     {
         currentHealth = entityStats.GetMaxHealth() * Mathf.Clamp01(percentage);
+
+        // Update session health for player
+        if (GetComponent<Player>() != null)
+        {
+            sessionHealthPercentage = percentage;
+        }
+
         OnHealthUpdate?.Invoke();
     }
 
@@ -262,6 +311,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
         entity?.ReceiveKnockback(knockback, duration);
     }
+
     private Vector2 CalculateKnockback(Transform damageDealer, float damage)
     {
         int direction = transform.position.x > damageDealer.position.x ? 1 : -1;
@@ -271,7 +321,9 @@ public class Entity_Health : MonoBehaviour, IDamageable
 
         return knockback;
     }
+
     private float CalculateDuration(float damage) => IsHeavyDamage(damage) ? heavyKnockbackDuration : knockbackDuration;
+
     private bool IsHeavyDamage(float damage)
     {
         if (entityStats == null)
@@ -279,6 +331,7 @@ public class Entity_Health : MonoBehaviour, IDamageable
         else
             return damage / entityStats.GetMaxHealth() > heavyDamageTreshold;
     }
+
     private void TriggerCameraShake()
     {
         if (CameraShakeManager.Instance == null)
@@ -311,4 +364,11 @@ public class Entity_Health : MonoBehaviour, IDamageable
         CameraShakeManager.Instance.ScreenShakeFromProfile(screenShakeProfile, playerImpulseSource);
     }
 
+    // Public method to reset session (called when starting a new game)
+    public static void ResetSessionHealth()
+    {
+        sessionHealthPercentage = -1f;
+        isNewGameSession = true;
+        Debug.Log("[Entity_Health] Session health reset - next game will start at 100%");
+    }
 }

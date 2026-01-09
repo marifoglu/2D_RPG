@@ -1000,7 +1000,7 @@ MonoBehaviour:
     ScreenPosition: {x: 0, y: 0.15}
     DeadZone:
       Enabled: 1
-      Size: {x: 0.2, y: 0.4}
+      Size: {x: 0, y: 0}
     HardLimits:
       Enabled: 1
       Size: {x: 0.6, y: 0.8}
@@ -1097,8 +1097,8 @@ MonoBehaviour:
   ReactionSettings:
     m_SecondaryNoise: {fileID: 11400000, guid: 69ce8388f6785dd4c8c39915efece2f4, type: 2}
     AmplitudeGain: 2
-    FrequencyGain: 2
-    Duration: 0.2
+    FrequencyGain: 1
+    Duration: 0.25
     m_NoiseOffsets: {x: 211.68265, y: 843.9479, z: -154.6351}
 --- !u!1 &816127173
 GameObject:

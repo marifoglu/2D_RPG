@@ -14,37 +14,41 @@ public class Player_AnimationTriggers : Entity_AnimationTriggers
         upCombat = GetComponentInParent<Player_UpCombat>();
     }
 
-    // Animation Event for Sword Throw
     private void ThrowSword() => player.skillManager.swordThrow.ThrowSword();
 
-    // Animation Event for Heavy Attack
     private void HeavyAttackTrigger()
     {
         if (heavyCombat != null)
             heavyCombat.PerformHeavyAttack();
     }
 
-    // Animation Event for Up Attack
     private void UpAttackTrigger()
     {
         if (upCombat != null)
             upCombat.PerformUpAttack();
     }
 
-    // backstab attack animation when damage applied
     private void BackstabHitTrigger()
     {
         if (player != null && player.skillManager.backstab != null)
-        {
             player.skillManager.backstab.ExecuteBackstabAttack();
-        }
     }
 
     private void BackstabCompleteTrigger()
     {
         if (player != null)
-        {
             player.CurrentStateAnimationTrigger();
-        }
+    }
+
+    private void TeleportStartTrigger()
+    {
+        if (player != null)
+            player.CurrentStateAnimationTrigger();
+    }
+
+    private void TeleportEndTrigger()
+    {
+        if (player != null)
+            player.CurrentStateAnimationTrigger();
     }
 }

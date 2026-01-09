@@ -29,7 +29,7 @@ public class UI_SkillSlot : MonoBehaviour, IPointerEnterHandler, IPointerExitHan
 
     private void OnValidate()
     {
-        gameObject.name = $"Skill Slot - {skillType.ToString()}";
+        gameObject.name = "UI_SkillSlot - " + skillType.ToString();
     }
 
     public void SetupSkillSlot(Skill_DataSO selectedSkill)

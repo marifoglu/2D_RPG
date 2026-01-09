@@ -226,6 +226,15 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Teleport"",
+                    ""type"": ""Button"",
+                    ""id"": ""02770b49-1ea3-43c7-aba9-1bc79f3ba088"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -591,6 +600,17 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
                     ""action"": ""Backstab"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""6b046977-7169-4784-b3de-66a2b7f63c8b"",
+                    ""path"": ""<Keyboard>/0"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Keyboard & Mouse"",
+                    ""action"": ""Teleport"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         },
@@ -792,6 +812,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         m_PlayerCharacter_QuickItemSlot_4 = m_PlayerCharacter.FindAction("QuickItemSlot_4", throwIfNotFound: true);
         m_PlayerCharacter_QuickItemSlot_5 = m_PlayerCharacter.FindAction("QuickItemSlot_5", throwIfNotFound: true);
         m_PlayerCharacter_Backstab = m_PlayerCharacter.FindAction("Backstab", throwIfNotFound: true);
+        m_PlayerCharacter_Teleport = m_PlayerCharacter.FindAction("Teleport", throwIfNotFound: true);
         // UI
         m_UI = asset.FindActionMap("UI", throwIfNotFound: true);
         m_UI_InventoryUI = m_UI.FindAction("InventoryUI", throwIfNotFound: true);
@@ -896,6 +917,7 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
     private readonly InputAction m_PlayerCharacter_QuickItemSlot_4;
     private readonly InputAction m_PlayerCharacter_QuickItemSlot_5;
     private readonly InputAction m_PlayerCharacter_Backstab;
+    private readonly InputAction m_PlayerCharacter_Teleport;
     /// <summary>
     /// Provides access to input actions defined in input action map "PlayerCharacter".
     /// </summary>
@@ -968,6 +990,10 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// </summary>
         public InputAction @Backstab => m_Wrapper.m_PlayerCharacter_Backstab;
         /// <summary>
+        /// Provides access to the underlying input action "PlayerCharacter/Teleport".
+        /// </summary>
+        public InputAction @Teleport => m_Wrapper.m_PlayerCharacter_Teleport;
+        /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
         public InputActionMap Get() { return m_Wrapper.m_PlayerCharacter; }
@@ -1038,6 +1064,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @Backstab.started += instance.OnBackstab;
             @Backstab.performed += instance.OnBackstab;
             @Backstab.canceled += instance.OnBackstab;
+            @Teleport.started += instance.OnTeleport;
+            @Teleport.performed += instance.OnTeleport;
+            @Teleport.canceled += instance.OnTeleport;
         }
 
         /// <summary>
@@ -1094,6 +1123,9 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
             @Backstab.started -= instance.OnBackstab;
             @Backstab.performed -= instance.OnBackstab;
             @Backstab.canceled -= instance.OnBackstab;
+            @Teleport.started -= instance.OnTeleport;
+            @Teleport.performed -= instance.OnTeleport;
+            @Teleport.canceled -= instance.OnTeleport;
         }
 
         /// <summary>
@@ -1416,6 +1448,13 @@ public partial class @PlayerInputSet: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnBackstab(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Teleport" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnTeleport(InputAction.CallbackContext context);
     }
     /// <summary>
     /// Interface to implement callback methods for all input action callbacks associated with input actions defined by "UI" which allows adding and removing callbacks.
