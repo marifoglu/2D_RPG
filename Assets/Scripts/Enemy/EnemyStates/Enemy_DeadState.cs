@@ -26,16 +26,16 @@ public class Enemy_DeadState : EnemyState
         if (col != null)
             col.enabled = false;
 
-        // Stop state updates
         stateMachine.switchOffStateMachine();
 
-        // Remove enemy after animation finishes (e.g. 2-3 seconds)
-        enemy.StartCoroutine(DestroyAfterDelay(2.5f));
+        // Remove enemy after animation finishes
+        //enemy.StartCoroutine(DestroyAfterDelay(2.5f));
+        enemy.DestroyGameObjectAfterDelay();
     }
 
-    private IEnumerator DestroyAfterDelay(float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        Object.Destroy(enemy.gameObject);
-    }
+    //private IEnumerator DestroyAfterDelay(float delay)
+    //{
+    //    yield return new WaitForSeconds(delay);
+    //    Object.Destroy(enemy.gameObject);
+    //}
 }

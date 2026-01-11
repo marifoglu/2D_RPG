@@ -2,7 +2,13 @@ using UnityEngine;
 
 public class Enemy_Slime : Enemy, ICounterable
 {
+    public Enemy_Slime_DeadState slimeDeadState { get; set; }
+
     [Header("Slime Specific Settings")]
+    [SerializeField] private GameObject slimeToCreatePrefab;
+    [SerializeField] private int amountOfSlimesToCreate = 2;
+    [SerializeField] private Vector2 newSlimeVelocity;
+
     [SerializeField] private bool hasRecoveryAnimation = false;
 
     protected override void Awake()
@@ -13,6 +19,7 @@ public class Enemy_Slime : Enemy, ICounterable
         attackState = new Enemy_AttackState(this, stateMachine, "attack");
         battleState = new Enemy_BattleState(this, stateMachine, "battle");
         stunnedState = new Enemy_StunnedState(this, stateMachine, "stunned");
+        slimeDeadState = new Enemy_Slime_DeadState(this, stateMachine, "idle");
 
         deadState = new Enemy_DeadState(this, stateMachine, "dead");
 
@@ -24,5 +31,51 @@ public class Enemy_Slime : Enemy, ICounterable
     {
         base.Start();
         stateMachine.Initialize(idleState);
+    }
+
+    public override void EntityDeath()
+    {
+        stateMachine.ChangeState(slimeDeadState);
+
+    }
+
+    public void CreateSlimeOnDeath()
+    {
+        if (slimeToCreatePrefab == null)
+            return;
+
+        for(int i = 0; i < amountOfSlimesToCreate; i++)
+        {
+            GameObject newSlime = Instantiate(slimeToCreatePrefab, transform.position, Quaternion.identity);
+
+            Enemy_Slime slimeScript = newSlime.GetComponent<Enemy_Slime>();
+
+            //slimScript.SetupSlime(newSlimeVelocity, stats);
+            slimeScript.stats.AdjustStatsSetup(stats.resources, stats.offense, stats.defense, stats.major, .6f, 1.2f);
+            slimeScript.ApplyRespawnVelocity();
+            slimeScript.StartBattleStartCheck(player);
+        }
+    }
+
+    public void ApplyRespawnVelocity()
+    {
+        Vector2 velocity = new Vector2(stunnedVelocity.x * Random.Range(-1f, 1f), stunnedVelocity.y * Random.Range(-1f, 2f));
+        SetVelocity(velocity.x, velocity.y);
+    }
+
+    public void StartBattleStartCheck(Transform player)
+    {
+        TryEnterBattleState(player);
+        InvokeRepeating(nameof(ReEnterBattleState), 0f, .3f);
+    }
+
+    private void ReEnterBattleState()
+    {
+        if(stateMachine.currentState == battleState || stateMachine.currentState == attackState)
+        {
+            CancelInvoke(nameof(ReEnterBattleState));
+            return;
+        }
+        stateMachine.ChangeState(battleState);
     }
 }

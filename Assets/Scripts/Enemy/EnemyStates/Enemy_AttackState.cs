@@ -62,9 +62,7 @@ public class Enemy_AttackState : EnemyState
         }
     }
 
-    /// <summary>
-    /// Check if player is still within chasing distance (even if not in raycast line of sight)
-    /// </summary>
+
     private bool IsPlayerNearby()
     {
         if (enemy.player == null)

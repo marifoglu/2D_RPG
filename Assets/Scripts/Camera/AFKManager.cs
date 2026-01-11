@@ -219,6 +219,13 @@ public class AFKManager : MonoBehaviour
     //    isAFK = true;
     //    Debug.Log("[AFKManager] Player is now AFK");
 
+    //    // Capture current camera size BEFORE zooming
+    //    if (cinemachineCamera != null)
+    //    {
+    //        originalCameraSize = cinemachineCamera.Lens.OrthographicSize;
+    //        Debug.Log($"[AFKManager] Captured current camera size: {originalCameraSize}");
+    //    }
+
     //    // Start camera zoom in and center on player
     //    StartCameraZoom(zoomedInSize, true);
 
@@ -234,16 +241,16 @@ public class AFKManager : MonoBehaviour
         if (isAFK) return;
 
         isAFK = true;
-        Debug.Log("[AFKManager] Player is now AFK");
 
-        // Capture current camera size BEFORE zooming
         if (cinemachineCamera != null)
         {
-            originalCameraSize = cinemachineCamera.Lens.OrthographicSize;
-            Debug.Log($"[AFKManager] Captured current camera size: {originalCameraSize}");
+            float currentSize = cinemachineCamera.Lens.OrthographicSize;
+            if (!Mathf.Approximately(currentSize, zoomedInSize))
+            {
+                originalCameraSize = currentSize;
+            }
         }
 
-        // Start camera zoom in and center on player
         StartCameraZoom(zoomedInSize, true);
 
         // Start AFK idle animation cycle

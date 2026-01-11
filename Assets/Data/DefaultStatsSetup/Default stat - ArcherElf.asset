@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9fe0192de0ced14ca01cb0cf6ca05f7, type: 3}
+  m_Name: Default stat - ArcherElf
+  m_EditorClassIdentifier: Assembly-CSharp::Stat_SetupSO
+  maxHealth: 100
+  healthRegen: 3
+  maxStamina: 100
+  staminaRegen: 10
+  damage: 25
+  attackSpeed: 1.05
+  critChance: 51
+  critPower: 10
+  armorReduction: 0
+  fireDamage: 0
+  iceDamage: 0
+  lightningDamage: 0
+  armor: 0
+  evasion: 0
+  fireResistance: 0
+  iceResistance: 0
+  lightninResistance: 0
+  strength: 0
+  agility: 0
+  intelligence: 0
+  vitality: 0

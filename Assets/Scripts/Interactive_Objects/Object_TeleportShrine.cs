@@ -277,7 +277,7 @@ public class Object_TeleportShrine : MonoBehaviour, IInteractable, ISaveable
             // Force the animator to the correct state immediately
             if (isActive)
             {
-                anim.Play("Active", 0, 0);
+                anim.Play("isActive", 0, 0);
             }
         }
         if (activeParticles != null)
@@ -326,7 +326,16 @@ public class Object_TeleportShrine : MonoBehaviour, IInteractable, ISaveable
             // Defer visual update to ensure animator is ready
             if (isActive)
             {
-                StartCoroutine(ForceActiveStateDelayed());
+                // Only start coroutine if the GameObject is active
+                if (gameObject.activeInHierarchy)
+                {
+                    StartCoroutine(ForceActiveStateDelayed());
+                }
+                else
+                {
+                    // Apply state immediately if inactive - will display when activated
+                    UpdateVisualState();
+                }
             }
         }
         else
@@ -334,7 +343,6 @@ public class Object_TeleportShrine : MonoBehaviour, IInteractable, ISaveable
             Debug.Log($"[Shrine] LoadData: {shrineID} NOT FOUND in save data");
         }
     }
-
     private IEnumerator ForceActiveStateDelayed()
     {
         // Wait one frame so Animator is initialized

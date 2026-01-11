@@ -1,81 +1,23 @@
-﻿//using UnityEditor;
-//using UnityEngine;
-
-//public class Player_Combat : Entity_Combat
-//{
-//    [Header("Counter Attack Settings")]
-//    [SerializeField] private float counterRecovery = .1f;
-
-//    public bool CounterAttackPerformed()
-//    {
-//        bool hasPerformedCounter = false;
-
-//        foreach (var target in GetDetectCollider())
-//        {
-//            ICounterable counterable = target.GetComponent<ICounterable>();
-
-//            if (counterable == null || !counterable.CanBeCountered)
-//                continue; // if not counterable, skip
-
-//            IDamageable damageable = target.GetComponent<IDamageable>();
-//            float elementalDamage = 0f; // No elemental damage for counter-attack
-
-//            if (damageable != null)
-//            {
-//                float counterAttackDamage = entityStats.GetCounterAttackDamage(); // Dynamic stat
-
-//                bool damageApplied = damageable.TakeDamage(
-//                    counterAttackDamage,
-//                    elementalDamage,
-//                    ElementType.None,
-//                    transform
-//                );
-
-//                if (damageApplied)
-//                {
-//                    hasPerformedCounter = true;
-
-//                    // Only apply knockback and counter effects if enemy didn't die
-//                    Entity_Health targetHealth = target.GetComponent<Entity_Health>();
-//                    if (targetHealth != null && !targetHealth.isDead)
-//                    {
-//                        counterable.HandleCounter();
-//                    }
-//                }
-//            }
-//        }
-
-//        return hasPerformedCounter;
-//    }
-
-//    public float GetCounterRecoveryDuration() => counterRecovery;
-//}
-
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Player_Combat : Entity_Combat
 {
     [Header("Counter Attack Settings")]
     [SerializeField] private float counterRecovery = .1f;
+    [SerializeField] private LayerMask whatIsCounterable;
 
     public bool CounterAttackPerformed()
     {
         bool hasPerformedCounter = false;
 
-        Collider2D[] targets = GetDetectCollider();
-        Debug.Log($"CounterAttackPerformed: Found {targets.Length} targets in range");
+        Collider2D[] targets = GetDetectColliders(whatIsCounterable);
 
         foreach (var target in targets)
         {
             ICounterable counterable = target.GetComponent<ICounterable>();
 
             if (counterable == null)
-            {
-                Debug.Log($"Target {target.name} does not implement ICounterable - skipping");
                 continue;
-            }
-
-            Debug.Log($"Target {target.name} is counterable!");
 
             IDamageable damageable = target.GetComponent<IDamageable>();
             float elementalDamage = 0f;
@@ -83,7 +25,6 @@ public class Player_Combat : Entity_Combat
             if (damageable != null)
             {
                 float counterAttackDamage = entityStats.GetCounterAttackDamage();
-                Debug.Log($"Attempting counter attack damage: {counterAttackDamage}");
 
                 bool damageApplied = damageable.TakeDamage(
                     counterAttackDamage,
@@ -91,8 +32,6 @@ public class Player_Combat : Entity_Combat
                     ElementType.None,
                     transform
                 );
-
-                Debug.Log($"Damage applied: {damageApplied}");
 
                 if (damageApplied)
                 {
@@ -107,9 +46,7 @@ public class Player_Combat : Entity_Combat
             }
         }
 
-        Debug.Log($"CounterAttackPerformed result: {hasPerformedCounter}");
         return hasPerformedCounter;
     }
-
     public float GetCounterRecoveryDuration() => counterRecovery;
 }

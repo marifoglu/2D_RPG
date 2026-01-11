@@ -1,37 +1,42 @@
 ﻿using UnityEngine;
 
+
 public class Enemy_BattleState : EnemyState
 {
-    private Transform player;
-    private Transform lastTarget;
-    private float lastTimeWasInBattle;
-    private const float FLIP_DEAD_ZONE = 0.1f;
-    private const float MAX_CHASE_DISTANCE = 15f; // Only give up if player is REALLY far
+    protected Transform player;
+    protected Transform lastTarget;
+    protected float lastTimeWasInBattle;
+    protected float lastTimeAttacked = float.NegativeInfinity;
+
+
+    // reduced dead-zone so quick passes are detected
+    protected const float FLIP_DEAD_ZONE = 0.02f;
+    protected const float MAX_CHASE_DISTANCE = 15f; // Only give up if player is REALLY far
 
     public Enemy_BattleState(Enemy enemy, StateMachine stateMachine, string animBoolName) : base(enemy, stateMachine, animBoolName)
     {
     }
-
     public override void Enter()
     {
         base.Enter();
-
         UpdateBattleTimer();
 
         if (player == null)
-            player = enemy.GetPlayerDetection();
+            player = enemy.player ?? enemy.GetPlayerDetection();
 
-        // Ensure we're facing the player when entering battle
-        if (player != null)
-        {
-            enemy.FlipTowardTarget(player);
-        }
 
         if (ShouldRetreat())
         {
-            rb.linearVelocity = new Vector2((enemy.retreatVelocity.x * enemy.activeSlowMultiplier) * -DirectToPlayer(), enemy.retreatVelocity.y);
-            enemy.HandleFlip(DirectToPlayer());
+            ShortRetreat();
         }
+    }
+    protected void ShortRetreat()
+    {
+        float x = (enemy.retreatVelocity.x * enemy.activeSlowMultiplier) * -DirectionToPlayer();
+        float y = enemy.retreatVelocity.y;
+
+        rb.linearVelocity = new Vector2(x, y);
+        enemy.HandleFlip(DirectionToPlayer());
     }
 
     public override void Exit()
@@ -46,6 +51,10 @@ public class Enemy_BattleState : EnemyState
     {
         base.Update();
 
+        // Debug snapshot
+        float dist = (player != null) ? Mathf.Abs(player.position.x - enemy.transform.position.x) : float.PositiveInfinity;
+        bool rayHit = enemy.PlayerDetected().collider != null;
+
         // Stop if at edge or no ground
         if (enemy.edgeDetected || !enemy.groundDetected)
         {
@@ -54,18 +63,17 @@ public class Enemy_BattleState : EnemyState
             return;
         }
 
-        // Update target tracking - ONLY reset timer when we actually SEE the player
         if (enemy.PlayerDetected())
         {
             UpdateTargetIfNeeded();
-            UpdateBattleTimer(); // Only reset timer when raycast sees player
+            UpdateBattleTimer();
         }
         else
         {
-            // Player not detected in front - check if player is behind us
-            if (player != null && enemy.IsPlayerBehind() && DistanceToPlayer() < enemy.attackDistance * 2f)
+            // Player not detected in front/ check if player is behind us
+            // Flip toward player when they are behind even if raycast misses (helps when player dashes past)
+            if (player != null && enemy.IsPlayerBehind())
             {
-                // Player is close behind us, flip to face them
                 enemy.FlipTowardTarget(player);
                 UpdateBattleTimer();
             }
@@ -75,36 +83,39 @@ public class Enemy_BattleState : EnemyState
                 stateMachine.ChangeState(enemy.idleState);
                 return;
             }
-            // Battle timer expired - give up chasing
+            // Battle timer expired  / give up chasing
             else if (BattleTimeOver())
             {
                 stateMachine.ChangeState(enemy.idleState);
                 return;
             }
-            // Otherwise keep chasing (player dashed/jumped but still in range)
         }
 
         // Only attack if we can actually see the player via raycast AND they're in range
-        if (WithinAttackRange() && enemy.PlayerDetected())
+        if (WithinAttackRange() && enemy.PlayerDetected() && CanAttack())
         {
+            lastTimeAttacked = Time.time;
             stateMachine.ChangeState(enemy.attackState);
             return;
         }
-
-        int dir = DirectToPlayer();
-
-        // Keep chasing toward last known player position
-        if (dir != 0 && player != null)
-        {
-            enemy.SetVelocity(enemy.GetBattleMoveSpeed() * dir, rb.linearVelocity.y);
-        }
         else
         {
-            enemy.SetVelocity(0f, rb.linearVelocity.y);
+            float baseSpeed = enemy.canChasePlayer ? enemy.GetBattleMoveSpeed() : 0.0001f;
+            int dir = DirectionToPlayer();
+
+            // if DirectionToPlayer() returned 0 due to tiny dead-zone but player exists and is further than a tiny epsilon,
+            // force a direction so the enemy actually approaches the player.
+            if (dir == 0 && player != null && DistanceToPlayer() > 0.01f)
+            {
+                dir = player.position.x > enemy.transform.position.x ? 1 : -1;
+            }
+            enemy.SetVelocity(baseSpeed * dir, rb.linearVelocity.y);
         }
     }
 
-    private void UpdateTargetIfNeeded()
+    protected bool CanAttack() => Time.time > lastTimeAttacked + enemy.attackCooldown;
+
+    protected void UpdateTargetIfNeeded()
     {
         if (enemy.PlayerDetected() == false)
             return;
@@ -118,13 +129,13 @@ public class Enemy_BattleState : EnemyState
         }
     }
 
-    private void UpdateBattleTimer() => lastTimeWasInBattle = Time.time;
-    private bool BattleTimeOver() => Time.time >= lastTimeWasInBattle + enemy.battleTimeDuration;
-    private bool WithinAttackRange() => DistanceToPlayer() < enemy.attackDistance;
+    protected void UpdateBattleTimer() => lastTimeWasInBattle = Time.time;
+    protected bool BattleTimeOver() => Time.time >= lastTimeWasInBattle + enemy.battleTimeDuration;
+    protected bool WithinAttackRange() => DistanceToPlayer() < enemy.attackDistance;
 
-    private bool ShouldRetreat() => DistanceToPlayer() < enemy.minRetreatDistance;
+    protected bool ShouldRetreat() => DistanceToPlayer() < enemy.minRetreatDistance;
 
-    private float DistanceToPlayer()
+    protected float DistanceToPlayer()
     {
         if (player == null)
             return float.MaxValue;
@@ -132,15 +143,16 @@ public class Enemy_BattleState : EnemyState
         return Mathf.Abs(player.position.x - enemy.transform.position.x);
     }
 
-    private int DirectToPlayer()
+    protected int DirectionToPlayer()
     {
         if (player == null)
             return 0;
 
         float distance = player.position.x - enemy.transform.position.x;
 
+        // Use a very small dead zone; treat anything non-zero as a direction so fast passes flip
         if (Mathf.Abs(distance) < FLIP_DEAD_ZONE)
-            return 0; // too close - don't flip
+            return 0;
 
         return distance > 0 ? 1 : -1;
     }

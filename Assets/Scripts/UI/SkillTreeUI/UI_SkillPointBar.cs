@@ -136,8 +136,7 @@ public class UI_SkillPointBar : MonoBehaviour
         {
             int totalPoints = skillTree.GetSkillPoints();
             skillPointsText.text = $"Skill Points: {totalPoints}";
-            Debug.Log($"[UI_SkillPointBar] Updated skill points display: {totalPoints}");
-        }
+       }
     }
 
     private void PlaySkillPointEarnedEffect()
